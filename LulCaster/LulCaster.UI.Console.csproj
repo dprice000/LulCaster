@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\LulCaster.Utility.Common\LulCaster.Utility.Common.csproj" />
-    <ProjectReference Include="..\LulCaster.Utility.ScreenCapture\LulCaster.Utility.ScreenCapture.Windows.csproj" />
+    <ProjectReference Include="..\LulCaster.Utility.ScreenCapter.Windows2\LulCaster.Utility.ScreenCapture.Windows.csproj" />
     <ProjectReference Include="..\LulCaster.Utility.Service\LulCaster.Utility.Service.csproj" />
   </ItemGroup>
 

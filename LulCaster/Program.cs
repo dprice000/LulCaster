@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using LulCaster.Utility.ScreenCapture.Windows;
 using LulCaster.Utility.Service;
+using LulCaster.Utility.ScreenCapture.Windows;
 
 namespace LulCaster
 {
@@ -15,10 +15,8 @@ namespace LulCaster
 
       while (true)
       {
-        
         var bitmap = screenCap.CaptureScreenshot();
-        var memoryStream = new MemoryStream();
-        var text = ocr.ProcessImage(memoryStream);
+        var text = ocr.ProcessImage(new MemoryStream(bitmap));
 
         Console.WriteLine(text);
         Thread.Sleep(5000);

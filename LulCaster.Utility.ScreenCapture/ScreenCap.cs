@@ -1,6 +1,7 @@
 ﻿using LulCaster.Utility.Common.Config;
 using System.Drawing;
-using System.Windows.Forms;
+using WpfScreenHelper;
+using System.Windows;
 
 namespace LulCaster.Utility.ScreenCapture.Windows
 {
@@ -20,10 +21,11 @@ namespace LulCaster.Utility.ScreenCapture.Windows
 
     public void InitializeBounds()
     {
-      _screenOptions.ScreenHeight = Screen.PrimaryScreen.WorkingArea.Height;
-      _screenOptions.ScreenWidth = Screen.PrimaryScreen.WorkingArea.Width;
-      _screenOptions.X = Screen.PrimaryScreen.Bounds.X;
-      _screenOptions.Y = Screen.PrimaryScreen.Bounds.Y;
+            Rectangle x = new Rectangle();
+      _screenOptions.ScreenHeight = (int)Screen.PrimaryScreen.;
+      _screenOptions.ScreenWidth = (int)Screen.PrimaryScreen.WorkingArea.Width;
+      _screenOptions.X = (int)Screen.PrimaryScreen.Bounds.X;
+      _screenOptions.Y = (int)Screen.PrimaryScreen.Bounds.Y;
     }
 
     public Bitmap CaptureScreenshot()
