@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:LulCaster.UI.WPF.Pages"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="LulCaster.UI.WPF.Pages.WireFramePage"
+      xmlns:lulCon="clr-namespace:LulCaster.UI.WPF.Controls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="WireFramePage">
@@ -39,38 +40,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition Height="3*"/>
-                    </Grid.RowDefinitions>
-
-                    <WrapPanel Grid.Row="0" Margin="132,0,0,0">
-                        <TextBlock >Screen Segments</TextBlock>
-                        <Button Style="{StaticResource MaterialDesignRaisedButton}"
-                                        Height="25"
-                                        materialDesign:ButtonAssist.CornerRadius="24"
-                                        ToolTip="Add New Screen Segment" Width="25">
-                            <materialDesign:PackIcon Kind="Add" Height="25" Width="25" Opacity=".56" />
-                        </Button>
-                        <Button Style="{StaticResource MaterialDesignRaisedButton}"
-                                            Height="25"
-                                            materialDesign:ButtonAssist.CornerRadius="24"
-                                            ToolTip="Delete Selected Screen Segments" Width="25">
-                            <materialDesign:PackIcon Kind="Minus" Opacity=".56" />
-                        </Button>
-                    </WrapPanel>
-                    <ListBox Grid.Row="1" Background="Beige">
-                        <ListBoxItem>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock>ListBox Item #1</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                    </ListBox>
-                </Grid>
-
-            </Grid>
+            <lulCon:PresetList Grid.Column="0"></lulCon:PresetList>
             <Grid Grid.Column="1" Height="120">
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
