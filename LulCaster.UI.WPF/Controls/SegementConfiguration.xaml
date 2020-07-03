@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="LulCaster.UI.WPF.Controls.SegementConfiguration"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LulCaster.UI.WPF.Controls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition MinHeight="35" Height="4*"></RowDefinition>
+      <RowDefinition Height="71*"></RowDefinition>
+    </Grid.RowDefinitions>
+    <Grid Grid.Row="0">
+      <TextBlock VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Height="24" Margin="0,11,0,0">Segment Configuration</TextBlock>
+    </Grid>
+    <GroupBox Name="GroupingConfigs" Grid.Row="1" Header="Properties" Margin="5,8,5,5">
+
+      <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
+          <Label>Label:</Label>
+          <TextBox Width="517"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <Label>Trigger Text:</Label>
+          <TextBox Width="517"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <Label>Sound File: </Label>
+          <Button Name="btnSoundBrowser" Click="btnSoundBrowser_Click">Browse</Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <Label Margin="0,0,6,0">Bounding Box: </Label>
+          <Button Style="{StaticResource MaterialDesignRaisedButton}"
+                                            Height="25"
+                                            materialDesign:ButtonAssist.CornerRadius="24"
+                                            ToolTip="Grab Bounding Box" Width="25">
+            <materialDesign:PackIcon Kind="Minus" Opacity=".56" />
+          </Button>
+          <Button Style="{StaticResource MaterialDesignRaisedButton}"
+                                            Height="25"
+                                            materialDesign:ButtonAssist.CornerRadius="24"
+                                            ToolTip="Reset Bounding Box" Width="25">
+            <materialDesign:PackIcon Kind="Minus" Opacity=".56" />
+          </Button>
+        </StackPanel>
+      </StackPanel>
+    </GroupBox>
+  </Grid>
+</UserControl>

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LulCaster.UI.WPF"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="LulCaster" Height="450" Width="800"
+        Title="LulCaster" Height="800" Width="1200"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
         TextOptions.TextFormattingMode="Ideal"

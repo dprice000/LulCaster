@@ -43,7 +43,7 @@ namespace LulCaster.Utility.ScreenCapture.Windows
 
         var memoryStream = new MemoryStream();
         screencapImage.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Tiff);
-        screencapImage.Save(@"LastFrame.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
+        //screencapImage.Save(@"LastFrame.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
 
         byte[] byteImage = new Byte[memoryStream.Length];
         byteImage = memoryStream.ToArray();
