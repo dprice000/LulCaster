@@ -10,7 +10,7 @@ namespace LulCaster
   {
     private static void Main(string[] args)
     {
-      var screenCap = new ScreenCap();
+      var screenCap = new ScreenCaptureService();
       var ocr = new OcrService();
 
       while (true)

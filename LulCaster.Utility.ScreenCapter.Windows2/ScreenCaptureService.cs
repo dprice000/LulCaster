@@ -3,29 +3,27 @@ using System;
 using System.Drawing;
 using System.IO;
 using WpfScreenHelper;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace LulCaster.Utility.ScreenCapture.Windows
 {
-  public class ScreenCap
+  public class ScreenCaptureService
   {
     private ScreenOptions _screenOptions;
 
-    public ScreenCap()
+    public ScreenCaptureService()
     {
       InitializeBounds();
     }
 
-    public ScreenCap(ScreenOptions screenOptions)
+    public ScreenCaptureService(ScreenOptions screenOptions)
     {
       _screenOptions = screenOptions;
     }
 
-    public void InitializeBounds()
+    private void InitializeBounds()
     {
       _screenOptions = new ScreenOptions();
-      _screenOptions.ScreenHeight = 2160; //TODO: This should not be hardcoded 
+      _screenOptions.ScreenHeight = 2160; //TODO: This should not be hardcoded
       _screenOptions.ScreenWidth = 3840;
       _screenOptions.X = (int)Screen.PrimaryScreen.Bounds.X;
       _screenOptions.Y = (int)Screen.PrimaryScreen.Bounds.Y;
@@ -45,11 +43,10 @@ namespace LulCaster.Utility.ScreenCapture.Windows
 
         var memoryStream = new MemoryStream();
         screencapImage.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Tiff);
+        screencapImage.Save(@"LastFrame.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
 
         byte[] byteImage = new Byte[memoryStream.Length];
         byteImage = memoryStream.ToArray();
-        screencapImage.Save(@"LastFrame.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
-                
 
         return byteImage;
       }
