@@ -55,9 +55,9 @@ namespace LulCaster.Utility.ScreenCapture.Windows.Snipping
       ReleaseDC(IntPtr.Zero, desktopPtr);
     }
 
-    public System.Windows.Shapes.Rectangle ConvertRectToWindowsRect(System.Drawing.Rectangle rectangle)
+    public System.Windows.Shapes.Rectangle ConvertRectToWindowsRect(Rectangle rectangle)
     {
-      return new System.Windows.Shapes.Rectangle() { Width = rectangle.Width, Height = rectangle.Height, Fill = System.Windows.Media.Brushes.LightBlue, StrokeThickness = 2 };
+      return new System.Windows.Shapes.Rectangle() { Width = rectangle.Width, Height = rectangle.Height, Stroke = System.Windows.Media.Brushes.LightBlue, StrokeThickness = 5 };
     }
   }
 }

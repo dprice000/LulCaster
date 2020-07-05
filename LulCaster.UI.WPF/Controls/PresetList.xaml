@@ -19,7 +19,7 @@
                     <ColumnDefinition MinWidth="130" Width="201*"/>
                     <ColumnDefinition Width="599*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Bottom" Grid.Column="0" FontWeight="Bold" FontSize="24">Presets</TextBlock>
+                <TextBlock VerticalAlignment="Bottom" Grid.Column="0" FontWeight="Bold" FontSize="18">Presets</TextBlock>
                 <WrapPanel VerticalAlignment="Bottom" Grid.Column="1" HorizontalAlignment="Right">
                     <Button Style="{StaticResource MaterialDesignRaisedButton}"
                                             Height="25"

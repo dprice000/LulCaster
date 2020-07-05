@@ -9,13 +9,9 @@
              d:DesignHeight="450" d:DesignWidth="800">
   <Grid>
     <Grid.RowDefinitions>
-      <RowDefinition MinHeight="35" Height="4*"></RowDefinition>
-      <RowDefinition Height="71*"></RowDefinition>
+      <RowDefinition></RowDefinition>
     </Grid.RowDefinitions>
-    <Grid Grid.Row="0">
-      <TextBlock VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Height="24" Margin="0,11,0,0">Segment Configuration</TextBlock>
-    </Grid>
-    <GroupBox Name="GroupingConfigs" Grid.Row="1" Header="Properties" Margin="5,8,5,5">
+    <GroupBox Name="GroupingConfigs" Grid.Row="0" Margin="5,8,5,5" Header="Region Configuration">
 
       <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">

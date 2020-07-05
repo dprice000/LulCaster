@@ -56,8 +56,9 @@ namespace LulCaster.UI.WPF.Pages
       {
         if (e.LeftButton == MouseButtonState.Released) return;
 
+        CanvasScreenFeed.Children.Clear();
         var newBox = _boundingBoxBrush.OnMouseDown(e);
-        var windowsBox = _boundingBoxBrush.ConvertRectToWindowsRect(newBox);     
+        var windowsBox = _boundingBoxBrush.ConvertRectToWindowsRect(newBox);
         CanvasScreenFeed.Children.Add(windowsBox);
         Canvas.SetLeft(windowsBox, newBox.X);
         Canvas.SetTop(windowsBox, newBox.Y);
@@ -71,8 +72,6 @@ namespace LulCaster.UI.WPF.Pages
       this.Dispatcher?.Invoke(() =>
       {
         if (e.LeftButton == MouseButtonState.Pressed) return;
-
-        CanvasScreenFeed.Children.Remove(_currentBoundingBox);
         //TODO: Update the configuration of the selected bounding box in the segment configuration control
       });
     }
@@ -83,12 +82,15 @@ namespace LulCaster.UI.WPF.Pages
       {
         if (e.LeftButton == MouseButtonState.Released) return;
 
+        CanvasScreenFeed.Children.Clear();
+
         var newBox = _boundingBoxBrush.OnMouseMove(e);
         var windowsBox = _boundingBoxBrush.ConvertRectToWindowsRect(newBox);
         CanvasScreenFeed.Children.Add(windowsBox);
         Canvas.SetLeft(windowsBox, newBox.X);
         Canvas.SetTop(windowsBox, newBox.Y);
         _boundingBoxCollection[""] = windowsBox;
+        _currentBoundingBox = windowsBox;
       });
     }
   }
