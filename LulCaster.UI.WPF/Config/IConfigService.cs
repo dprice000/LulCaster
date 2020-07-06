@@ -14,6 +14,7 @@ namespace LulCaster.UI.WPF.Config
     RegionViewModel GetRegion(string preset, Guid id);
     void UpdateRegion(string preset, RegionViewModel regionViewModel);
     void CreatePreset(string preset);
+    IEnumerable<string> GetAllPresets();
     void DeletePreset(string preset);
   }
 }

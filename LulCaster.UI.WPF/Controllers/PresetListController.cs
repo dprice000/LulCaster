@@ -1,6 +1,7 @@
 ﻿using LulCaster.UI.WPF.Config;
 using LulCaster.UI.WPF.Dialogs;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LulCaster.UI.WPF.Controllers
 {
@@ -15,6 +16,9 @@ namespace LulCaster.UI.WPF.Controllers
     {
       _configService = configService;
       _newPresetDialog = newPresetDialog;
+
+      PresetNames = _configService.GetAllPresets().ToList();
+      OnPropertyChanged(nameof(PresetNames));
     }
 
     /// <summary>
