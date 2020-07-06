@@ -14,7 +14,7 @@ namespace LulCaster.Utility.ScreenCapture.Windows.Snipping
     public static extern void ReleaseDC(IntPtr hwnd, IntPtr dc);
 
     private Point startPosition;
-    private Rectangle boundingRectangle;
+    //private Rectangle boundingRectangle;
 
     public Image Image { get; set; }
 
@@ -41,19 +41,19 @@ namespace LulCaster.Utility.ScreenCapture.Windows.Snipping
       return new Rectangle(x1, y1, x2 - x1, y2 - y1);
     }
 
-    public void DrawRectangle()
-    {
-      IntPtr desktopPtr = GetDC(IntPtr.Zero);
-      Graphics graphics = Graphics.FromHdc(desktopPtr);
+    //public void DrawRectangle()
+    //{
+    //  IntPtr desktopPtr = GetDC(IntPtr.Zero);
+    //  Graphics graphics = Graphics.FromHdc(desktopPtr);
 
-      SolidBrush brush = new SolidBrush(Color.LightBlue);
-      Pen pen = new Pen(brush);
+    //  SolidBrush brush = new SolidBrush(Color.LightBlue);
+    //  Pen pen = new Pen(brush);
 
-      graphics.DrawRectangle(pen, boundingRectangle);
+    //  graphics.DrawRectangle(pen, boundingRectangle);
 
-      graphics.Dispose();
-      ReleaseDC(IntPtr.Zero, desktopPtr);
-    }
+    //  graphics.Dispose();
+    //  ReleaseDC(IntPtr.Zero, desktopPtr);
+    //}
 
     public System.Windows.Shapes.Rectangle ConvertRectToWindowsRect(Rectangle rectangle)
     {

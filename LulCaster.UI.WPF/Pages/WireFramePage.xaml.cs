@@ -1,4 +1,5 @@
-﻿using LulCaster.UI.WPF.Workers;
+﻿using LulCaster.UI.WPF.Config;
+using LulCaster.UI.WPF.Workers;
 using LulCaster.Utility.ScreenCapture.Windows;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
 using System.Collections.Generic;
@@ -21,8 +22,9 @@ namespace LulCaster.UI.WPF.Pages
     private readonly BoundingBoxBrush _boundingBoxBrush = new BoundingBoxBrush();
     private readonly Dictionary<string, Rectangle> _boundingBoxCollection = new Dictionary<string, Rectangle>(); //TODO: This will live in the segement configuration tool
     private Rectangle _currentBoundingBox; //TODO: This will live in the segement configuration tool
+    private IConfigService _configService;
 
-    public WireFramePage()
+    public WireFramePage(IConfigService configService)
     {
       InitializeComponent();
 
@@ -30,6 +32,9 @@ namespace LulCaster.UI.WPF.Pages
       _screenCaptureTimer = new ScreenCaptureTimer(new ScreenCaptureService(), CAPTURE_TIMER_INTERVAL);
       _screenCaptureTimer.ScreenCaptureCompleted += _screenCaptureTimer_ScreenCaptureCompleted;
       _screenCaptureTimer.Start();
+      _configService = configService;
+
+      cntrlSegmentList.DataContext = _configService.GetAllRegionsAsViewModels();
     }
 
     private void _screenCaptureTimer_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
@@ -46,7 +51,7 @@ namespace LulCaster.UI.WPF.Pages
 
         var imageBrush = new ImageBrush(screenCaptureImage);
 
-        CanvasScreenFeed.Background = imageBrush;
+        canvasScreenFeed.Background = imageBrush;
       }, System.Windows.Threading.DispatcherPriority.Background);
     }
 
@@ -56,10 +61,10 @@ namespace LulCaster.UI.WPF.Pages
       {
         if (e.LeftButton == MouseButtonState.Released) return;
 
-        CanvasScreenFeed.Children.Clear();
+        canvasScreenFeed.Children.Clear();
         var newBox = _boundingBoxBrush.OnMouseDown(e);
         var windowsBox = _boundingBoxBrush.ConvertRectToWindowsRect(newBox);
-        CanvasScreenFeed.Children.Add(windowsBox);
+        canvasScreenFeed.Children.Add(windowsBox);
         Canvas.SetLeft(windowsBox, newBox.X);
         Canvas.SetTop(windowsBox, newBox.Y);
         _boundingBoxCollection[""] = windowsBox; //TODO: The name needs to be taken from the segment configuration control
@@ -82,11 +87,11 @@ namespace LulCaster.UI.WPF.Pages
       {
         if (e.LeftButton == MouseButtonState.Released) return;
 
-        CanvasScreenFeed.Children.Clear();
+        canvasScreenFeed.Children.Clear();
 
         var newBox = _boundingBoxBrush.OnMouseMove(e);
         var windowsBox = _boundingBoxBrush.ConvertRectToWindowsRect(newBox);
-        CanvasScreenFeed.Children.Add(windowsBox);
+        canvasScreenFeed.Children.Add(windowsBox);
         Canvas.SetLeft(windowsBox, newBox.X);
         Canvas.SetTop(windowsBox, newBox.Y);
         _boundingBoxCollection[""] = windowsBox;
