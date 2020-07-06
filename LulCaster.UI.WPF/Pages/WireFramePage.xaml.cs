@@ -1,4 +1,5 @@
 ﻿using LulCaster.UI.WPF.Config;
+using LulCaster.UI.WPF.Controllers;
 using LulCaster.UI.WPF.Workers;
 using LulCaster.Utility.ScreenCapture.Windows;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
@@ -24,17 +25,15 @@ namespace LulCaster.UI.WPF.Pages
     private Rectangle _currentBoundingBox; //TODO: This will live in the segement configuration tool
     private IConfigService _configService;
 
-    public WireFramePage(IConfigService configService)
+    public WireFramePage(IConfigService configService, IPresetListController presetListController, IScreenCaptureService screenCaptureService)
     {
       InitializeComponent();
 
-      //TODO: Add dependacy injection
-      _screenCaptureTimer = new ScreenCaptureTimer(new ScreenCaptureService(), CAPTURE_TIMER_INTERVAL);
+      _screenCaptureTimer = new ScreenCaptureTimer(screenCaptureService, CAPTURE_TIMER_INTERVAL);
       _screenCaptureTimer.ScreenCaptureCompleted += _screenCaptureTimer_ScreenCaptureCompleted;
       _screenCaptureTimer.Start();
       _configService = configService;
-
-      cntrlSegmentList.DataContext = _configService.GetAllRegionsAsViewModels();
+      cntrlPresetList = new Controls.PresetList(presetListController);
     }
 
     private void _screenCaptureTimer_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)

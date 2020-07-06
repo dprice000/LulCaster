@@ -77,6 +77,16 @@ namespace LulCaster.UI.WPF.Config
       throw new NotImplementedException();
     }
 
+    public IEnumerable<string> GetAllPresets()
+    {
+      return new List<string>
+      {
+        "One",
+        "Two",
+        "Three"
+      };
+    }
+
     public void DeletePreset(string preset)
     {
       throw new NotImplementedException();

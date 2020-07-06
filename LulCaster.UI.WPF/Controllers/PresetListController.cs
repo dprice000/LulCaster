@@ -1,12 +1,15 @@
 ﻿using LulCaster.UI.WPF.Config;
 using LulCaster.UI.WPF.Dialogs;
+using System.Collections.Generic;
 
 namespace LulCaster.UI.WPF.Controllers
 {
-  public class PresetListController : IPresetListController
+  public class PresetListController : ControllerBase, IPresetListController
   {
     private readonly IConfigService _configService;
     private readonly ISimpleDialogService<string> _newPresetDialog;
+
+    public List<string> PresetNames { get; private set; } = new List<string>();
 
     public PresetListController(IConfigService configService, ISimpleDialogService<string> newPresetDialog)
     {
@@ -18,21 +21,22 @@ namespace LulCaster.UI.WPF.Controllers
     /// Shows new preset dialog
     /// </summary>
     /// <returns>Returns name of new preset</returns>
-    public string ShowNewPresetDialog()
+    public void ShowNewPresetDialog()
     {
       if (_newPresetDialog.ShowDialog() == true) 
       {
         var preset = _newPresetDialog.ReturnValue;
         _configService.CreatePreset(preset);
-        return preset;
+        PresetNames.Add(preset);
+        OnPropertyChanged(nameof(PresetNames));
       }
-
-      return null;
     }
 
     public void DeletePreset(string preset)
     {
       _configService.DeletePreset(preset);
+      PresetNames.Remove(preset);
+      OnPropertyChanged(nameof(PresetNames));
     }
   }
 }

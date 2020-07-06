@@ -1,5 +1,4 @@
 ﻿using LulCaster.UI.WPF.Controllers;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,26 +9,25 @@ namespace LulCaster.UI.WPF.Controls
   /// </summary>
   public partial class PresetList : UserControl
   {
-    private readonly IPresetListController presetListController;
+    private readonly IPresetListController _presetListController;
 
-    public List<string> PresetNames = new List<string>();
+    public PresetList() { }
 
     public PresetList(IPresetListController presetListController)
     {
       InitializeComponent();
-      this.presetListController = presetListController;
+      _presetListController = presetListController;
+      this.DataContext = _presetListController;
     }
 
     private void Button_btnAddPreset(object sender, RoutedEventArgs e)
     {
-      PresetNames.Add(presetListController.ShowNewPresetDialog());     
+      _presetListController.ShowNewPresetDialog();
     }
 
     private void Button_BtndeletePreset(object sender, RoutedEventArgs e)
     {
-      var selectedPreset = (string)lstBoxPresets.SelectedItem;
-      presetListController.DeletePreset(selectedPreset);
-      PresetNames.Remove(selectedPreset);
+      _presetListController.DeletePreset((string)lstBoxPresets.SelectedItem);
     }
   }
 }

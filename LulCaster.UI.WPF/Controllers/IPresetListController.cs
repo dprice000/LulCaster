@@ -1,8 +1,13 @@
-﻿namespace LulCaster.UI.WPF.Controllers
+﻿using System.Collections.Generic;
+
+namespace LulCaster.UI.WPF.Controllers
 {
   public interface IPresetListController
   {
-    string ShowNewPresetDialog();
-    void DeletePreset(string preset)
+    List<string> PresetNames { get; }
+
+    void ShowNewPresetDialog();
+
+    void DeletePreset(string preset);
   }
 }

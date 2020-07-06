@@ -6,12 +6,12 @@ namespace LulCaster.UI.WPF.Workers
 {
   internal class ScreenCaptureTimer
   {
-    private readonly ScreenCaptureService _screenCaptureService;
+    private readonly IScreenCaptureService _screenCaptureService;
     private readonly Timer _nextScreenShotTimer;
 
     public event EventHandler<ScreenCaptureCompletedArgs> ScreenCaptureCompleted;
 
-    public ScreenCaptureTimer(ScreenCaptureService screenCapService, double timerInterval)
+    public ScreenCaptureTimer(IScreenCaptureService screenCapService, double timerInterval)
     {
       _screenCaptureService = screenCapService;
 

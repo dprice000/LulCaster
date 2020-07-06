@@ -6,7 +6,7 @@ using WpfScreenHelper;
 
 namespace LulCaster.Utility.ScreenCapture.Windows
 {
-  public class ScreenCaptureService
+  public class ScreenCaptureService : IScreenCaptureService
   {
     private ScreenOptions _screenOptions;
 
