@@ -34,11 +34,6 @@
             </WrapPanel>
         </Grid>
         <ListBox Grid.Row="1" Background="Beige">
-            <ListBoxItem>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock>ListBox Item #1</TextBlock>
-                </StackPanel>
-            </ListBoxItem>
         </ListBox>
     </Grid>
 </UserControl>

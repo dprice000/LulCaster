@@ -1,26 +1,35 @@
-﻿using System;
+﻿using LulCaster.UI.WPF.Controllers;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LulCaster.UI.WPF.Controls
 {
-    /// <summary>
-    /// Interaction logic for PresetList.xaml
-    /// </summary>
-    public partial class PresetList : UserControl
+  /// <summary>
+  /// Interaction logic for PresetList.xaml
+  /// </summary>
+  public partial class PresetList : UserControl
+  {
+    private readonly IPresetListController presetListController;
+
+    public List<string> PresetNames = new List<string>();
+
+    public PresetList(IPresetListController presetListController)
     {
-        public PresetList()
-        {
-            InitializeComponent();
-        }
+      InitializeComponent();
+      this.presetListController = presetListController;
     }
+
+    private void Button_btnAddPreset(object sender, RoutedEventArgs e)
+    {
+      PresetNames.Add(presetListController.ShowNewPresetDialog());     
+    }
+
+    private void Button_BtndeletePreset(object sender, RoutedEventArgs e)
+    {
+      var selectedPreset = (string)lstBoxPresets.SelectedItem;
+      presetListController.DeletePreset(selectedPreset);
+      PresetNames.Remove(selectedPreset);
+    }
+  }
 }

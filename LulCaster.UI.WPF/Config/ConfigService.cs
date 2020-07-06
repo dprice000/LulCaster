@@ -71,5 +71,15 @@ namespace LulCaster.UI.WPF.Config
       regions.RemoveAll(x => x.Id == regionId);
       _config[$"{PRESETS_KEY}:{preset}:{REGIONS_KEY}"] = JsonConvert.SerializeObject(regions);
     }
+
+    public void CreatePreset(string preset)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void DeletePreset(string preset)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

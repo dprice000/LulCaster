@@ -24,23 +24,18 @@
                     <Button Style="{StaticResource MaterialDesignRaisedButton}"
                                             Height="25"
                                             materialDesign:ButtonAssist.CornerRadius="24"
-                                            ToolTip="Add New Screen Segment" Width="25">
+                                            ToolTip="Add New Screen Segment" Width="25" Click="Button_btnAddPreset">
                         <materialDesign:PackIcon Kind="Add" Height="25" Width="25" Opacity=".56" />
                     </Button>
                     <Button Style="{StaticResource MaterialDesignRaisedButton}"
                                                 Height="25"
                                                 materialDesign:ButtonAssist.CornerRadius="24"
-                                                ToolTip="Delete Selected Screen Segments" Width="25">
+                                                ToolTip="Delete Selected Screen Segments" Width="25" Click="Button_BtndeletePreset">
                         <materialDesign:PackIcon Kind="Minus" Opacity=".56" />
                     </Button>
                 </WrapPanel>
             </Grid>
-            <ListBox Grid.Row="1" Background="Beige">
-                <ListBoxItem>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock>ListBox Item #1</TextBlock>
-                    </StackPanel>
-                </ListBoxItem>
+            <ListBox Name="lstBoxPresets" Grid.Row="1" Background="Beige">
             </ListBox>
         </Grid>
     </Grid>
