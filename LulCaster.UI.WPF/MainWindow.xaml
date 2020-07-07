@@ -64,6 +64,6 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
-        <Frame Source="/Pages/WireFramePage.xaml" Margin="0,52,0,0" Grid.RowSpan="2" />
+        <Frame Margin="0,52,0,0" Grid.RowSpan="2" />
     </Grid>
 </Window>

@@ -12,17 +12,15 @@ namespace LulCaster.UI.WPF.Config
 {
   public class ConfigService : IConfigService
   {
-    private IMapper _mapper;
-    private IConfiguration _config;
+    private readonly IMapper _mapper;
+    private readonly IConfiguration _config;
     private const string REGIONS_KEY = "regions";
     private const string PRESETS_KEY = "presets";
 
     public ConfigService(IConfiguration config, IMapper mapper)
     {
-      //TODO: This should be injected yo
-      //new ConfigurationBuilder().AddJsonFile("AppSettings.json", optional: false, reloadOnChange: true)
-      //          .Build();
       _config = config;
+      _mapper = mapper;
     }
 
     public void CreateRegionConfig(string preset, RegionConfig regionConfig)

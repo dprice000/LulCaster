@@ -1,6 +1,9 @@
-﻿using LulCaster.UI.WPF.Config;
+﻿using AutoMapper.Configuration;
+using LulCaster.UI.WPF.Config;
 using LulCaster.UI.WPF.Controllers;
+using LulCaster.UI.WPF.Pages;
 using LulCaster.Utility.ScreenCapture.Windows;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
@@ -25,9 +28,19 @@ namespace LulCaster.UI.WPF
       services.AddSingleton<MainWindow>();
       services.AddSingleton<IConfigService, ConfigService>();
       services.AddScoped<IScreenCaptureService, ScreenCaptureService>();
+      services.AddScoped<Microsoft.Extensions.Configuration.IConfiguration>(provider => {
+        return new ConfigurationBuilder().AddJsonFile("AppSettings.json", optional: false, reloadOnChange: true)
+                  .Build();
+      });
 
       RegisterControllers(services);
+      RegisterPages(services);
       RegisterDialogServices(services);
+    }
+
+    private void RegisterPages(IServiceCollection services)
+    {
+      services.AddScoped<WireFramePage>();
     }
 
     private void OnStartup(object sender, StartupEventArgs e)
