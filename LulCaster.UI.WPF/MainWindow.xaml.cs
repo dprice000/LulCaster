@@ -1,6 +1,5 @@
 ﻿using LulCaster.UI.WPF.Pages;
 using System.Windows;
-using System.Windows.Navigation;
 
 namespace LulCaster.UI.WPF
 {
@@ -9,13 +8,17 @@ namespace LulCaster.UI.WPF
   /// </summary>
   public partial class MainWindow : Window
   {
-    private NavigationService _navigationService;
+    private readonly WireFramePage _wireFramePage;
 
     public MainWindow(WireFramePage wireFramePage)
     {
       InitializeComponent();
-      _navigationService = NavigationService.GetNavigationService(this);
-      _navigationService.Navigate(wireFramePage);
+      _wireFramePage = wireFramePage;
+    }
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+      NavigationFrame.Navigate(_wireFramePage);
     }
   }
 }

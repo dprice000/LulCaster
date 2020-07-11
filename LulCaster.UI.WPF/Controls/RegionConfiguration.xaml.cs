@@ -6,9 +6,9 @@ namespace LulCaster.UI.WPF.Controls
   /// <summary>
   /// Interaction logic for SegementConfiguration.xaml
   /// </summary>
-  public partial class SegementConfiguration : UserControl
+  public partial class RegionConfiguration : UserControl
   {
-    public SegementConfiguration()
+    public RegionConfiguration()
     {
       InitializeComponent();
     }

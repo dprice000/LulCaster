@@ -41,9 +41,9 @@
         <ColumnDefinition />
         <ColumnDefinition />
       </Grid.ColumnDefinitions>
-      <lulCon:PresetList x:Name="cntrlPresetList" Grid.Column="0" Margin="6,0,3,0" />
-      <lulCon:SegmentList x:Name="cntrlSegmentList" Grid.Column="1" Margin="3,0,3,0" />
-      <lulCon:SegementConfiguration x:Name="cntrlRegionConfig" Grid.Column="2" Margin="3,0,3,0" />
+      <lulCon:PresetControl x:Name="cntrlPresetList" Grid.Column="0" Margin="6,0,3,0" />
+      <lulCon:RegionList x:Name="cntrlSegmentList" Grid.Column="1" Margin="3,0,3,0" />
+      <lulCon:RegionConfiguration x:Name="cntrlRegionConfig" Grid.Column="2" Margin="3,0,3,0" />
     </Grid>
   </Grid>
 </Page>

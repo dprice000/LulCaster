@@ -19,7 +19,7 @@ namespace LulCaster.UI.WPF.Pages
   public partial class WireFramePage : Page
   {
     private readonly ScreenCaptureTimer _screenCaptureTimer;
-    private const double CAPTURE_TIMER_INTERVAL = 500;
+    private const double CAPTURE_TIMER_INTERVAL = 3000;
     private readonly BoundingBoxBrush _boundingBoxBrush = new BoundingBoxBrush();
     private readonly Dictionary<string, Rectangle> _boundingBoxCollection = new Dictionary<string, Rectangle>(); //TODO: This will live in the region configuration tool
     private Rectangle _currentBoundingBox; //TODO: This will live in the region configuration tool
@@ -31,9 +31,10 @@ namespace LulCaster.UI.WPF.Pages
 
       _screenCaptureTimer = new ScreenCaptureTimer(screenCaptureService, CAPTURE_TIMER_INTERVAL);
       _screenCaptureTimer.ScreenCaptureCompleted += _screenCaptureTimer_ScreenCaptureCompleted;
-      _screenCaptureTimer.Start();
       _configService = configService;
-      cntrlPresetList = new Controls.PresetList(presetListController);
+
+      // cntrlPresetList = new Controls.PresetList(presetListController);
+      _screenCaptureTimer.Start();
     }
 
     private void _screenCaptureTimer_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)

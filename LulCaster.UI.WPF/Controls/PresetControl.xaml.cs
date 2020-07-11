@@ -13,14 +13,14 @@ using System.Windows.Shapes;
 
 namespace LulCaster.UI.WPF.Controls
 {
-    /// <summary>
-    /// Interaction logic for SegmentList.xaml
-    /// </summary>
-    public partial class RegionList : UserControl
+  /// <summary>
+  /// Interaction logic for PresetControl.xaml
+  /// </summary>
+  public partial class PresetControl : UserControl
+  {
+    public PresetControl()
     {
-        public RegionList()
-        {
-            InitializeComponent();
-        }
+      InitializeComponent();
     }
+  }
 }
