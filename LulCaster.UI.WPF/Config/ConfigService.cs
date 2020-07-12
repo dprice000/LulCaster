@@ -70,22 +70,22 @@ namespace LulCaster.UI.WPF.Config
       _config[$"{PRESETS_KEY}:{preset}:{REGIONS_KEY}"] = JsonConvert.SerializeObject(regions);
     }
 
-    public void CreatePreset(string preset)
+    public PresetViewModel CreatePreset(string name)
     {
       throw new NotImplementedException();
     }
 
-    public IEnumerable<string> GetAllPresets()
+    public IEnumerable<PresetViewModel> GetAllPresets()
     {
-      return new List<string>
+      return new List<PresetViewModel>
       {
-        "One",
-        "Two",
-        "Three"
+        new PresetViewModel { Id = Guid.NewGuid(), Name = "One", FilePath = "FilePath" },
+        new PresetViewModel { Id = Guid.NewGuid(), Name = "Two", FilePath = "FilePath" },
+        new PresetViewModel { Id = Guid.NewGuid(), Name = "Three", FilePath = "FilePath" }
       };
     }
 
-    public void DeletePreset(string preset)
+    public void DeletePreset(Guid id)
     {
       throw new NotImplementedException();
     }
