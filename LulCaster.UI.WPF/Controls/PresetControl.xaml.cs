@@ -1,15 +1,9 @@
-﻿using System;
+﻿using LulCaster.UI.WPF.Controllers;
+using LulCaster.UI.WPF.ViewModels;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LulCaster.UI.WPF.Controls
 {
@@ -18,9 +12,95 @@ namespace LulCaster.UI.WPF.Controls
   /// </summary>
   public partial class PresetControl : UserControl
   {
+    private readonly IPresetListController _presetController;
+
+    #region "Dependency Properties"
+
+    public static readonly DependencyProperty PresetListProperty =
+    DependencyProperty.Register
+    (
+        "PresetList",
+        typeof(IList<PresetViewModel>),
+        typeof(PresetControl),
+        new FrameworkPropertyMetadata(new PropertyChangedCallback(OnPresetListChanged))
+    );
+
+    public static readonly DependencyProperty SelectedPresetProperty =
+    DependencyProperty.Register
+    (
+        "SelectedPreset",
+        typeof(PresetViewModel),
+        typeof(PresetControl),
+        new FrameworkPropertyMetadata(new PropertyChangedCallback(OnSelectedPresetChanged))
+    );
+
+    #endregion "Dependency Properties"
+
+    #region "Properties"
+
+    public IList<PresetViewModel> PresetList
+    {
+      get { return (IList<PresetViewModel>)GetValue(PresetListProperty); }
+      set { SetValue(PresetListProperty, value); }
+    }
+
+    public PresetViewModel SelectedPreset
+    {
+      get { return (PresetViewModel)GetValue(SelectedPresetProperty); }
+      set { SetValue(SelectedPresetProperty, value); }
+    }
+
+    #endregion "Properties"
+
+    #region "Constructors"
+
     public PresetControl()
     {
       InitializeComponent();
+    }
+
+    public PresetControl(IPresetListController presetController) : this()
+    {
+      _presetController = presetController;
+      PresetList = _presetController.GetAllPresets().ToList();
+    }
+
+    #endregion "Constructors"
+
+    #region "OnChanged Events"
+
+    private static void OnSelectedPresetChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+    {
+      if (sender is PresetControl thisControl)
+      {
+        thisControl.SelectedPreset = (PresetViewModel)e.NewValue;
+      }
+    }
+
+    private static void OnPresetListChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+    {
+      if (sender is PresetControl thisControl)
+      {
+        thisControl.PresetList = (IList<PresetViewModel>)e.NewValue;
+      }
+    }
+
+    #endregion "OnChanged Events"
+
+    private void Button_btnAddPreset(object sender, RoutedEventArgs e)
+    {
+      if (_presetController.ShowNewPresetDialog() is PresetViewModel newPreset)
+      {
+        PresetList.Add(newPreset);
+        SelectedPreset = newPreset;
+      }
+    }
+
+    private void Button_BtndeletePreset(object sender, RoutedEventArgs e)
+    {
+      _presetController.DeletePreset(SelectedPreset.Id);
+      PresetList.Remove(SelectedPreset);
+      SelectedPreset = null;
     }
   }
 }

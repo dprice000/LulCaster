@@ -1,5 +1,6 @@
 ﻿using LulCaster.UI.WPF.Config;
 using LulCaster.UI.WPF.Controllers;
+using LulCaster.UI.WPF.Controls;
 using LulCaster.UI.WPF.Workers;
 using LulCaster.Utility.ScreenCapture.Windows;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
@@ -27,13 +28,13 @@ namespace LulCaster.UI.WPF.Pages
 
     public WireFramePage(IConfigService configService, IPresetListController presetListController, IScreenCaptureService screenCaptureService)
     {
+      cntrlPresetList = new PresetControl(presetListController);
       InitializeComponent();
 
       _screenCaptureTimer = new ScreenCaptureTimer(screenCaptureService, CAPTURE_TIMER_INTERVAL);
       _screenCaptureTimer.ScreenCaptureCompleted += _screenCaptureTimer_ScreenCaptureCompleted;
       _configService = configService;
 
-      // cntrlPresetList = new Controls.PresetList(presetListController);
       _screenCaptureTimer.Start();
     }
 

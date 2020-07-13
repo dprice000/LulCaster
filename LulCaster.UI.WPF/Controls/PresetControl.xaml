@@ -35,7 +35,7 @@
         </WrapPanel>
       </Grid>
 
-      <ListBox Name="lstBoxPresets" Grid.Row="1" Background="Beige">
+      <ListBox Name="lstBoxPresets" Grid.Row="1" Background="Beige" ItemsSource="{Binding PresetList}" SelectedItem="{Binding SelectedPreset}">
       </ListBox>
     </Grid>
   </Grid>
