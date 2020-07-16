@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:LulCaster.UI.WPF.Controls"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
+             x:Name="CntrlPresetList"
              d:DesignHeight="450" d:DesignWidth="800">
   <Grid>
     <Grid>
@@ -35,7 +36,7 @@
         </WrapPanel>
       </Grid>
 
-      <ListBox Name="lstBoxPresets" Grid.Row="1" Background="Beige" ItemsSource="{Binding PresetList}" SelectedItem="{Binding SelectedPreset}">
+      <ListBox Name="lstBoxPresets" Grid.Row="1" Background="Beige" ItemsSource="{Binding ElementName=CntrlPresetList, Path=PresetList}" DisplayMemberPath="Name" SelectedItem="{Binding ElementName=CntrlPresetList, Path=SelectedPreset}">
       </ListBox>
     </Grid>
   </Grid>

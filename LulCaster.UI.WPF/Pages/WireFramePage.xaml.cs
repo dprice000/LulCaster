@@ -28,8 +28,10 @@ namespace LulCaster.UI.WPF.Pages
 
     public WireFramePage(IConfigService configService, IPresetListController presetListController, IScreenCaptureService screenCaptureService)
     {
-      cntrlPresetList = new PresetControl(presetListController);
+
       InitializeComponent();
+      cntrlPresetList.PresetController = presetListController;
+      cntrlPresetList.LoadPresets();
 
       _screenCaptureTimer = new ScreenCaptureTimer(screenCaptureService, CAPTURE_TIMER_INTERVAL);
       _screenCaptureTimer.ScreenCaptureCompleted += _screenCaptureTimer_ScreenCaptureCompleted;

@@ -12,8 +12,6 @@ namespace LulCaster.UI.WPF.Controls
   /// </summary>
   public partial class PresetControl : UserControl
   {
-    private readonly IPresetListController _presetController;
-
     #region "Dependency Properties"
 
     public static readonly DependencyProperty PresetListProperty =
@@ -50,6 +48,8 @@ namespace LulCaster.UI.WPF.Controls
       set { SetValue(SelectedPresetProperty, value); }
     }
 
+    public IPresetListController PresetController { get; set; }
+
     #endregion "Properties"
 
     #region "Constructors"
@@ -59,10 +59,9 @@ namespace LulCaster.UI.WPF.Controls
       InitializeComponent();
     }
 
-    public PresetControl(IPresetListController presetController) : this()
+    public void LoadPresets()
     {
-      _presetController = presetController;
-      PresetList = _presetController.GetAllPresets().ToList();
+      PresetList = PresetController.GetAllPresets().ToList();
     }
 
     #endregion "Constructors"
@@ -89,7 +88,7 @@ namespace LulCaster.UI.WPF.Controls
 
     private void Button_btnAddPreset(object sender, RoutedEventArgs e)
     {
-      if (_presetController.ShowNewPresetDialog() is PresetViewModel newPreset)
+      if (PresetController.ShowNewPresetDialog() is PresetViewModel newPreset)
       {
         PresetList.Add(newPreset);
         SelectedPreset = newPreset;
@@ -98,7 +97,7 @@ namespace LulCaster.UI.WPF.Controls
 
     private void Button_BtndeletePreset(object sender, RoutedEventArgs e)
     {
-      _presetController.DeletePreset(SelectedPreset.Id);
+      PresetController.DeletePreset(SelectedPreset.Id);
       PresetList.Remove(SelectedPreset);
       SelectedPreset = null;
     }

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using LulCaster.UI.WPF.ViewModels;
+using System.Windows;
 
 namespace LulCaster.UI.WPF.Dialogs
 {
@@ -10,9 +11,15 @@ namespace LulCaster.UI.WPF.Dialogs
     public NewPresetDialog()
     {
       InitializeComponent();
+      DataContext = new PresetViewModel();
     }
 
-    public string ReturnValue { get; }
+    public string ReturnValue {
+      get
+      {
+        return ((PresetViewModel)DataContext).Name;
+      }
+    }
 
     private void Button_btnOk(object sender, RoutedEventArgs e)
     {

@@ -14,7 +14,7 @@
       <RowDefinition></RowDefinition>
     </Grid.RowDefinitions>
     <Label Grid.Row="0" VerticalAlignment="Bottom">Enter new preset name:</Label>
-    <TextBox Grid.Row="1" VerticalAlignment="Top" Margin="5,0,10,0" Text="{Binding ReturnValue}"></TextBox>
+    <TextBox Grid.Row="1" VerticalAlignment="Top" Margin="5,0,10,0" Text="{Binding Name}"></TextBox>
     <WrapPanel Grid.Row="2" HorizontalAlignment="Right">
       <Button Margin="3,0,3,0" Name="btnCancel" Style="{StaticResource MaterialDesignFlatLightBgButton}" Click="Button_btnCancel">Cancel</Button>
       <Button Margin="3,0,3,0" Name="btnOk" Style="{DynamicResource MaterialDesignRaisedButton}" Click="Button_btnOk">Ok</Button>
