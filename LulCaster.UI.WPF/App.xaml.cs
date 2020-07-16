@@ -37,6 +37,7 @@ namespace LulCaster.UI.WPF
     private void ConfigureServices(IServiceCollection services)
     {
       services.AddSingleton<MainWindow>();
+      services.AddSingleton<IPresetConfigService, PresetConfigService>();
       services.AddSingleton<IRegionConfigService, RegionConfigService>();
       services.AddScoped<IScreenCaptureService, ScreenCaptureService>();
       services.AddScoped<Microsoft.Extensions.Configuration.IConfiguration>(provider => {
