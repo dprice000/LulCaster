@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace LulCaster.UI.WPF.Config
 {
-  public interface IConfigService
+  public interface IRegionConfigService
   {
     void CreateRegionConfig(string preset, RegionConfig regionConfig);
     void DeleteRegion(string preset, Guid regionId);
@@ -13,8 +13,5 @@ namespace LulCaster.UI.WPF.Config
     IEnumerable<RegionViewModel> GetAllRegionsAsViewModels(string preset);
     RegionViewModel GetRegion(string preset, Guid id);
     void UpdateRegion(string preset, RegionViewModel regionViewModel);
-    PresetViewModel CreatePreset(string name);
-    IEnumerable<PresetViewModel> GetAllPresets();
-    void DeletePreset(Guid id);
   }
 }

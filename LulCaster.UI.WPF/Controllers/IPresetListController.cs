@@ -9,6 +9,6 @@ namespace LulCaster.UI.WPF.Controllers
     IEnumerable <PresetViewModel> GetAllPresets();
     PresetViewModel ShowNewPresetDialog();
 
-    void DeletePreset(Guid id);
+    void DeletePreset(PresetViewModel preset);
   }
 }

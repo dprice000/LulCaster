@@ -1,25 +1,24 @@
 ﻿using LulCaster.UI.WPF.Config;
 using LulCaster.UI.WPF.Dialogs;
 using LulCaster.UI.WPF.ViewModels;
-using System;
 using System.Collections.Generic;
 
 namespace LulCaster.UI.WPF.Controllers
 {
   public class PresetListController : ControllerBase, IPresetListController
   {
-    private readonly IConfigService _configService;
+    private readonly IPresetConfigService _presetConfigService;
     private readonly ISimpleDialogService<string> _newPresetDialog;
 
-    public PresetListController(IConfigService configService, ISimpleDialogService<string> newPresetDialog)
+    public PresetListController(IPresetConfigService configService, ISimpleDialogService<string> newPresetDialog)
     {
-      _configService = configService;
+      _presetConfigService = configService;
       _newPresetDialog = newPresetDialog;
     }
 
     public IEnumerable<PresetViewModel> GetAllPresets()
     {
-      return _configService.GetAllPresets();
+      return _presetConfigService.GetAllPresets();
     }
 
     /// <summary>
@@ -31,15 +30,15 @@ namespace LulCaster.UI.WPF.Controllers
       if (_newPresetDialog.ShowDialog() == true)
       {
         var preset = _newPresetDialog.ReturnValue;
-        return _configService.CreatePreset(preset);
+        return _presetConfigService.CreatePreset(preset);
       }
 
       return null;
     }
 
-    public void DeletePreset(Guid id)
+    public void DeletePreset(PresetViewModel preset)
     {
-      _configService.DeletePreset(id);
+      _presetConfigService.DeletePreset(preset);
     }
   }
 }

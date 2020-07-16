@@ -97,7 +97,7 @@ namespace LulCaster.UI.WPF.Controls
 
     private void Button_BtndeletePreset(object sender, RoutedEventArgs e)
     {
-      PresetController.DeletePreset(SelectedPreset.Id);
+      PresetController.DeletePreset(SelectedPreset);
       PresetList.Remove(SelectedPreset);
       SelectedPreset = null;
     }

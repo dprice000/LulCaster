@@ -24,9 +24,9 @@ namespace LulCaster.UI.WPF.Pages
     private readonly BoundingBoxBrush _boundingBoxBrush = new BoundingBoxBrush();
     private readonly Dictionary<string, Rectangle> _boundingBoxCollection = new Dictionary<string, Rectangle>(); //TODO: This will live in the region configuration tool
     private Rectangle _currentBoundingBox; //TODO: This will live in the region configuration tool
-    private IConfigService _configService;
+    private IRegionConfigService _configService;
 
-    public WireFramePage(IConfigService configService, IPresetListController presetListController, IScreenCaptureService screenCaptureService)
+    public WireFramePage(IRegionConfigService configService, IPresetListController presetListController, IScreenCaptureService screenCaptureService)
     {
 
       InitializeComponent();

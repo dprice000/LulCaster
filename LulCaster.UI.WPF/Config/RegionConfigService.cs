@@ -10,14 +10,14 @@ using System.Linq;
 
 namespace LulCaster.UI.WPF.Config
 {
-  public class ConfigService : IConfigService
+  public class RegionConfigService : IRegionConfigService
   {
     private readonly IMapper _mapper;
     private readonly IConfiguration _config;
     private const string REGIONS_KEY = "regions";
     private const string PRESETS_KEY = "presets";
 
-    public ConfigService(IConfiguration config, IMapper mapper)
+    public RegionConfigService(IConfiguration config, IMapper mapper)
     {
       _config = config;
       _mapper = mapper;
@@ -70,24 +70,6 @@ namespace LulCaster.UI.WPF.Config
       _config[$"{PRESETS_KEY}:{preset}:{REGIONS_KEY}"] = JsonConvert.SerializeObject(regions);
     }
 
-    public PresetViewModel CreatePreset(string name)
-    {
-      throw new NotImplementedException();
-    }
 
-    public IEnumerable<PresetViewModel> GetAllPresets()
-    {
-      return new List<PresetViewModel>
-      {
-        new PresetViewModel { Id = Guid.NewGuid(), Name = "One", FilePath = "FilePath" },
-        new PresetViewModel { Id = Guid.NewGuid(), Name = "Two", FilePath = "FilePath" },
-        new PresetViewModel { Id = Guid.NewGuid(), Name = "Three", FilePath = "FilePath" }
-      };
-    }
-
-    public void DeletePreset(Guid id)
-    {
-      throw new NotImplementedException();
-    }
   }
 }
