@@ -7,11 +7,11 @@ namespace LulCaster.UI.WPF.Config
 {
   public interface IRegionConfigService
   {
-    void CreateRegionConfig(string preset, RegionConfig regionConfig);
-    void DeleteRegion(string preset, Guid regionId);
-    IEnumerable<RegionConfig> GetAllRegions(string preset);
-    IEnumerable<RegionViewModel> GetAllRegionsAsViewModels(string preset);
-    RegionViewModel GetRegion(string preset, Guid id);
-    void UpdateRegion(string preset, RegionViewModel regionViewModel);
+    void CreateRegionConfig(string presetFilePath, RegionConfig regionConfig);
+    void DeleteRegion(string presetFilePath, Guid regionId);
+    IEnumerable<RegionConfig> GetAllRegions(string presetFilePath);
+    IEnumerable<RegionViewModel> GetAllRegionsAsViewModels(string presetFilePath);
+    RegionViewModel GetRegion(string presetFilePath, Guid id);
+    void UpdateRegion(string presetFilePath, RegionViewModel regionViewModel);
   }
 }

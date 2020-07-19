@@ -1,11 +1,14 @@
 ﻿using LulCaster.UI.WPF.Config;
 using LulCaster.UI.WPF.Controllers;
 using LulCaster.UI.WPF.Controls;
+using LulCaster.UI.WPF.ViewModels;
 using LulCaster.UI.WPF.Workers;
 using LulCaster.Utility.ScreenCapture.Windows;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -17,19 +20,36 @@ namespace LulCaster.UI.WPF.Pages
   /// <summary>
   /// Interaction logic for WireFramePage.xaml
   /// </summary>
-  public partial class WireFramePage : Page
+  public partial class WireFramePage : Page, INotifyPropertyChanged
   {
+    public event PropertyChangedEventHandler PropertyChanged;
+
     private readonly ScreenCaptureTimer _screenCaptureTimer;
     private const double CAPTURE_TIMER_INTERVAL = 3000;
     private readonly BoundingBoxBrush _boundingBoxBrush = new BoundingBoxBrush();
     private readonly Dictionary<string, Rectangle> _boundingBoxCollection = new Dictionary<string, Rectangle>(); //TODO: This will live in the region configuration tool
     private Rectangle _currentBoundingBox; //TODO: This will live in the region configuration tool
     private IRegionConfigService _configService;
+    private PresetViewModel _selectedPreset;
+    
+    public PresetViewModel SelectedPreset
+    {
+      get
+      {
+        return _selectedPreset;
+      }
+      set
+      {
+        _selectedPreset = value;
+        OnPropertyChanged(nameof(SelectedPreset));
+      }
+    }
 
-    public WireFramePage(IRegionConfigService configService, IPresetListController presetListController, IScreenCaptureService screenCaptureService)
+    public WireFramePage(IRegionConfigService configService, IPresetListController presetListController, IRegionListController regionListController, IScreenCaptureService screenCaptureService)
     {
 
       InitializeComponent();
+      cntrlRegionList.RegionListController = regionListController;
       cntrlPresetList.PresetController = presetListController;
       cntrlPresetList.LoadPresets();
 
@@ -100,6 +120,11 @@ namespace LulCaster.UI.WPF.Pages
         _boundingBoxCollection[""] = windowsBox;
         _currentBoundingBox = windowsBox;
       });
+    }
+
+    protected void OnPropertyChanged([CallerMemberName] string name = null)
+    {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
   }
 }

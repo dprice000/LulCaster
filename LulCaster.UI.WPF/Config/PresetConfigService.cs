@@ -38,8 +38,21 @@ namespace LulCaster.UI.WPF.Config
 
     public IEnumerable<PresetViewModel> GetAllPresets()
     {
-      var section = _config.GetSection($"{PRESETS_KEY}");
-      throw new NotImplementedException();
+      return new PresetViewModel[] { new PresetViewModel() 
+      {
+        Id = Guid.NewGuid(),
+        Name = "Preset1",
+        FilePath = @"\Presets\Preset1.json"
+      },
+      new PresetViewModel()
+      {
+        Id = Guid.NewGuid(),
+        Name = "Preset2",
+        FilePath = @"\Presets\Preset2.json"
+      }};
+
+      //var section = _config.GetSection($"{PRESETS_KEY}");
+      //throw new NotImplementedException();
     }
 
     public void DeletePreset(PresetViewModel preset)

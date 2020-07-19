@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:LulCaster.UI.WPF.Pages"
-      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="LulCaster.UI.WPF.Pages.WireFramePage"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Name="pageWireFrame" x:Class="LulCaster.UI.WPF.Pages.WireFramePage"
       xmlns:lulCon="clr-namespace:LulCaster.UI.WPF.Controls"
       mc:Ignorable="d"
       d:DesignHeight="800" d:DesignWidth="1200"
@@ -41,8 +41,8 @@
         <ColumnDefinition />
         <ColumnDefinition />
       </Grid.ColumnDefinitions>
-      <lulCon:PresetControl x:Name="cntrlPresetList" Grid.Column="0" Margin="6,0,3,0" />
-      <lulCon:RegionList x:Name="cntrlSegmentList" Grid.Column="1" Margin="3,0,3,0" />
+      <lulCon:PresetControl x:Name="cntrlPresetList" SelectedPreset="{Binding ElementName=pageWireFrame, Path=SelectedPreset}" Grid.Column="0" Margin="6,0,3,0" />
+      <lulCon:RegionListControl x:Name="cntrlRegionList" SelectedPreset="{Binding ElementName=pageWireFrame, Path=SelectedPreset}" Grid.Column="1" />
       <lulCon:RegionConfiguration x:Name="cntrlRegionConfig" Grid.Column="2" Margin="3,0,3,0" />
     </Grid>
   </Grid>

@@ -55,7 +55,19 @@ namespace LulCaster.UI.WPF
     {
       services.AddScoped<IMapper>(provider =>
       {
-        var config = new MapperConfiguration(cfg => cfg.CreateMap<RegionConfig, RegionViewModel>());
+        var config = new MapperConfiguration(cfg => 
+        {
+          cfg.CreateMap<RegionConfig, RegionViewModel>()
+              .ForMember(dest => dest.BoundingBox, opt => opt.MapFrom(s => s.BoundingBox));
+
+          cfg.CreateMap<RegionViewModel, RegionConfig>()
+            .ForMember(dest => dest.BoundingBox, opt => opt.Ignore())
+            .ForMember(dest => dest.X, opt => opt.MapFrom(s => s.BoundingBox.X))
+            .ForMember(dest => dest.Y, opt => opt.MapFrom(s => s.BoundingBox.Y))
+            .ForMember(dest => dest.Widht, opt => opt.MapFrom(s => s.BoundingBox.Width))
+            .ForMember(dest => dest.Height, opt => opt.MapFrom(s => s.BoundingBox.Height));
+         });
+
         return new Mapper(config);
       });
     }
@@ -74,6 +86,7 @@ namespace LulCaster.UI.WPF
     private void RegisterControllers(IServiceCollection services)
     {
       services.AddScoped<IPresetListController, PresetListController>();
+      services.AddScoped<IRegionListController, RegionListController>();
     }
 
     private void RegisterDialogServices(IServiceCollection services)

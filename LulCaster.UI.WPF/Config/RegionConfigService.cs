@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
-using LulCaster.UI.WPF.Extensions;
 using LulCaster.UI.WPF.ViewModels;
 using LulCaster.Utility.Common.Config;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace LulCaster.UI.WPF.Config
 {
+  // TODO: This class is super inefficient but I just wanted to get it working.
   public class RegionConfigService : IRegionConfigService
   {
     private readonly IMapper _mapper;
@@ -30,46 +31,38 @@ namespace LulCaster.UI.WPF.Config
       _config[$"{PRESETS_KEY}:{preset}:{REGIONS_KEY}"] = JsonConvert.SerializeObject(regions);
     }
 
-    public IEnumerable<RegionViewModel> GetAllRegionsAsViewModels(string preset)
+    public IEnumerable<RegionViewModel> GetAllRegionsAsViewModels(string presetFilePath)
     {
-      var regionConfigs = JsonConvert.DeserializeObject<IEnumerable<RegionConfig>>(_config[$"{PRESETS_KEY}:{preset}:{REGIONS_KEY}"]);
-
-      return _mapper.Map<IEnumerable<RegionViewModel>>(regionConfigs);
+      return _mapper.Map<IEnumerable<RegionViewModel>>(GetAllRegions(presetFilePath));
     }
 
-    public IEnumerable<RegionConfig> GetAllRegions(string preset)
+    public IEnumerable<RegionConfig> GetAllRegions(string presetFilePath)
     {
-      var regionConfigs = JsonConvert.DeserializeObject<IEnumerable<RegionConfig>>(_config[$"{PRESETS_KEY}:{preset}:{REGIONS_KEY}"]);
-
-      return regionConfigs;
+      return JsonConvert.DeserializeObject<IEnumerable<RegionConfig>>(File.ReadAllText(presetFilePath));
     }
 
-    public RegionViewModel GetRegion(string preset, Guid id)
+    public RegionViewModel GetRegion(string presetFilePath, Guid id)
     {
-      var regionConfig = JsonConvert.DeserializeObject<List<RegionConfig>>(_config[$"{PRESETS_KEY}:{preset}:{REGIONS_KEY}"]).FirstOrDefault(x => x.Id == id);
+      var regions = GetAllRegions(presetFilePath);
 
-      return _mapper.Map<RegionViewModel>(regionConfig);
+      return _mapper.Map<RegionViewModel>(regions.FirstOrDefault(x => x.Id == id));
     }
 
-    public void UpdateRegion(string preset, RegionViewModel regionViewModel)
+    public void UpdateRegion(string presetFilePath, RegionViewModel regionViewModel)
     {
-      var regionConfig = _mapper.Map<RegionConfig>(regionViewModel);
-      regionConfig.BoundingBoxDimensions = regionViewModel.BoundingBoxToString();
+      var regions = GetAllRegions(presetFilePath).ToList();
+      var region = regions.FirstOrDefault(x => x.Id == regionViewModel.Id);
+      region = _mapper.Map<RegionConfig>(regionViewModel);
 
-      var regionList = GetAllRegions(preset).ToList();
-      var configItem = regionList.First(x => x.Id == regionViewModel.Id);
-      configItem = regionConfig;
-
-      _config[$"{PRESETS_KEY}:{preset}:{REGIONS_KEY}"] = JsonConvert.SerializeObject(regionList);
+      File.WriteAllText(presetFilePath, JsonConvert.SerializeObject(regions));
     }
 
-    public void DeleteRegion(string preset, Guid regionId)
+    public void DeleteRegion(string presetFilePath, Guid regionId)
     {
-      var regions = GetAllRegions(preset).ToList();
-      regions.RemoveAll(x => x.Id == regionId);
-      _config[$"{PRESETS_KEY}:{preset}:{REGIONS_KEY}"] = JsonConvert.SerializeObject(regions);
+      var regions = GetAllRegions(presetFilePath).ToList();
+      var region = regions.RemoveAll(x => x.Id == regionId);
+
+      File.WriteAllText(presetFilePath, JsonConvert.SerializeObject(regions));
     }
-
-
   }
 }
