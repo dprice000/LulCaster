@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace LulCaster.UI.WPF.Controllers
 {
-  public class PresetListController : ControllerBase, IPresetListController
+  public class PresetListController : IPresetListController
   {
     private readonly IPresetConfigService _presetConfigService;
     private readonly ISimpleDialogService<string> _newPresetDialog;

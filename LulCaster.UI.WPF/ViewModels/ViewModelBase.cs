@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace LulCaster.UI.WPF.Controllers
+namespace LulCaster.UI.WPF.ViewModels
 {
-  public class ControllerBase : INotifyPropertyChanged
+  public class ViewModelBase : INotifyPropertyChanged
   {
     public event PropertyChangedEventHandler PropertyChanged;
 

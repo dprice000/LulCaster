@@ -41,8 +41,8 @@
         <ColumnDefinition />
         <ColumnDefinition />
       </Grid.ColumnDefinitions>
-      <lulCon:PresetControl x:Name="cntrlPresetList" SelectedPreset="{Binding ElementName=pageWireFrame, Path=SelectedPreset}" Grid.Column="0" Margin="6,0,3,0" />
-      <lulCon:RegionListControl x:Name="cntrlRegionList" SelectedPreset="{Binding ElementName=pageWireFrame, Path=SelectedPreset}" Grid.Column="1" />
+      <lulCon:PresetControl x:Name="cntrlPresetList" SelectedPreset="{Binding ElementName=pageWireFrame, Path=SelectedPreset, Mode=TwoWay}" Grid.Column="0" Margin="6,0,3,0" />
+      <lulCon:RegionListControl x:Name="cntrlRegionList" RegionList="{Binding ElementName=pageWireFrame, Path=Regions, Mode=TwoWay}" SelectedPreset="{Binding ElementName=pageWireFrame, Path=SelectedPreset}" Grid.Column="1" />
       <lulCon:RegionConfiguration x:Name="cntrlRegionConfig" Grid.Column="2" Margin="3,0,3,0" />
     </Grid>
   </Grid>

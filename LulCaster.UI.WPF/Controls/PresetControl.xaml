@@ -36,8 +36,7 @@
         </WrapPanel>
       </Grid>
 
-      <ListBox Name="lstBoxPresets" Grid.Row="1" Background="Beige" ItemsSource="{Binding ElementName=CntrlPresetList, Path=PresetList}" DisplayMemberPath="Name" SelectedItem="{Binding ElementName=CntrlPresetList, Path=SelectedPreset}">
-      </ListBox>
+      <ListBox Name="lstBoxPresets" Grid.Row="1" Background="Beige" ItemsSource="{Binding ElementName=CntrlPresetList, Path=PresetList}" DisplayMemberPath="Name" SelectedItem="{Binding ElementName=CntrlPresetList, Path=SelectedPreset, Mode=TwoWay}"/>
     </Grid>
   </Grid>
 </UserControl>

@@ -1,11 +1,13 @@
-{
-  "Id": "f2b4066b-e661-4015-aa1e-5807fc507253",
-  "LogicSet": "Basic",
-  "Label": "Basic",
-  "TriggerValue": "Poop",
-  "Height": 100,
-  "Width": 100,
-  "X": 100,
-  "Y": 100,
-  "SoundFilePath": "C:\\Poop.wav"
-}
+[
+  {
+    "Id": "f2b4066b-e661-4015-aa1e-5807fc507253",
+    "LogicSet": 1,
+    "Label": "Poop",
+    "TriggerValue": "Poop",
+    "Height": 100,
+    "Width": 100,
+    "X": 100,
+    "Y": 100,
+    "SoundFilePath": "C:\\Poop.wav"
+  }
+]

@@ -1,4 +1,4 @@
-﻿<UserControl x:Name="CtrlRegionList" x:Class="LulCaster.UI.WPF.Controls.RegionListControl"
+﻿<UserControl x:Name="ctrlRegionList" x:Class="LulCaster.UI.WPF.Controls.RegionListControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -32,7 +32,7 @@
         </Button>
       </WrapPanel>
     </Grid>
-    <ListBox Grid.Row="1" Background="Beige" ItemsSource="{Binding ElementName=CntrlRegionList, Path=RegionList}" DisplayMemberPath="Name" SelectedItem="{Binding ElementName=CntrlRegionList, Path=SelectedRegion}">
+    <ListBox x:Name="lstRegions" Grid.Row="1" Background="Beige" ItemsSource="{Binding ElementName=cntrlRegionList, Path=RegionList}" DisplayMemberPath="Label" SelectedItem="{Binding ElementName=cntrlRegionList, Path=SelectedRegion}">
     </ListBox>
   </Grid>
 </UserControl>

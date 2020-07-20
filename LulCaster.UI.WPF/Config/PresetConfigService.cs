@@ -42,13 +42,13 @@ namespace LulCaster.UI.WPF.Config
       {
         Id = Guid.NewGuid(),
         Name = "Preset1",
-        FilePath = @"\Presets\Preset1.json"
+        FilePath = @"C:\Users\David\Source\Repos\LulCaster\LulCaster.UI.WPF\bin\Debug\netcoreapp3.1\Presets\Preset1.json"
       },
       new PresetViewModel()
       {
         Id = Guid.NewGuid(),
         Name = "Preset2",
-        FilePath = @"\Presets\Preset2.json"
+        FilePath = @"C:\Users\David\Source\Repos\LulCaster\LulCaster.UI.WPF\bin\Debug\netcoreapp3.1\Presets\Preset2.json"
       }};
 
       //var section = _config.GetSection($"{PRESETS_KEY}");

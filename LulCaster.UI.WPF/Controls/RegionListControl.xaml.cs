@@ -1,7 +1,9 @@
 ﻿using LulCaster.UI.WPF.Controllers;
 using LulCaster.UI.WPF.ViewModels;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,27 +12,29 @@ namespace LulCaster.UI.WPF.Controls
   /// <summary>
   /// Interaction logic for SegmentList.xaml
   /// </summary>
-  public partial class RegionListControl : UserControl
+  public partial class RegionListControl : UserControl, INotifyPropertyChanged
   {
+    public event PropertyChangedEventHandler PropertyChanged;
+
     #region "Dependency Properties"
 
     public static readonly DependencyProperty SelectedPresetProperty =
-DependencyProperty.Register
-(
-    "SelectedPreset",
-    typeof(PresetViewModel),
-    typeof(RegionListControl),
-    new FrameworkPropertyMetadata(new PropertyChangedCallback(OnSelectedPresetChanged))
-);
+    DependencyProperty.Register
+    (
+        "SelectedPreset",
+        typeof(PresetViewModel),
+        typeof(RegionListControl),
+        new FrameworkPropertyMetadata(new PropertyChangedCallback(OnSelectedPresetChanged))
+    );
 
     public static readonly DependencyProperty RegionListProperty =
-DependencyProperty.Register
-(
-    "RegionList",
-    typeof(IList<RegionViewModel>),
-    typeof(RegionListControl),
-    new FrameworkPropertyMetadata(new PropertyChangedCallback(OnRegionListChanged))
-);
+    DependencyProperty.Register
+    (
+        "RegionList",
+        typeof(IList<RegionViewModel>),
+        typeof(RegionListControl),
+        new FrameworkPropertyMetadata(new PropertyChangedCallback(OnRegionListChanged))
+    );
 
     public static readonly DependencyProperty SelectedRegionProperty =
     DependencyProperty.Register
@@ -60,7 +64,8 @@ DependencyProperty.Register
     public PresetViewModel SelectedPreset
     {
       get { return (PresetViewModel)GetValue(SelectedPresetProperty); }
-      set { SetValue(SelectedPresetProperty, value); }
+      set { 
+        SetValue(SelectedPresetProperty, value); }
     }
 
     public IRegionListController RegionListController { get; set; }
@@ -75,6 +80,12 @@ DependencyProperty.Register
     private void BtnAddRegion_Click(object sender, RoutedEventArgs e)
     {
     }
+
+    private void LoadRegions(string presetFilePath)
+    {
+      RegionList = RegionListController.GetRegions(presetFilePath).ToList();
+    }
+
     #region "OnChanged Events"
 
     private static void OnSelectedPresetChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
@@ -82,7 +93,7 @@ DependencyProperty.Register
       if (sender is RegionListControl thisControl)
       {
         thisControl.SelectedPreset = (PresetViewModel)e.NewValue;
-        thisControl.RegionList = thisControl.RegionListController.GetRegions(thisControl.SelectedPreset.FilePath).ToList();
+        thisControl.LoadRegions(thisControl.SelectedPreset.FilePath);
       }
     }
 
@@ -102,6 +113,10 @@ DependencyProperty.Register
       }
     }
 
+    protected void OnPropertyChanged([CallerMemberName] string name = null)
+    {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
     #endregion "OnChanged Events"
   }
 }

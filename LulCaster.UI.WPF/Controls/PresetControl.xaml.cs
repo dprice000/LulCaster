@@ -59,11 +59,6 @@ namespace LulCaster.UI.WPF.Controls
       InitializeComponent();
     }
 
-    public void LoadPresets()
-    {
-      PresetList = PresetController.GetAllPresets().ToList();
-    }
-
     #endregion "Constructors"
 
     #region "OnChanged Events"
@@ -85,6 +80,11 @@ namespace LulCaster.UI.WPF.Controls
     }
 
     #endregion "OnChanged Events"
+
+    public void LoadPresets()
+    {
+      PresetList = PresetController.GetAllPresets().ToList();
+    }
 
     private void Button_btnAddPreset(object sender, RoutedEventArgs e)
     {

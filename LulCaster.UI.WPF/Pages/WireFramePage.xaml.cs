@@ -31,6 +31,7 @@ namespace LulCaster.UI.WPF.Pages
     private Rectangle _currentBoundingBox; //TODO: This will live in the region configuration tool
     private IRegionConfigService _configService;
     private PresetViewModel _selectedPreset;
+    private IList<RegionViewModel> _regions;
     
     public PresetViewModel SelectedPreset
     {
@@ -42,6 +43,19 @@ namespace LulCaster.UI.WPF.Pages
       {
         _selectedPreset = value;
         OnPropertyChanged(nameof(SelectedPreset));
+      }
+    }
+
+    public IList<RegionViewModel> Regions
+    {
+      get
+      {
+        return _regions;
+      }
+      set
+      {
+        _regions = value;
+        OnPropertyChanged(nameof(Regions));
       }
     }
 
