@@ -1,6 +1,7 @@
 ﻿using LulCaster.UI.WPF.Controllers;
 using LulCaster.UI.WPF.ViewModels;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -27,11 +28,13 @@ namespace LulCaster.UI.WPF.Controls
         new FrameworkPropertyMetadata(new PropertyChangedCallback(OnSelectedPresetChanged))
     );
 
+
+
     public static readonly DependencyProperty RegionListProperty =
     DependencyProperty.Register
     (
         "RegionList",
-        typeof(IList<RegionViewModel>),
+        typeof(ObservableCollection<RegionViewModel>),
         typeof(RegionListControl),
         new FrameworkPropertyMetadata(new PropertyChangedCallback(OnRegionListChanged))
     );
@@ -40,7 +43,7 @@ namespace LulCaster.UI.WPF.Controls
     DependencyProperty.Register
     (
         "SelectedRegion",
-        typeof(PresetViewModel),
+        typeof(RegionViewModel),
         typeof(RegionListControl),
         new FrameworkPropertyMetadata(new PropertyChangedCallback(OnSelectedRegionChanged))
     );
@@ -49,9 +52,10 @@ namespace LulCaster.UI.WPF.Controls
 
     #region "Properties"
 
-    public IList<RegionViewModel> RegionList
+    public ObservableCollection<RegionViewModel> RegionList
     {
-      get { return (IList<RegionViewModel>)GetValue(RegionListProperty); }
+      get { return (ObservableCollection<RegionViewModel>)GetValue(RegionListProperty); }
+
       set { SetValue(RegionListProperty, value); }
     }
 
@@ -64,8 +68,7 @@ namespace LulCaster.UI.WPF.Controls
     public PresetViewModel SelectedPreset
     {
       get { return (PresetViewModel)GetValue(SelectedPresetProperty); }
-      set { 
-        SetValue(SelectedPresetProperty, value); }
+      set { SetValue(SelectedPresetProperty, value); }
     }
 
     public IRegionListController RegionListController { get; set; }
@@ -83,7 +86,7 @@ namespace LulCaster.UI.WPF.Controls
 
     private void LoadRegions(string presetFilePath)
     {
-      RegionList = RegionListController.GetRegions(presetFilePath).ToList();
+      RegionList = new ObservableCollection<RegionViewModel>(RegionListController.GetRegions(presetFilePath));
     }
 
     #region "OnChanged Events"
@@ -109,7 +112,7 @@ namespace LulCaster.UI.WPF.Controls
     {
       if (sender is RegionListControl thisControl)
       {
-        thisControl.RegionList = (IList<RegionViewModel>)e.NewValue;
+        thisControl.RegionList = (ObservableCollection<RegionViewModel>)e.NewValue;
       }
     }
 
