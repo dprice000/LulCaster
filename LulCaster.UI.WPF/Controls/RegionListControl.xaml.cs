@@ -1,9 +1,7 @@
 ﻿using LulCaster.UI.WPF.Controllers;
 using LulCaster.UI.WPF.ViewModels;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,8 +25,6 @@ namespace LulCaster.UI.WPF.Controls
         typeof(RegionListControl),
         new FrameworkPropertyMetadata(new PropertyChangedCallback(OnSelectedPresetChanged))
     );
-
-
 
     public static readonly DependencyProperty RegionListProperty =
     DependencyProperty.Register
@@ -55,7 +51,6 @@ namespace LulCaster.UI.WPF.Controls
     public ObservableCollection<RegionViewModel> RegionList
     {
       get { return (ObservableCollection<RegionViewModel>)GetValue(RegionListProperty); }
-
       set { SetValue(RegionListProperty, value); }
     }
 
@@ -120,6 +115,7 @@ namespace LulCaster.UI.WPF.Controls
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
+
     #endregion "OnChanged Events"
   }
 }

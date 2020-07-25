@@ -32,7 +32,7 @@
         </Button>
       </WrapPanel>
     </Grid>
-    <ListBox x:Name="lstRegions" Grid.Row="1" Background="Beige" ItemsSource="{Binding ElementName=ctrlRegionList, Path=RegionList}" DisplayMemberPath="Label" SelectedItem="{Binding ElementName=cntrlRegionList, Path=SelectedRegion, Mode=TwoWay}">
+    <ListBox x:Name="lstRegions" Grid.Row="1" Background="Beige" ItemsSource="{Binding ElementName=ctrlRegionList, Path=RegionList}" DisplayMemberPath="Label" SelectedItem="{Binding ElementName=ctrlRegionList, Path=SelectedRegion, Mode=TwoWay}">
     </ListBox>
   </Grid>
 </UserControl>

@@ -32,7 +32,9 @@ namespace LulCaster.UI.WPF.Pages
     private IRegionConfigService _configService;
     private PresetViewModel _selectedPreset;
     private IList<RegionViewModel> _regions;
-    
+    private RegionViewModel _selectedRegion;
+
+    #region "Properties"
     public PresetViewModel SelectedPreset
     {
       get
@@ -58,6 +60,20 @@ namespace LulCaster.UI.WPF.Pages
         OnPropertyChanged(nameof(Regions));
       }
     }
+
+    public RegionViewModel SelectedRegion
+    {
+      get
+      {
+        return _selectedRegion;
+      }
+      set
+      {
+        _selectedRegion = value;
+        OnPropertyChanged(nameof(SelectedRegion));
+      }
+    }
+    #endregion
 
     public WireFramePage(IRegionConfigService configService, IPresetListController presetListController, IRegionListController regionListController, IScreenCaptureService screenCaptureService)
     {
