@@ -16,30 +16,18 @@
       <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
           <Label>Label:</Label>
-          <TextBox Width="517" Text="{Binding Label}"></TextBox>
+          <TextBox Width="517" Text="{Binding Label}" IsEnabled="{Binding ElementName=ctrlRegionConfiguration, Path=IsControlEnabled}"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
           <Label>Trigger Text:</Label>
-          <TextBox Width="517" Text="{Binding TriggerValue}"></TextBox>
+          <TextBox Width="517" Text="{Binding TriggerValue}" IsEnabled="{Binding ElementName=ctrlRegionConfiguration, Path=IsControlEnabled}"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
-          <Label>Sound File: </Label>
-          <Button Name="btnSoundBrowser" Click="btnSoundBrowser_Click">Browse</Button>
+          <Label>Sound File:</Label>
+          <Label Content="{Binding SoundFilePath}"></Label>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
-          <Label Margin="0,0,6,0">Bounding Box: </Label>
-          <Button Style="{StaticResource MaterialDesignRaisedButton}"
-                                            Height="25"
-                                            materialDesign:ButtonAssist.CornerRadius="24"
-                                            ToolTip="Grab Bounding Box" Width="25">
-            <materialDesign:PackIcon Kind="Minus" Opacity=".56" />
-          </Button>
-          <Button Style="{StaticResource MaterialDesignRaisedButton}"
-                                            Height="25"
-                                            materialDesign:ButtonAssist.CornerRadius="24"
-                                            ToolTip="Reset Bounding Box" Width="25">
-            <materialDesign:PackIcon Kind="Minus" Opacity=".56" />
-          </Button>
+          <Button Name="btnSoundBrowser" Click="btnSoundBrowser_Click" IsEnabled="{Binding ElementName=ctrlRegionConfiguration, Path=IsControlEnabled}">Browse</Button>
         </StackPanel>
       </StackPanel>
     </GroupBox>

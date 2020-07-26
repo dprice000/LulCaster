@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LulCaster.UI.WPF.Config.Models;
 using LulCaster.UI.WPF.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -38,28 +39,24 @@ namespace LulCaster.UI.WPF.Config
 
     public IEnumerable<PresetViewModel> GetAllPresets()
     {
-      return new PresetViewModel[] { new PresetViewModel() 
-      {
-        Id = Guid.NewGuid(),
-        Name = "Preset1",
-        FilePath = @"C:\Users\David\Source\Repos\LulCaster\LulCaster.UI.WPF\bin\Debug\netcoreapp3.1\Presets\Preset1.json"
-      },
-      new PresetViewModel()
-      {
-        Id = Guid.NewGuid(),
-        Name = "Preset2",
-        FilePath = @"C:\Users\David\Source\Repos\LulCaster\LulCaster.UI.WPF\bin\Debug\netcoreapp3.1\Presets\Preset2.json"
-      }};
+      var presets = new List<PresetViewModel>();
+      var presetSection = PresetConfigSection.GetConfig();
 
-      //var section = _config.GetSection($"{PRESETS_KEY}");
-      //throw new NotImplementedException();
+      if (presetSection != null)
+      {
+        foreach (var preset in presetSection.Presets)
+        {
+          presets.Add(_mapper.Map<PresetViewModel>(preset));
+        }
+      }
+
+      return presets;
     }
 
     public void DeletePreset(PresetViewModel preset)
     {
-      var presetList = JsonConvert.DeserializeObject<List<PresetViewModel>>(_config[$"{PRESETS_KEY}"]);
-      presetList.Remove(preset);
-      _config[$"{PRESETS_KEY}"] = JsonConvert.SerializeObject(presetList);
+      var presetSection = PresetConfigSection.GetConfig();
+      presetSection.Presets.Remove(preset.Id);
     }
   }
 }

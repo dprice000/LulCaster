@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.Configuration;
 using LulCaster.UI.WPF.Config;
+using LulCaster.UI.WPF.Config.Models;
 using LulCaster.UI.WPF.Controllers;
 using LulCaster.UI.WPF.Dialogs;
 using LulCaster.UI.WPF.Pages;
@@ -57,6 +58,8 @@ namespace LulCaster.UI.WPF
       {
         var config = new MapperConfiguration(cfg => 
         {
+          cfg.CreateMap<PresetConfig, PresetViewModel>();
+
           cfg.CreateMap<RegionConfig, RegionViewModel>()
               .ForMember(dest => dest.BoundingBox, opt => opt.MapFrom(s => s.BoundingBox));
 
