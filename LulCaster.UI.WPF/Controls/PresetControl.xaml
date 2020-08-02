@@ -3,11 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:LulCaster.UI.WPF.Controls"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:nulConv="clr-namespace:LulCaster.UI.WPF.Converter"
              mc:Ignorable="d"
              x:Name="CntrlPresetList"
              d:DesignHeight="450" d:DesignWidth="800">
+  <UserControl.Resources>
+    <nulConv:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
+  </UserControl.Resources>
   <Grid>
     <Grid>
       <Grid.RowDefinitions>
@@ -28,9 +31,10 @@
             <materialDesign:PackIcon Kind="Add" Height="25" Width="25" Opacity=".56" />
           </Button>
           <Button Style="{StaticResource MaterialDesignRaisedButton}"
+                                                IsEnabled="{Binding ElementName=CntrlPresetList, Path=SelectedPreset, Converter={StaticResource NullToBooleanConverter}}"
                                                 Height="25"
                                                 materialDesign:ButtonAssist.CornerRadius="24"
-                                                ToolTip="Delete Selected Screen Segments" Width="25" Click="Button_BtndeletePreset">
+                                                ToolTip="Delete Selected Screen Segments" Width="25" Click="Button_BtnDeletePreset">
             <materialDesign:PackIcon Kind="Minus" Opacity=".56" />
           </Button>
         </WrapPanel>

@@ -16,6 +16,11 @@ namespace LulCaster.UI.WPF.Controllers
       _newPresetDialog = newPresetDialog;
     }
 
+    public PresetViewModel CreatePreset(string name)
+    {
+      return _presetConfigService.CreatePreset(name);
+    }
+
     public IEnumerable<PresetViewModel> GetAllPresets()
     {
       return _presetConfigService.GetAllPresets();
@@ -36,9 +41,15 @@ namespace LulCaster.UI.WPF.Controllers
       return null;
     }
 
-    public void DeletePreset(PresetViewModel preset)
+    public bool DeletePreset(PresetViewModel preset)
     {
-      _presetConfigService.DeletePreset(preset);
+      if (MessageBoxDialog.Show("Delete Preset", $"Are you sure you want to delete {preset.Name}?", MessageBoxButtons.YesNo) == DialogResults.Yes)
+      {
+        _presetConfigService.DeletePreset(preset);
+        return true;
+      }
+
+      return false;
     }
   }
 }

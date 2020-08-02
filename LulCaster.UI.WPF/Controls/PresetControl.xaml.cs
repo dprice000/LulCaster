@@ -90,16 +90,19 @@ namespace LulCaster.UI.WPF.Controls
     {
       if (PresetController.ShowNewPresetDialog() is PresetViewModel newPreset)
       {
+        newPreset = PresetController.CreatePreset(newPreset.Name);
         PresetList.Add(newPreset);
         SelectedPreset = newPreset;
       }
     }
 
-    private void Button_BtndeletePreset(object sender, RoutedEventArgs e)
+    private void Button_BtnDeletePreset(object sender, RoutedEventArgs e)
     {
-      PresetController.DeletePreset(SelectedPreset);
-      PresetList.Remove(SelectedPreset);
-      SelectedPreset = null;
+      if (PresetController.DeletePreset(SelectedPreset))
+      {
+        PresetList.Remove(SelectedPreset);
+        SelectedPreset = null;
+      }
     }
   }
 }
