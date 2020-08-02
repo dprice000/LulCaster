@@ -90,6 +90,7 @@ namespace LulCaster.UI.WPF
     private void RegisterDialogServices(IServiceCollection services)
     {
       services.AddScoped<ISimpleDialogService<string>, NewPresetDialog>();
+      services.AddScoped<IMessageBoxDialogService, MessageBoxDialogService>();
     }
   }
 }
