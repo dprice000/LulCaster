@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using LulCaster.UI.WPF.ViewModels;
 using LulCaster.Utility.Common.Config;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,21 +13,17 @@ namespace LulCaster.UI.WPF.Config
   public class RegionConfigService : IRegionConfigService
   {
     private readonly IMapper _mapper;
-    private readonly IConfiguration _config;
-    private const string REGIONS_KEY = "regions";
-    private const string PRESETS_KEY = "presets";
 
-    public RegionConfigService(IConfiguration config, IMapper mapper)
+    public RegionConfigService(IMapper mapper)
     {
-      _config = config;
       _mapper = mapper;
     }
 
-    public void CreateRegionConfig(string preset, RegionConfig regionConfig)
+    public void CreateRegionConfig(string presetFilePath, RegionConfig regionConfig)
     {
-      var regions = GetAllRegions(preset).ToList();
+      var regions = GetAllRegions(presetFilePath).ToList();
       regions.Add(regionConfig);
-      _config[$"{PRESETS_KEY}:{preset}:{REGIONS_KEY}"] = JsonConvert.SerializeObject(regions);
+      File.WriteAllText(presetFilePath, JsonConvert.SerializeObject(regions));
     }
 
     public IEnumerable<RegionViewModel> GetAllRegionsAsViewModels(string presetFilePath)

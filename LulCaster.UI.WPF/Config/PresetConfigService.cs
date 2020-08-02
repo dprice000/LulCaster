@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using LulCaster.UI.WPF.Config.Models;
 using LulCaster.UI.WPF.ViewModels;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -10,20 +8,15 @@ namespace LulCaster.UI.WPF.Config
 {
   public class PresetConfigService : IPresetConfigService
   {
-    private const string PRESETS_KEY = "presets";
-
     private readonly IMapper _mapper;
-    private readonly IConfiguration _config;
 
-    public PresetConfigService(IConfiguration config, IMapper mapper)
+    public PresetConfigService(IMapper mapper)
     {
-      _config = config;
       _mapper = mapper;
     }
 
     public PresetViewModel CreatePreset(string name)
     {
-      var presetList = JsonConvert.DeserializeObject<List<PresetViewModel>>(_config[$"{PRESETS_KEY}"]);
       var id = Guid.NewGuid();
       var newPreset = new PresetViewModel()
       {
@@ -31,8 +24,14 @@ namespace LulCaster.UI.WPF.Config
         Name = name,
         FilePath = $"{id}.json"
       };
-      presetList.Add(newPreset);
-      _config[$"{PRESETS_KEY}"] = JsonConvert.SerializeObject(presetList);
+
+      var presetConfig = _mapper.Map<PresetConfig>(newPreset);
+      var presetSection = PresetConfigSection.GetConfig();
+
+      if (presetSection != null)
+      {
+        presetSection.Presets.Add(presetConfig);
+      }
 
       return newPreset;
     }

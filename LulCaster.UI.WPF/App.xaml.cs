@@ -8,7 +8,6 @@ using LulCaster.UI.WPF.Pages;
 using LulCaster.UI.WPF.ViewModels;
 using LulCaster.Utility.Common.Config;
 using LulCaster.Utility.ScreenCapture.Windows;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Windows;
@@ -41,10 +40,6 @@ namespace LulCaster.UI.WPF
       services.AddSingleton<IPresetConfigService, PresetConfigService>();
       services.AddSingleton<IRegionConfigService, RegionConfigService>();
       services.AddScoped<IScreenCaptureService, ScreenCaptureService>();
-      services.AddScoped<Microsoft.Extensions.Configuration.IConfiguration>(provider => {
-        return new ConfigurationBuilder().AddJsonFile("AppSettings.json", optional: false, reloadOnChange: true)
-                  .Build();
-      });
 
       RegisterControllers(services);
       RegisterPages(services);
