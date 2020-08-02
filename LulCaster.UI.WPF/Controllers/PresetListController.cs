@@ -8,7 +8,7 @@ namespace LulCaster.UI.WPF.Controllers
   public class PresetListController : IPresetListController
   {
     private readonly IPresetConfigService _presetConfigService;
-    private readonly ISimpleDialogService<string> _newPresetDialog;
+    private readonly IDialogService<string> _newPresetDialog;
     private readonly IMessageBoxDialogService _messageBoxService;
 
     public PresetListController(IPresetConfigService configService, ISimpleDialogService<string> newPresetDialog, IMessageBoxDialogService messageBoxService)
@@ -45,7 +45,7 @@ namespace LulCaster.UI.WPF.Controllers
 
     public bool DeletePreset(PresetViewModel preset)
     {
-      if (_messageBoxService.Show("Delete Preset", $"Are you sure you want to delete {preset.Name}?", MessageBoxButtons.YesNo) == DialogResults.Yes)
+      if (_messageBoxService.Show("Delete Preset", $"Are you sure you want to delete {preset.Name}?", DialogButtons.YesNo) == DialogResults.Yes)
       {
         _presetConfigService.DeletePreset(preset);
         return true;

@@ -1,6 +1,6 @@
 ﻿namespace LulCaster.UI.WPF.Dialogs
 {
-  public enum MessageBoxButtons
+  public enum DialogButtons
   {
     Ok,
     OkCancel,

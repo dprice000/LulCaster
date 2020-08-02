@@ -15,7 +15,7 @@ namespace LulCaster.UI.WPF.Dialogs
       InitializeComponent();
     }
 
-    public static DialogResults Show(string title, string message, MessageBoxButtons messageBoxButtons)
+    public static DialogResults Show(string title, string message, DialogButtons messageBoxButtons)
     {
       var dialog = new MessageBoxDialog
       {

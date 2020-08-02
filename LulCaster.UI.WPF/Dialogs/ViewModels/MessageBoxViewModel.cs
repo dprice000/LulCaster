@@ -1,12 +1,9 @@
 ﻿namespace LulCaster.UI.WPF.Dialogs.ViewModels
 {
-  public class MessageBoxViewModel
+  public class MessageBoxViewModel : DialogViewModelBase
   {
-    public string Title { get; set; }
-    public string Message { get; set; }
-    public MessageBoxButtons MessageBoxButtons { get; set; }
-    public bool ShowOk => MessageBoxButtons == MessageBoxButtons.Ok || MessageBoxButtons == MessageBoxButtons.OkCancel;
-    public bool ShowCancel => MessageBoxButtons == MessageBoxButtons.OkCancel;
-    public bool ShowYesNo => MessageBoxButtons == MessageBoxButtons.YesNo;
+    public bool ShowOk => MessageBoxButtons == DialogButtons.Ok || MessageBoxButtons == DialogButtons.OkCancel;
+    public bool ShowCancel => MessageBoxButtons == DialogButtons.OkCancel;
+    public bool ShowYesNo => MessageBoxButtons == DialogButtons.YesNo;
   }
 }
