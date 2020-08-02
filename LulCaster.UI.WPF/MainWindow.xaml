@@ -34,18 +34,12 @@
             </MenuItem.Icon>
           </MenuItem>
           <Separator />
-          <MenuItem Header="Excellent" IsCheckable="True" IsChecked="True" />
-          <MenuItem Header="Rubbish" IsCheckable="True" />
-          <MenuItem Header="Dig Deeper" InputGestureText="Ctrl+D">
-            <MenuItem Header="Enlightenment?" IsCheckable="True" />
-            <MenuItem Header="Disappointment" IsCheckable="True" />
-          </MenuItem>
-          <MenuItem Header="Look Deeper" InputGestureText="Ctrl+D">
-            <MenuItem Header="Plain" />
-            <MenuItem Header="Ice Cream" />
+          <MenuItem Header="Presets" InputGestureText="Ctrl+D">
+            <MenuItem Header="Import" />
+            <MenuItem Header="Export Selected" />
           </MenuItem>
         </MenuItem>
-        <MenuItem Header="_Edit">
+        <MenuItem Header="_Tools">
           <MenuItem Header="_Cut" Command="Cut">
             <MenuItem.Icon>
               <materialDesign:PackIcon Kind="ContentCut" />
