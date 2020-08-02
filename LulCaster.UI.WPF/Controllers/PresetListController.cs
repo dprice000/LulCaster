@@ -1,5 +1,6 @@
 ﻿using LulCaster.UI.WPF.Config;
 using LulCaster.UI.WPF.Dialogs;
+using LulCaster.UI.WPF.Dialogs.Services;
 using LulCaster.UI.WPF.ViewModels;
 using System.Collections.Generic;
 
@@ -8,13 +9,13 @@ namespace LulCaster.UI.WPF.Controllers
   public class PresetListController : IPresetListController
   {
     private readonly IPresetConfigService _presetConfigService;
-    private readonly IDialogService<string> _newPresetDialog;
-    private readonly IMessageBoxDialogService _messageBoxService;
+    private readonly IDialogService<InputDialog, string> _inputDialog;
+    private readonly IDialogService<MessageBoxDialog, DialogResults> _messageBoxService;
 
-    public PresetListController(IPresetConfigService configService, ISimpleDialogService<string> newPresetDialog, IMessageBoxDialogService messageBoxService)
+    public PresetListController(IPresetConfigService configService, IDialogService<InputDialog, string> inputDialog, IDialogService<MessageBoxDialog, DialogResults>  messageBoxService)
     {
       _presetConfigService = configService;
-      _newPresetDialog = newPresetDialog;
+      _inputDialog = inputDialog;
       _messageBoxService = messageBoxService;
     }
 
@@ -34,10 +35,9 @@ namespace LulCaster.UI.WPF.Controllers
     /// <returns>Returns PresetViewModel for new Preset.</returns>
     public PresetViewModel ShowNewPresetDialog()
     {
-      if (_newPresetDialog.ShowDialog() == true)
+      if (_inputDialog.Show("New Preset", "Enter New Preset Name: ", DialogButtons.OkCancel) is string presetName)
       {
-        var preset = _newPresetDialog.ReturnValue;
-        return _presetConfigService.CreatePreset(preset);
+        return _presetConfigService.CreatePreset(presetName);
       }
 
       return null;

@@ -6,21 +6,25 @@ namespace LulCaster.UI.WPF.Dialogs
   /// <summary>
   /// Interaction logic for InputDialog.xaml
   /// </summary>
-  public partial class InputDialog : Window
+  public partial class InputDialog : Window, ILulDialog
   {
     public InputDialog()
     {
       InitializeComponent();
-
-      DataContext = new InputDialogViewModel();
     }
 
-    public static string Show(string title, string message)
+    public object Show(string title, string message, DialogButtons dialogButtons)
     {
-      var dialog = new InputDialog();
-      dialog.ShowDialog();
+      DataContext = new InputDialogViewModel()
+      {
+        Title = title,
+        Message = message,
+        MessageBoxButtons = dialogButtons
+      };
 
-      return (dialog.DialogResult ?? false) ? ((InputDialogViewModel)dialog.DataContext).Input : null;
+      ShowDialog();
+
+      return (DialogResult ?? false) ? ((InputDialogViewModel)DataContext).Input : null;
     }
 
     private void Button_btnOk(object sender, RoutedEventArgs e)

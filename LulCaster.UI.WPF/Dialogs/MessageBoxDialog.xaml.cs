@@ -6,7 +6,7 @@ namespace LulCaster.UI.WPF.Dialogs
   /// <summary>
   /// Interaction logic for MessageBoxDialog.xaml
   /// </summary>
-  public partial class MessageBoxDialog : Window
+  public partial class MessageBoxDialog : Window, ILulDialog
   {
     public new DialogResults DialogResult { get; set; }
 
@@ -15,9 +15,9 @@ namespace LulCaster.UI.WPF.Dialogs
       InitializeComponent();
     }
 
-    public static DialogResults Show(string title, string message, DialogButtons messageBoxButtons)
+    public object Show(string title, string message, DialogButtons messageBoxButtons)
     {
-      var dialog = new MessageBoxDialog
+      DataContext = new MessageBoxDialog
       {
         DataContext = new MessageBoxViewModel()
         {
@@ -27,9 +27,9 @@ namespace LulCaster.UI.WPF.Dialogs
         }
       };
 
-      dialog.ShowDialog();
+      ShowDialog();
 
-      return dialog.DialogResult;
+      return DialogResult;
     }
 
     private void Button_btnCancel(object sender, RoutedEventArgs e)

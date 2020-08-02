@@ -4,6 +4,7 @@ using LulCaster.UI.WPF.Config;
 using LulCaster.UI.WPF.Config.Models;
 using LulCaster.UI.WPF.Controllers;
 using LulCaster.UI.WPF.Dialogs;
+using LulCaster.UI.WPF.Dialogs.Services;
 using LulCaster.UI.WPF.Pages;
 using LulCaster.UI.WPF.ViewModels;
 using LulCaster.Utility.Common.Config;
@@ -40,6 +41,7 @@ namespace LulCaster.UI.WPF
       services.AddSingleton<IPresetConfigService, PresetConfigService>();
       services.AddSingleton<IRegionConfigService, RegionConfigService>();
       services.AddScoped<IScreenCaptureService, ScreenCaptureService>();
+
 
       RegisterControllers(services);
       RegisterPages(services);
@@ -89,8 +91,10 @@ namespace LulCaster.UI.WPF
 
     private void RegisterDialogServices(IServiceCollection services)
     {
-      services.AddScoped<ISimpleDialogService<string>, NewPresetDialog>();
-      services.AddScoped<IMessageBoxDialogService, MessageBoxDialogService>();
+      services.AddScoped<InputDialog>();
+      services.AddScoped<MessageBoxDialog>();
+      services.AddTransient(typeof(IDialogService<InputDialog, string>), typeof(DialogService<InputDialog, string>));
+      services.AddTransient(typeof(IDialogService<MessageBoxDialog, DialogResults>), typeof(DialogService<MessageBoxDialog, DialogResults>));
     }
   }
 }
