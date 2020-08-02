@@ -2,9 +2,9 @@
 
 namespace LulCaster.UI.WPF.Dialogs.Services
 {
-  public class DialogService<TWindowType, TReturnType>: IDialogService<TWindowType, TReturnType> where TWindowType : Window
+  public class DialogService<TWindowType, TReturnType> : IDialogService<TWindowType, TReturnType> where TWindowType : Window
   {
-    private TWindowType _window;
+    private readonly TWindowType _window;
 
     public DialogService(TWindowType window)
     {

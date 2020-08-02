@@ -33,6 +33,7 @@ namespace LulCaster.UI.WPF
     private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
       var p = (Exception)e.ExceptionObject;
+      throw new NotImplementedException();
     }
 
     private void ConfigureServices(IServiceCollection services)
@@ -41,7 +42,6 @@ namespace LulCaster.UI.WPF
       services.AddSingleton<IPresetConfigService, PresetConfigService>();
       services.AddSingleton<IRegionConfigService, RegionConfigService>();
       services.AddScoped<IScreenCaptureService, ScreenCaptureService>();
-
 
       RegisterControllers(services);
       RegisterPages(services);
