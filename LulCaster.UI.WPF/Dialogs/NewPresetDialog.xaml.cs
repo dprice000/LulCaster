@@ -23,12 +23,14 @@ namespace LulCaster.UI.WPF.Dialogs
 
     private void Button_btnOk(object sender, RoutedEventArgs e)
     {
-      this.DialogResult = true;
+      DialogResult = true;
+      Close();
     }
 
     private void Button_btnCancel(object sender, RoutedEventArgs e)
     {
-      this.DialogResult = false;
+      DialogResult = false;
+      Close();
     }
   }
 }
