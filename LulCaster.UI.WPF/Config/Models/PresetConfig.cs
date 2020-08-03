@@ -17,11 +17,5 @@ namespace LulCaster.UI.WPF.Config.Models
       get { return (string)this["Name"]; }
       set { this["Name"] = value; }
     }
-    [ConfigurationProperty("FilePath", IsRequired = true)]
-    public string FilePath 
-    {
-      get { return (string)this["FilePath"]; }
-      set { this["FilePath"] = value; }
-    }
   }
 }

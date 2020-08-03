@@ -6,7 +6,7 @@ namespace LulCaster.UI.WPF.Utility
   {
     public static string ResolvePresetFilePath(Guid presetId)
     {
-      return $@"Presets\{presetId}";
+      return $@"Presets\{presetId}.json";
     }
   }
 }
