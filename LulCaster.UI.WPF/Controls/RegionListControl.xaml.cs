@@ -77,6 +77,30 @@ namespace LulCaster.UI.WPF.Controls
 
     private void BtnAddRegion_Click(object sender, RoutedEventArgs e)
     {
+      if (RegionListController.ShowNewRegionDialog(SelectedPreset.FilePath) is string regionName && !string.IsNullOrWhiteSpace(regionName))
+      {
+        var newRegion = RegionListController.CreateRegion(SelectedPreset.Id.ToString(), regionName);
+        RegionList.Add(newRegion);
+        SelectedRegion = newRegion;
+      }
+      else
+      {
+        RegionListController.ShowMessageBox("Empty Name", "No Region Name Provided!!", Dialogs.DialogButtons.Ok);
+      }
+    }
+
+    private void BtnDeleteRegion_Click(object sender, RoutedEventArgs e)
+    {
+      if (RegionListController.ShowMessageBox("Delete Region", $"Do you want to delete region {SelectedRegion.Label}?", Dialogs.DialogButtons.YesNo) != Dialogs.DialogResults.Yes)
+      {
+        return;
+      }
+
+      if (RegionListController.DeleteRegion(SelectedPreset.Id, SelectedRegion.Id);
+      {
+        RegionList.Remove(SelectedRegion);
+        SelectedRegion = null;
+      }
     }
 
     private void LoadRegions(string presetFilePath)
@@ -91,7 +115,11 @@ namespace LulCaster.UI.WPF.Controls
       if (sender is RegionListControl thisControl)
       {
         thisControl.SelectedPreset = (PresetViewModel)e.NewValue;
-        thisControl.LoadRegions(thisControl.SelectedPreset.FilePath);
+
+        if (thisControl.SelectedPreset != null)
+        {
+          thisControl.LoadRegions(thisControl.SelectedPreset.FilePath);
+        }
       }
     }
 
@@ -117,5 +145,6 @@ namespace LulCaster.UI.WPF.Controls
     }
 
     #endregion "OnChanged Events"
+
   }
 }

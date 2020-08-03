@@ -1,4 +1,5 @@
-﻿using LulCaster.UI.WPF.ViewModels;
+﻿using LulCaster.UI.WPF.Dialogs;
+using LulCaster.UI.WPF.ViewModels;
 using System.Collections.Generic;
 
 namespace LulCaster.UI.WPF.Controllers
@@ -9,7 +10,8 @@ namespace LulCaster.UI.WPF.Controllers
 
     IEnumerable<PresetViewModel> GetAllPresets();
 
-    PresetViewModel ShowNewPresetDialog();
+    string ShowNewPresetDialog();
+    DialogResults ShowMessageBox(string title, string message, DialogButtons dialogButtons);
 
     bool DeletePreset(PresetViewModel preset);
   }

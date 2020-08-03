@@ -23,16 +23,17 @@
       <TextBlock VerticalAlignment="Top" Grid.Column="0" FontWeight="Bold" FontSize="18" Height="24" Margin="0,11,0,0">Screen Regions</TextBlock>
       <WrapPanel VerticalAlignment="Bottom" Grid.Column="1" HorizontalAlignment="Right" Height="25" Width="50">
         <Button x:Name="btnAddRegion" Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                        IsEnabled="{Binding ElementName=ctrlRegionList, Path=SelectedPreset, Converter={StaticResource NullToBooleanConverter}}"
                                         Height="25"
                                         materialDesign:ButtonAssist.CornerRadius="24"
                                         ToolTip="Add New Screen Segment" Width="25" Click="BtnAddRegion_Click">
           <materialDesign:PackIcon Kind="Add" Opacity=".56" Height="18" Width="18" />
         </Button>
-        <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+        <Button x:Name="BtnDeleteRegion" Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
                                             IsEnabled="{Binding ElementName=ctrlRegionList, Path=SelectedRegion, Converter={StaticResource NullToBooleanConverter}}"
                                             Height="25" Width="25"
                                             materialDesign:ButtonAssist.CornerRadius="24"
-                                            ToolTip="Delete Selected Screen Segments">
+                                            ToolTip="Delete Selected Screen Segments" Click="BtnDeleteRegion_Click">
           <materialDesign:PackIcon Kind="Minus" Opacity=".56" Height="18" Width="18" />
         </Button>
       </WrapPanel>

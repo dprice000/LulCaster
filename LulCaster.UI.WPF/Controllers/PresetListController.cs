@@ -33,14 +33,19 @@ namespace LulCaster.UI.WPF.Controllers
     /// Shows new preset dialog.
     /// </summary>
     /// <returns>Returns PresetViewModel for new Preset.</returns>
-    public PresetViewModel ShowNewPresetDialog()
+    public string ShowNewPresetDialog()
     {
       if (_inputDialog.Show("New Preset", "Enter New Preset Name: ", DialogButtons.OkCancel) is string presetName)
       {
-        return _presetConfigService.CreatePreset(presetName);
+        return presetName;
       }
 
       return null;
+    }
+
+    public DialogResults ShowMessageBox(string title, string message, DialogButtons dialogButtons)
+    {
+      return _messageBoxService.Show(title, message, dialogButtons);
     }
 
     public bool DeletePreset(PresetViewModel preset)
