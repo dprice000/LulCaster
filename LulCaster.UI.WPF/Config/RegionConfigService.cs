@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LulCaster.UI.WPF.Utility;
 using LulCaster.UI.WPF.ViewModels;
 using LulCaster.Utility.Common.Config;
 using Newtonsoft.Json;
@@ -19,45 +20,53 @@ namespace LulCaster.UI.WPF.Config
       _mapper = mapper;
     }
 
-    public void CreateRegionConfig(string presetFilePath, RegionConfig regionConfig)
+    public RegionViewModel CreateRegion(Guid presetId, string regionName)
     {
-      var regions = GetAllRegions(presetFilePath).ToList();
-      regions.Add(regionConfig);
-      File.WriteAllText(presetFilePath, JsonConvert.SerializeObject(regions));
+      var newRegion = new RegionConfig
+      {
+        Id = Guid.NewGuid(),
+        Label = regionName
+      };
+
+      var regions = GetAllRegions(presetId).ToList();
+      regions.Add(newRegion);
+      File.WriteAllText(PresetFile.ResolvePresetFilePath(presetId), JsonConvert.SerializeObject(regions));
+
+      return _mapper.Map<RegionViewModel>(newRegion);
     }
 
-    public IEnumerable<RegionViewModel> GetAllRegionsAsViewModels(string presetFilePath)
+    public IEnumerable<RegionViewModel> GetAllRegionsAsViewModels(Guid presetId)
     {
-      return _mapper.Map<IEnumerable<RegionViewModel>>(GetAllRegions(presetFilePath));
+      return _mapper.Map<IEnumerable<RegionViewModel>>(GetAllRegions(presetId));
     }
 
-    public IEnumerable<RegionConfig> GetAllRegions(string presetFilePath)
+    public IEnumerable<RegionConfig> GetAllRegions(Guid presetId)
     {
-      return JsonConvert.DeserializeObject<IEnumerable<RegionConfig>>(File.ReadAllText(presetFilePath));
+      return JsonConvert.DeserializeObject<IEnumerable<RegionConfig>>(File.ReadAllText(PresetFile.ResolvePresetFilePath(presetId)));
     }
 
-    public RegionViewModel GetRegion(string presetFilePath, Guid id)
+    public RegionViewModel GetRegion(Guid presetId, Guid id)
     {
-      var regions = GetAllRegions(presetFilePath);
+      var regions = GetAllRegions(presetId);
 
       return _mapper.Map<RegionViewModel>(regions.FirstOrDefault(x => x.Id == id));
     }
 
-    public void UpdateRegion(string presetFilePath, RegionViewModel regionViewModel)
+    public void UpdateRegion(Guid presetId, RegionViewModel regionViewModel)
     {
-      var regions = GetAllRegions(presetFilePath).ToList();
+      var regions = GetAllRegions(presetId).ToList();
       var region = regions.FirstOrDefault(x => x.Id == regionViewModel.Id);
       region = _mapper.Map<RegionConfig>(regionViewModel);
 
-      File.WriteAllText(presetFilePath, JsonConvert.SerializeObject(regions));
+      File.WriteAllText(PresetFile.ResolvePresetFilePath(presetId), JsonConvert.SerializeObject(regions));
     }
 
-    public void DeleteRegion(string presetFilePath, Guid regionId)
+    public void DeleteRegion(Guid presetId, Guid regionId)
     {
-      var regions = GetAllRegions(presetFilePath).ToList();
+      var regions = GetAllRegions(presetId).ToList();
       var region = regions.RemoveAll(x => x.Id == regionId);
 
-      File.WriteAllText(presetFilePath, JsonConvert.SerializeObject(regions));
+      File.WriteAllText(PresetFile.ResolvePresetFilePath(presetId), JsonConvert.SerializeObject(regions));
     }
   }
 }
