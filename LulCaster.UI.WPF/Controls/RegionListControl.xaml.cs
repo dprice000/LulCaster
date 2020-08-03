@@ -1,5 +1,6 @@
 ﻿using LulCaster.UI.WPF.Controllers;
 using LulCaster.UI.WPF.ViewModels;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -77,9 +78,9 @@ namespace LulCaster.UI.WPF.Controls
 
     private void BtnAddRegion_Click(object sender, RoutedEventArgs e)
     {
-      if (RegionListController.ShowNewRegionDialog(SelectedPreset.FilePath) is string regionName && !string.IsNullOrWhiteSpace(regionName))
+      if (RegionListController.ShowNewRegionDialog() is string regionName && !string.IsNullOrWhiteSpace(regionName))
       {
-        var newRegion = RegionListController.CreateRegion(SelectedPreset.Id.ToString(), regionName);
+        var newRegion = RegionListController.CreateRegion(SelectedPreset.Id, regionName);
         RegionList.Add(newRegion);
         SelectedRegion = newRegion;
       }
@@ -96,16 +97,14 @@ namespace LulCaster.UI.WPF.Controls
         return;
       }
 
-      if (RegionListController.DeleteRegion(SelectedPreset.Id, SelectedRegion.Id);
-      {
-        RegionList.Remove(SelectedRegion);
-        SelectedRegion = null;
-      }
+      RegionListController.DeleteRegion(SelectedPreset.Id, SelectedRegion.Id);
+      RegionList.Remove(SelectedRegion);
+      SelectedRegion = null;
     }
 
-    private void LoadRegions(string presetFilePath)
+    private void LoadRegions(Guid presetId)
     {
-      RegionList = new ObservableCollection<RegionViewModel>(RegionListController.GetRegions(presetFilePath));
+      RegionList = new ObservableCollection<RegionViewModel>(RegionListController.GetRegions(presetId));
     }
 
     #region "OnChanged Events"
@@ -118,7 +117,7 @@ namespace LulCaster.UI.WPF.Controls
 
         if (thisControl.SelectedPreset != null)
         {
-          thisControl.LoadRegions(thisControl.SelectedPreset.FilePath);
+          thisControl.LoadRegions(thisControl.SelectedPreset.Id);
         }
       }
     }
