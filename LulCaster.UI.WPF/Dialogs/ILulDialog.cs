@@ -1,7 +1,10 @@
-﻿namespace LulCaster.UI.WPF.Dialogs
+﻿using LulCaster.UI.WPF.Dialogs.Models;
+
+namespace LulCaster.UI.WPF.Dialogs
 {
   public interface ILulDialog
   {
-    object Show(string title, string message, DialogButtons dialogButtons);
+    DialogResults DialogResult { get; set; }
+    DialogResult Show(string title, string message, DialogButtons dialogButtons);
   }
 }

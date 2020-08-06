@@ -55,6 +55,7 @@ namespace LulCaster.UI.WPF
       {
         var config = new MapperConfiguration(cfg => 
         {
+          cfg.CreateMap<PresetViewModel, PresetConfig>();
           cfg.CreateMap<PresetConfig, PresetViewModel>();
 
           cfg.CreateMap<RegionConfig, RegionViewModel>()

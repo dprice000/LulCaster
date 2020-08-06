@@ -94,7 +94,7 @@ namespace LulCaster.UI.WPF.Controls
         PresetList.Add(newPreset);
         SelectedPreset = newPreset;
       }
-      else
+      else if ()
       {
         PresetController.ShowMessageBox("Empty Preset Name", "No Preset Name Provided!!", Dialogs.DialogButtons.Ok);
       }

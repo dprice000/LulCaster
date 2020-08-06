@@ -24,7 +24,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal">
           <Label>Sound File:</Label>
-          <Label Content="{Binding SoundFilePath}"></Label>
+          <Label Content="{Binding SoundFilePath}" ToolTip="{Binding SoundFilePath}"></Label>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
           <Button Name="btnSoundBrowser" Click="btnSoundBrowser_Click" IsEnabled="{Binding ElementName=ctrlRegionConfiguration, Path=IsControlEnabled}">Browse</Button>

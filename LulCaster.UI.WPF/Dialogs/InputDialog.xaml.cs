@@ -1,4 +1,5 @@
-﻿using LulCaster.UI.WPF.Dialogs.ViewModels;
+﻿using LulCaster.UI.WPF.Dialogs.Models;
+using LulCaster.UI.WPF.Dialogs.ViewModels;
 using System.Windows;
 
 namespace LulCaster.UI.WPF.Dialogs
@@ -8,12 +9,14 @@ namespace LulCaster.UI.WPF.Dialogs
   /// </summary>
   public partial class InputDialog : Window, ILulDialog
   {
+    public new DialogResults DialogResult { get; set; }
+
     public InputDialog()
     {
       InitializeComponent();
     }
 
-    public object Show(string title, string message, DialogButtons dialogButtons)
+    public DialogResult Show(string title, string message, DialogButtons dialogButtons)
     {
       DataContext = new InputDialogViewModel()
       {
@@ -24,18 +27,22 @@ namespace LulCaster.UI.WPF.Dialogs
 
       ShowDialog();
 
-      return (DialogResult ?? false) ? ((InputDialogViewModel)DataContext).Input : null;
+      return new InputDialogResult
+      {
+        DialogResult = this.DialogResult,
+        Input = (DialogResult == DialogResults.Ok) ? ((InputDialogViewModel)DataContext).Input : null
+      };
     }
 
     private void Button_btnOk(object sender, RoutedEventArgs e)
     {
-      DialogResult = true;
+      DialogResult = DialogResults.Ok;
       Close();
     }
 
     private void Button_btnCancel(object sender, RoutedEventArgs e)
     {
-      DialogResult = false;
+      DialogResult = DialogResults.Cancel;
       Close();
     }
   }

@@ -1,4 +1,4 @@
-﻿namespace LulCaster.UI.WPF.Dialogs
+﻿namespace LulCaster.UI.WPF.Dialogs.Models
 {
   public enum DialogResults
   {
