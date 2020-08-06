@@ -79,9 +79,6 @@ namespace LulCaster.UI.WPF.Pages
     {
 
       InitializeComponent();
-      cntrlRegionList.RegionListController = regionListController;
-      cntrlPresetList.PresetController = presetListController;
-      cntrlPresetList.LoadPresets();
 
       _screenCaptureTimer = new ScreenCaptureTimer(screenCaptureService, CAPTURE_TIMER_INTERVAL);
       _screenCaptureTimer.ScreenCaptureCompleted += _screenCaptureTimer_ScreenCaptureCompleted;

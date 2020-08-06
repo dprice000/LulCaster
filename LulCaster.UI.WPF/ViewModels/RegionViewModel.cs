@@ -1,14 +1,15 @@
-﻿using LulCaster.Utility.Common.Logic;
+﻿using LulCaster.UI.WPF.Controls;
+using LulCaster.Utility.Common.Logic;
 using System;
 using System.Drawing;
 
 namespace LulCaster.UI.WPF.ViewModels
 {
-  public class RegionViewModel : ViewModelBase
+  public class RegionViewModel : ViewModelBase, IListItem
   {
     private Guid _id;
     private LogicSets _logicSet;
-    private string _label;
+    private string _name;
     private string _triggerValue;
     private string _soundFilePath;
     private Rectangle _boundingBox;
@@ -39,16 +40,16 @@ namespace LulCaster.UI.WPF.ViewModels
       }
     }
 
-    public string Label
+    public string Name
     {
       get
       {
-        return _label;
+        return _name;
       }
       set
       {
-        _label = value;
-        OnPropertyChanged(nameof(Label));
+        _name = value;
+        OnPropertyChanged(nameof(Name));
       }
     }
 

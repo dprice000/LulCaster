@@ -15,8 +15,8 @@
 
       <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
-          <Label>Label:</Label>
-          <TextBox Width="517" Text="{Binding Label}" IsEnabled="{Binding ElementName=ctrlRegionConfiguration, Path=IsControlEnabled}"></TextBox>
+          <Label>Name:</Label>
+          <TextBox Width="517" Text="{Binding Name}" IsEnabled="{Binding ElementName=ctrlRegionConfiguration, Path=IsControlEnabled}"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
           <Label>Trigger Text:</Label>

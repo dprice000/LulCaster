@@ -11,9 +11,6 @@ namespace LulCaster.UI.WPF.Controllers
 
     IEnumerable<PresetViewModel> GetAllPresets();
 
-    InputDialogResult ShowNewPresetDialog();
-    LulDialogResult ShowMessageBox(string title, string message, DialogButtons dialogButtons);
-
     void DeletePreset(PresetViewModel preset);
   }
 }
