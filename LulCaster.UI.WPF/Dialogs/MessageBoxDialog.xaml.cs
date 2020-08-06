@@ -1,4 +1,5 @@
-﻿using LulCaster.UI.WPF.Dialogs.ViewModels;
+﻿using LulCaster.UI.WPF.Dialogs.Models;
+using LulCaster.UI.WPF.Dialogs.ViewModels;
 using System.Windows;
 
 namespace LulCaster.UI.WPF.Dialogs
@@ -15,7 +16,7 @@ namespace LulCaster.UI.WPF.Dialogs
       InitializeComponent();
     }
 
-    public object Show(string title, string message, DialogButtons messageBoxButtons)
+    public LulDialogResult Show(string title, string message, DialogButtons messageBoxButtons)
     {
       DataContext = new MessageBoxDialog
       {
@@ -29,7 +30,10 @@ namespace LulCaster.UI.WPF.Dialogs
 
       ShowDialog();
 
-      return DialogResult;
+      return new LulDialogResult
+      {
+        DialogResult = DialogResult
+      };
     }
 
     private void Button_btnCancel(object sender, RoutedEventArgs e)

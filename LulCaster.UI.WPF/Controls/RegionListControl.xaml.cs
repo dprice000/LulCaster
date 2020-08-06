@@ -92,7 +92,7 @@ namespace LulCaster.UI.WPF.Controls
 
     private void BtnDeleteRegion_Click(object sender, RoutedEventArgs e)
     {
-      if (RegionListController.ShowMessageBox("Delete Region", $"Do you want to delete region {SelectedRegion.Label}?", Dialogs.DialogButtons.YesNo) != Dialogs.DialogResults.Yes)
+      if (RegionListController.ShowMessageBox("Delete Region", $"Do you want to delete region {SelectedRegion.Label}?", Dialogs.DialogButtons.YesNo).DialogResult != Dialogs.Models.DialogResults.Yes)
       {
         return;
       }

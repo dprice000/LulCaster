@@ -16,7 +16,7 @@ namespace LulCaster.UI.WPF.Dialogs
       InitializeComponent();
     }
 
-    public DialogResult Show(string title, string message, DialogButtons dialogButtons)
+    public LulDialogResult Show(string title, string message, DialogButtons dialogButtons)
     {
       DataContext = new InputDialogViewModel()
       {
@@ -29,7 +29,7 @@ namespace LulCaster.UI.WPF.Dialogs
 
       return new InputDialogResult
       {
-        DialogResult = this.DialogResult,
+        DialogResult = DialogResult,
         Input = (DialogResult == DialogResults.Ok) ? ((InputDialogViewModel)DataContext).Input : null
       };
     }

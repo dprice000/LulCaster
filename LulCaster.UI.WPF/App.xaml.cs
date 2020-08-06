@@ -4,6 +4,7 @@ using LulCaster.UI.WPF.Config;
 using LulCaster.UI.WPF.Config.Models;
 using LulCaster.UI.WPF.Controllers;
 using LulCaster.UI.WPF.Dialogs;
+using LulCaster.UI.WPF.Dialogs.Models;
 using LulCaster.UI.WPF.Dialogs.Services;
 using LulCaster.UI.WPF.Pages;
 using LulCaster.UI.WPF.ViewModels;
@@ -94,8 +95,8 @@ namespace LulCaster.UI.WPF
     {
       services.AddScoped<InputDialog>();
       services.AddScoped<MessageBoxDialog>();
-      services.AddTransient(typeof(IDialogService<InputDialog, string>), typeof(DialogService<InputDialog, string>));
-      services.AddTransient(typeof(IDialogService<MessageBoxDialog, DialogResults>), typeof(DialogService<MessageBoxDialog, DialogResults>));
+      services.AddTransient(typeof(IDialogService<InputDialog, InputDialogResult>), typeof(DialogService<InputDialog, InputDialogResult>));
+      services.AddTransient(typeof(IDialogService<MessageBoxDialog, LulDialogResult>), typeof(DialogService<MessageBoxDialog, LulDialogResult>));
     }
   }
 }

@@ -1,4 +1,5 @@
 ﻿using LulCaster.UI.WPF.Controllers;
+using LulCaster.UI.WPF.Dialogs.Models;
 using LulCaster.UI.WPF.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,30 +89,30 @@ namespace LulCaster.UI.WPF.Controls
 
     private void Button_btnAddPreset(object sender, RoutedEventArgs e)
     {
-      if (PresetController.ShowNewPresetDialog() is string presetName && !string.IsNullOrWhiteSpace(presetName))
+      if (PresetController.ShowNewPresetDialog() is InputDialogResult dialogResult && dialogResult.DialogResult == DialogResults.Ok)
       {
-        var newPreset = PresetController.CreatePreset(presetName);
+        if (string.IsNullOrWhiteSpace(dialogResult.Input))
+        {
+          PresetController.ShowMessageBox("Empty Preset Name", "No Preset Name Provided!!", Dialogs.DialogButtons.Ok);
+          return;
+        }
+
+        var newPreset = PresetController.CreatePreset(dialogResult.Input);
         PresetList.Add(newPreset);
         SelectedPreset = newPreset;
-      }
-      else if ()
-      {
-        PresetController.ShowMessageBox("Empty Preset Name", "No Preset Name Provided!!", Dialogs.DialogButtons.Ok);
       }
     }
 
     private void Button_BtnDeletePreset(object sender, RoutedEventArgs e)
     {
-      if (PresetController.ShowMessageBox("Delete Preset", $"Do you want to delete preset {SelectedPreset.Name}?", Dialogs.DialogButtons.YesNo) != Dialogs.DialogResults.Yes)
+      if (PresetController.ShowMessageBox("Delete Preset", $"Do you want to delete preset {SelectedPreset.Name}?", Dialogs.DialogButtons.YesNo).DialogResult != DialogResults.Yes)
       {
         return;
       }
 
-      if (PresetController.DeletePreset(SelectedPreset))
-      {
-        PresetList.Remove(SelectedPreset);
-        SelectedPreset = null;
-      }
+      PresetController.DeletePreset(SelectedPreset);
+      PresetList.Remove(SelectedPreset);
+      SelectedPreset = null;
     }
   }
 }

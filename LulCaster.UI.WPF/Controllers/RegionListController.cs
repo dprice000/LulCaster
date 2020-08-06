@@ -1,5 +1,6 @@
 ﻿using LulCaster.UI.WPF.Config;
 using LulCaster.UI.WPF.Dialogs;
+using LulCaster.UI.WPF.Dialogs.Models;
 using LulCaster.UI.WPF.Dialogs.Services;
 using LulCaster.UI.WPF.ViewModels;
 using System;
@@ -11,9 +12,9 @@ namespace LulCaster.UI.WPF.Controllers
   {
     private readonly IRegionConfigService _regionConfigService;
     private readonly IDialogService<InputDialog, string> _inputDialog;
-    private readonly IDialogService<MessageBoxDialog, DialogResults> _messageBoxService;
+    private readonly IDialogService<MessageBoxDialog, LulDialogResult> _messageBoxService;
 
-    public RegionListController(IRegionConfigService configService, IDialogService<InputDialog, string> inputDialog, IDialogService<MessageBoxDialog, DialogResults> messageBoxService)
+    public RegionListController(IRegionConfigService configService, IDialogService<InputDialog, string> inputDialog, IDialogService<MessageBoxDialog, LulDialogResult> messageBoxService)
     {
       _regionConfigService = configService;
       _inputDialog = inputDialog;
@@ -44,7 +45,7 @@ namespace LulCaster.UI.WPF.Controllers
       return null;
     }
 
-    public DialogResults ShowMessageBox(string title, string message, DialogButtons dialogButtons)
+    public LulDialogResult ShowMessageBox(string title, string message, DialogButtons dialogButtons)
     {
       return _messageBoxService.Show(title, message, dialogButtons);
     }

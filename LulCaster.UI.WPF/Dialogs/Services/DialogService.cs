@@ -1,8 +1,11 @@
-﻿using System.Windows;
+﻿using LulCaster.UI.WPF.Dialogs.Models;
+using System.Windows;
 
 namespace LulCaster.UI.WPF.Dialogs.Services
 {
-  public class DialogService<TWindowType, TReturnType> : IDialogService<TWindowType, TReturnType> where TWindowType : Window
+  public class DialogService<TWindowType, TReturnType> : IDialogService<TWindowType, TReturnType> 
+    where TReturnType : LulDialogResult
+    where TWindowType : Window
   {
     private readonly TWindowType _window;
 
