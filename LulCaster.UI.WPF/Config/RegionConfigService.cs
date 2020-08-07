@@ -25,7 +25,7 @@ namespace LulCaster.UI.WPF.Config
       var newRegion = new RegionConfig
       {
         Id = Guid.NewGuid(),
-        Label = regionName
+        Name = regionName
       };
 
       var regions = GetAllRegions(presetId).ToList();

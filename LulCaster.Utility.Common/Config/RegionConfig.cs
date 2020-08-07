@@ -8,7 +8,7 @@ namespace LulCaster.Utility.Common.Config
   {
     public Guid Id { get; set; }
     public LogicSets LogicSet { get; set; }
-    public string Label { get; set; }
+    public string Name { get; set; }
     public string TriggerValue { get; set; }
     public int Height { get; set; }
     public int Widht { get; set; }

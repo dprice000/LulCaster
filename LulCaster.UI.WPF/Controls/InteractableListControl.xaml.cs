@@ -1,7 +1,8 @@
 ﻿using LulCaster.UI.WPF.Dialogs;
 using LulCaster.UI.WPF.Dialogs.Models;
 using LulCaster.UI.WPF.Dialogs.Services;
-using System.Collections.Generic;
+using System;
+using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -12,6 +13,15 @@ namespace LulCaster.UI.WPF.Controls
   /// </summary>
   public partial class InteractableListControl : UserControl
   {
+    #region "Public Events"
+    public event EventHandler<InputDialogResult> NewItemDialogExecuted;
+
+    public event EventHandler<LulDialogResult> DeleteItemDialogExecuted;
+
+    public event EventHandler<IListItem> SelectionChanged;
+
+    #endregion "Public Events"
+
     #region "Dependency Properties"
 
     public static readonly DependencyProperty TitleProperty =
@@ -19,36 +29,41 @@ namespace LulCaster.UI.WPF.Controls
     (
         "Title",
         typeof(string),
-        typeof(InteractableListControl),
-        new FrameworkPropertyMetadata(new PropertyChangedCallback(OnTitleChanged))
+        typeof(InteractableListControl)
     );
 
-    public static readonly DependencyProperty SingularItemDescriptorProperty =
+    public static readonly DependencyProperty ItemDescriptorProperty =
     DependencyProperty.Register
     (
         "ItemDescriptor",
         typeof(string),
-        typeof(InteractableListControl),
-        new FrameworkPropertyMetadata(new PropertyChangedCallback(OnSingularItemDescriptorChanged))
+        typeof(InteractableListControl)
     );
 
-    public static readonly DependencyProperty PresetListProperty =
+    public static readonly DependencyProperty ItemListProperty =
     DependencyProperty.Register
     (
         "ItemList",
-        typeof(IList<IListItem>),
-        typeof(InteractableListControl),
-        new FrameworkPropertyMetadata(new PropertyChangedCallback(OnItemListChanged))
+        typeof(IList),
+        typeof(InteractableListControl)
     );
 
-    public static readonly DependencyProperty SelectedPresetProperty =
+    public static readonly DependencyProperty SelectedItemProperty =
     DependencyProperty.Register
     (
         "SelectedItem",
         typeof(IListItem),
         typeof(InteractableListControl),
-        new FrameworkPropertyMetadata(new PropertyChangedCallback(OnSelectedItemChanged))
+        new FrameworkPropertyMetadata(SelectionDependancyPropertyChanged)
     );
+
+    private static void SelectionDependancyPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+    {
+      if (sender is InteractableListControl thisControl)
+      {
+        thisControl.SelectedItem = (IListItem)e.NewValue;
+      }
+    }
 
     #endregion "Dependency Properties"
 
@@ -65,20 +80,34 @@ namespace LulCaster.UI.WPF.Controls
     /// </summary>
     public string ItemDescriptor
     {
-      get { return (string)GetValue(SingularItemDescriptorProperty); }
-      set { SetValue(SingularItemDescriptorProperty, value); }
+      get { return (string)GetValue(ItemDescriptorProperty); }
+      set { SetValue(ItemDescriptorProperty, value); }
     }
 
-    public IList<IListItem> ItemList
+    public string AddToolTip
     {
-      get { return (IList<IListItem>)GetValue(PresetListProperty); }
-      set { SetValue(PresetListProperty, value); }
+      get => $"Add New {ItemDescriptor}";
+    }
+
+    public string DeleteToolTip
+    {
+      get => $"Delete Selected {ItemDescriptor}";
+    }
+
+    public IList ItemList
+    {
+      get { return (IList)GetValue(ItemListProperty); }
+      set { SetValue(ItemListProperty, value); }
     }
 
     public IListItem SelectedItem
     {
-      get { return (IListItem)GetValue(SelectedPresetProperty); }
-      set { SetValue(SelectedPresetProperty, value); }
+      get { return (IListItem)GetValue(SelectedItemProperty); }
+      set 
+      { 
+        SetValue(SelectedItemProperty, value);
+        SelectionChanged?.Invoke(this, value);
+      }
     }
 
     public IDialogService<InputDialog, InputDialogResult> InputDialog { get; set; }
@@ -91,62 +120,26 @@ namespace LulCaster.UI.WPF.Controls
       InitializeComponent();
     }
 
-    #region "OnChanged Events"
-
-    private static void OnTitleChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-    {
-      if (sender is InteractableListControl thisControl)
-      {
-        thisControl.Title = (string)e.NewValue;
-      }
-    }
-
-    private static void OnSingularItemDescriptorChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-    {
-      if (sender is InteractableListControl thisControl)
-      {
-        thisControl.ItemDescriptor = (string)e.NewValue;
-      }
-    }
-
-    private static void OnSelectedItemChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-    {
-      if (sender is InteractableListControl thisControl)
-      {
-        thisControl.SelectedItem = (IListItem)e.NewValue;
-      }
-    }
-
-    private static void OnItemListChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-    {
-      if (sender is InteractableListControl thisControl)
-      {
-        thisControl.ItemList = (IList<IListItem>)e.NewValue;
-      }
-    }
-
-    #endregion "OnChanged Events"
-
     private void Button_btnAddPreset(object sender, RoutedEventArgs e)
     {
-      if (InputDialog.Show($"New {ItemDescriptor}", $"Enter New {ItemDescriptor} Name: ", DialogButtons.OkCancel) is InputDialogResult dialogResult && dialogResult.DialogResult == DialogResults.Ok)
+      if (InputDialog.Show($"New {ItemDescriptor}", $"Enter New {ItemDescriptor} Name: ", DialogButtons.OkCancel) is InputDialogResult dialogResult)
       {
-        if (string.IsNullOrWhiteSpace(dialogResult.Input))
+        if (dialogResult.DialogResult == DialogResults.Ok && string.IsNullOrWhiteSpace(dialogResult.Input))
         {
           MessageBoxService.Show("Empty Preset Name", "No Preset Name Provided!!", Dialogs.DialogButtons.Ok);
           return;
         }
+
+        NewItemDialogExecuted?.Invoke(this, dialogResult);
       }
     }
 
     private void Button_BtnDeletePreset(object sender, RoutedEventArgs e)
     {
-      if (MessageBoxService.Show($"Delete {ItemDescriptor}", $"Do you want to delete selected {ItemDescriptor}(s)?", DialogButtons.YesNo).DialogResult != DialogResults.Yes)
+      if (MessageBoxService.Show($"Delete {ItemDescriptor}", $"Do you want to delete selected {ItemDescriptor}(s)?", DialogButtons.YesNo) is LulDialogResult dialogResult)
       {
-        return;
+        DeleteItemDialogExecuted?.Invoke(this, dialogResult);
       }
-
-      SelectedItem = null;
     }
   }
 }

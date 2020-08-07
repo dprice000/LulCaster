@@ -3,7 +3,6 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="clr-namespace:LulCaster.UI.WPF.Pages"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Name="pageWireFrame" x:Class="LulCaster.UI.WPF.Pages.WireFramePage"
       xmlns:lulCon="clr-namespace:LulCaster.UI.WPF.Controls"
       mc:Ignorable="d"
@@ -32,7 +31,7 @@
       <RowDefinition Height="4*"></RowDefinition>
     </Grid.RowDefinitions>
 
-    <materialDesign:Card Grid.Row="0" Margin="10,10,10,18">
+    <materialDesign:Card Visibility="Hidden" Grid.Row="0" Margin="10,10,10,18">
       <Canvas Name="canvasScreenFeed" MouseLeftButtonDown="CanvasScreenFeed_MouseLeftButtonDown" MouseLeftButtonUp="CanvasScreenFeed_MouseLeftButtonUp" MouseMove="CanvasScreenFeed_MouseMove"></Canvas>
     </materialDesign:Card>
     <Grid Name="GridConfigTools" Grid.Row="1" Margin="10,0,10,0">
@@ -41,9 +40,21 @@
         <ColumnDefinition />
         <ColumnDefinition />
       </Grid.ColumnDefinitions>
-      <lulCon:InteractableListControl Title="Game Presets" SelectedItem="{Binding ElementName=pageWireFrame, Path=SelectedPreset, Mode=TwoWay}" Grid.Column="0" Margin="6,0,3,0" />
-      <lulCon:InteractableListControl Title="Screen Regions" ItemList="{Binding ElementName=pageWireFrame, Path=Regions, Mode=TwoWay}" SelectedItem="{Binding ElementName=pageWireFrame, Path=SelectedRegion, Mode=TwoWay}" Grid.Column="1" Margin="6,0,3,0" />
-      <lulCon:RegionConfiguration x:Name="cntrlRegionConfig" SelectedRegion="{Binding ElementName=pageWireFrame, Path=SelectedRegion, Mode=TwoWay}" Grid.Column="2" Margin="3,0,3,0" />
+      <lulCon:InteractableListControl x:Name="LstGamePresets" Title="Game Presets"
+                                      ItemDescriptor="Game Preset"
+                                      ItemList="{Binding Presets}" 
+                                      SelectedItem="{Binding SelectedPreset, Mode=TwoWay}"
+                                      NewItemDialogExecuted="LstGamePresets_NewPresetDialogExecuted"
+                                      DeleteItemDialogExecuted="LstGamePresets_DeletePresetDialogExecuted"
+                                      Grid.Column="0" Margin="6,0,3,0" />
+      <lulCon:InteractableListControl x:Name="LstScreenRegions" Title="Screen Regions"
+                                      ItemDescriptor="Screen Region"
+                                      ItemList="{Binding Regions}" 
+                                      SelectedItem="{Binding SelectedRegion, Mode=TwoWay}"
+                                      NewItemDialogExecuted="LstScreenRegions_NewRegionDialogExecuted"
+                                      DeleteItemDialogExecuted="LstScreenRegions_DeleteRegionDialogExecuted"
+                                      Grid.Column="1" Margin="6,0,3,0" />
+      <lulCon:RegionConfiguration x:Name="cntrlRegionConfig" SelectedRegion="{Binding SelectedRegion}" Grid.Column="2" Margin="3,0,3,0" />
     </Grid>
   </Grid>
 </Page>

@@ -1,11 +1,14 @@
-﻿using LulCaster.UI.WPF.Config;
-using LulCaster.UI.WPF.Controllers;
-using LulCaster.UI.WPF.Controls;
+﻿using LulCaster.UI.WPF.Controllers;
+using LulCaster.UI.WPF.Dialogs;
+using LulCaster.UI.WPF.Dialogs.Models;
+using LulCaster.UI.WPF.Dialogs.Services;
 using LulCaster.UI.WPF.ViewModels;
 using LulCaster.UI.WPF.Workers;
 using LulCaster.Utility.ScreenCapture.Windows;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -22,6 +25,8 @@ namespace LulCaster.UI.WPF.Pages
   /// </summary>
   public partial class WireFramePage : Page, INotifyPropertyChanged
   {
+    #region "Private Members"
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     private readonly ScreenCaptureTimer _screenCaptureTimer;
@@ -29,62 +34,59 @@ namespace LulCaster.UI.WPF.Pages
     private readonly BoundingBoxBrush _boundingBoxBrush = new BoundingBoxBrush();
     private readonly Dictionary<string, Rectangle> _boundingBoxCollection = new Dictionary<string, Rectangle>(); //TODO: This will live in the region configuration tool
     private Rectangle _currentBoundingBox; //TODO: This will live in the region configuration tool
-    private IRegionConfigService _configService;
-    private PresetViewModel _selectedPreset;
-    private IList<RegionViewModel> _regions;
-    private RegionViewModel _selectedRegion;
+    private readonly IPresetListController _presetListController;
+    private readonly IRegionListController _regionListController;
+    private readonly IDialogService<InputDialog, InputDialogResult> _inputDialog;
+    private readonly IDialogService<MessageBoxDialog, LulDialogResult> _messageBoxService;
+
+    #endregion "Private Members"
 
     #region "Properties"
-    public PresetViewModel SelectedPreset
-    {
-      get
-      {
-        return _selectedPreset;
-      }
-      set
-      {
-        _selectedPreset = value;
-        OnPropertyChanged(nameof(SelectedPreset));
-      }
-    }
 
-    public IList<RegionViewModel> Regions
-    {
-      get
-      {
-        return _regions;
-      }
-      set
-      {
-        _regions = value;
-        OnPropertyChanged(nameof(Regions));
-      }
-    }
+    private WireFrameViewModel ViewModel { get => (WireFrameViewModel)DataContext; }
 
-    public RegionViewModel SelectedRegion
-    {
-      get
-      {
-        return _selectedRegion;
-      }
-      set
-      {
-        _selectedRegion = value;
-        OnPropertyChanged(nameof(SelectedRegion));
-      }
-    }
-    #endregion
+    #endregion "Properties"
 
-    public WireFramePage(IRegionConfigService configService, IPresetListController presetListController, IRegionListController regionListController, IScreenCaptureService screenCaptureService)
+    public WireFramePage(IPresetListController presetListController
+                          , IRegionListController regionListController
+                          , IScreenCaptureService screenCaptureService
+                          , IDialogService<InputDialog, InputDialogResult> inputDialog
+                          , IDialogService<MessageBoxDialog, LulDialogResult> messageBoxService)
     {
-
       InitializeComponent();
+      DataContext = new WireFrameViewModel();
+      // Dialog Services
+      _inputDialog = inputDialog;
+      _messageBoxService = messageBoxService;
+      InitializeDialogs();
+
+      //Controllers
+      _presetListController = presetListController;
+      _regionListController = regionListController;
+
+      ViewModel.Presets = new ObservableCollection<PresetViewModel>(_presetListController.GetAllPresets());
 
       _screenCaptureTimer = new ScreenCaptureTimer(screenCaptureService, CAPTURE_TIMER_INTERVAL);
       _screenCaptureTimer.ScreenCaptureCompleted += _screenCaptureTimer_ScreenCaptureCompleted;
-      _configService = configService;
-
       _screenCaptureTimer.Start();
+
+      //User Control Events
+      LstGamePresets.SelectionChanged += LstGamePresets_SelectionChanged;
+    }
+
+    private void LstGamePresets_SelectionChanged(object sender, Controls.IListItem e)
+    {
+      ViewModel.Regions = (ViewModel?.SelectedPreset != null)
+        ? new ObservableCollection<RegionViewModel>(_regionListController.GetRegions(ViewModel.SelectedPreset.Id))
+        : null;
+    }
+
+    private void InitializeDialogs()
+    {
+      LstGamePresets.InputDialog = _inputDialog;
+      LstGamePresets.MessageBoxService = _messageBoxService;
+      LstGamePresets.InputDialog = _inputDialog;
+      LstGamePresets.MessageBoxService = _messageBoxService;
     }
 
     private void _screenCaptureTimer_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
@@ -152,6 +154,45 @@ namespace LulCaster.UI.WPF.Pages
     protected void OnPropertyChanged([CallerMemberName] string name = null)
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+
+    private void LstGamePresets_NewPresetDialogExecuted(object sender, Dialogs.Models.InputDialogResult e)
+    {
+      if (e.DialogResult == Dialogs.Models.DialogResults.Ok)
+      {
+        var newPreset = _presetListController.CreatePreset(e.Input);
+        ViewModel.Presets.Add(newPreset);
+        ViewModel.SelectedPreset = newPreset;
+      }
+    }
+
+    private void LstGamePresets_DeletePresetDialogExecuted(object sender, Dialogs.Models.LulDialogResult e)
+    {
+      if (e.DialogResult == Dialogs.Models.DialogResults.Yes)
+      {
+        _presetListController.DeletePreset(ViewModel.SelectedPreset);
+        ViewModel.Presets.Remove(ViewModel.SelectedPreset);
+        ViewModel.SelectedPreset = null;
+      }
+    }
+
+    private void LstScreenRegions_NewRegionDialogExecuted(object sender, Dialogs.Models.InputDialogResult e)
+    {
+      if (e.DialogResult == Dialogs.Models.DialogResults.Ok)
+      {
+        var newRegion = _regionListController.CreateRegion(Guid.NewGuid(), e.Input);
+        ViewModel.Regions.Add(newRegion);
+        ViewModel.SelectedRegion = newRegion;
+      }
+    }
+
+    private void LstScreenRegions_DeleteRegionDialogExecuted(object sender, Dialogs.Models.LulDialogResult e)
+    {
+      if (e.DialogResult == Dialogs.Models.DialogResults.Yes)
+      {
+        _regionListController.DeleteRegion(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion.Id);
+        ViewModel.SelectedRegion = null;
+      }
     }
   }
 }

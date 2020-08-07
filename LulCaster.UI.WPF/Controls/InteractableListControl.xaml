@@ -10,6 +10,7 @@
              x:Name="CtrlInteractableListControl">
   <UserControl.Resources>
     <nulConv:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
+    <nulConv:ToIListItem x:Key="ToIListItemConverter" />
   </UserControl.Resources>
   <Grid>
     <Grid>
@@ -27,20 +28,23 @@
           <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
                                             Height="25"
                                             materialDesign:ButtonAssist.CornerRadius="24"
-                                            ToolTip="Add New Screen Segment" Width="25" Click="Button_btnAddPreset">
+                                            ToolTip="{Binding ElementName=CtrlInteractableListControl, Path=AddToolTip}" Width="25" Click="Button_btnAddPreset">
             <materialDesign:PackIcon Kind="Add" Opacity=".56" Height="18" Width="18" />
           </Button>
           <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
                                                 IsEnabled="{Binding ElementName=CtrlInteractableListControl, Path=SelectedItem, Converter={StaticResource NullToBooleanConverter}}"
                                                 Height="25"
                                                 materialDesign:ButtonAssist.CornerRadius="24"
-                                                ToolTip="Delete Selected Screen Segments" Width="25" Click="Button_BtnDeletePreset">
+                                                ToolTip="{Binding ElementName=CtrlInteractableListControl, Path=DeleteToolTip}" Width="25" Click="Button_BtnDeletePreset">
             <materialDesign:PackIcon Kind="Minus" Opacity=".56" Height="18" Width="18" />
           </Button>
         </WrapPanel>
       </Grid>
 
-      <ListBox Name="lstBoxPresets" Grid.Row="1" Background="Beige" ItemsSource="{Binding ElementName=CtrlInteractableListControl, Path=ItemList}" DisplayMemberPath="Name" SelectedItem="{Binding ElementName=CtrlInteractableListControl, Path=SelectedItem, Mode=TwoWay}"/>
+      <ListBox Name="lstBoxPresets" Grid.Row="1" Background="Beige" 
+               ItemsSource="{Binding ElementName=CtrlInteractableListControl, Path=ItemList}"
+               SelectedItem="{Binding ElementName=CtrlInteractableListControl, Path=SelectedItem, Mode=TwoWay}"
+               DisplayMemberPath="Name" />
     </Grid>
   </Grid>
 </UserControl>

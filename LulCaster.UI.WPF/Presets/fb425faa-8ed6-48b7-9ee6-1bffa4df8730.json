@@ -2,7 +2,7 @@
   {
     "Id": "f2b4066b-e661-4015-aa1e-5807fc507253",
     "LogicSet": 1,
-    "Label": "Poop",
+    "Name": "Poop",
     "TriggerValue": "Poop",
     "Height": 100,
     "Width": 100,
