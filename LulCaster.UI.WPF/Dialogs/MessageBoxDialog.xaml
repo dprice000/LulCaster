@@ -1,4 +1,4 @@
-﻿<Window x:Class="LulCaster.UI.WPF.Dialogs.MessageBoxDialog"
+﻿<Window x:Name="dialogMessageBox" x:Class="LulCaster.UI.WPF.Dialogs.MessageBoxDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -13,14 +13,25 @@
       <RowDefinition></RowDefinition>
       <RowDefinition></RowDefinition>
     </Grid.RowDefinitions>
-    <Label Grid.Row="0" Content="{Binding Message}" HorizontalContentAlignment="Center" Margin="0,10,0,0"/>
-    <WrapPanel Grid.Row="1" HorizontalAlignment="Center" Visibility="{Binding Path=ShowYesNo, Converter={StaticResource BooleanToVisibilityConverter}}">
-      <Button Margin="3,0,3,0" Name="btnYes" Style="{StaticResource MaterialDesignRaisedButton}" Click="Button_btnYes">Yes</Button>
-      <Button Margin="3,0,3,0" Name="btnNo" Style="{DynamicResource MaterialDesignFlatLightBgButton}" Click="Button_btnNo">No</Button>
+    <Label Grid.Row="0" Content="{Binding Path=Message}" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" Margin="0,10,0,0"/>
+    <WrapPanel Grid.Row="1" HorizontalAlignment="Center" 
+               Visibility="{Binding Path=ShowYesNo, Converter={StaticResource BooleanToVisibilityConverter}}">
+      <Button Margin="3,0,3,0" Name="btnYes"
+              Click="Button_btnYes" 
+              Style="{StaticResource MaterialDesignRaisedButton}" >Yes</Button>
+      <Button Margin="3,0,3,0" Name="btnNo" 
+              Click="Button_btnNo"
+              Style="{DynamicResource MaterialDesignFlatLightBgButton}">No</Button>
     </WrapPanel>
     <WrapPanel Grid.Row="1" HorizontalAlignment="Center">
-      <Button Margin="3,0,3,0" Name="btnOk" Style="{StaticResource MaterialDesignFlatLightBgButton}" Click="Button_btnOk" Visibility="{Binding Path=ShowOk, Converter={StaticResource BooleanToVisibilityConverter}}">Ok</Button>
-      <Button Margin="3,0,3,0" Name="btnCancel" Style="{StaticResource MaterialDesignFlatLightBgButton}" Click="Button_btnCancel" Visibility="{Binding Path=ShowCancel, Converter={StaticResource BooleanToVisibilityConverter}}">Cancel</Button>
+      <Button Margin="3,0,3,0" Name="btnOk" 
+              Click="Button_btnOk" 
+              Style="{StaticResource MaterialDesignFlatLightBgButton}" 
+              Visibility="{Binding Path=ShowOk, Converter={StaticResource BooleanToVisibilityConverter}}">Ok</Button>
+      <Button Margin="3,0,3,0" Name="btnCancel" 
+              Click="Button_btnCancel" 
+              Style="{StaticResource MaterialDesignFlatLightBgButton}" 
+              Visibility="{Binding Path=ShowCancel, Converter={StaticResource BooleanToVisibilityConverter}}">Cancel</Button>
     </WrapPanel>
   </Grid>
 </Window>

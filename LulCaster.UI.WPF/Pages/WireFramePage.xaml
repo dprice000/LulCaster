@@ -31,7 +31,7 @@
       <RowDefinition Height="4*"></RowDefinition>
     </Grid.RowDefinitions>
 
-    <materialDesign:Card Visibility="Hidden" Grid.Row="0" Margin="10,10,10,18">
+    <materialDesign:Card Grid.Row="0" Margin="10,10,10,18">
       <Canvas Name="canvasScreenFeed" MouseLeftButtonDown="CanvasScreenFeed_MouseLeftButtonDown" MouseLeftButtonUp="CanvasScreenFeed_MouseLeftButtonUp" MouseMove="CanvasScreenFeed_MouseMove"></Canvas>
     </materialDesign:Card>
     <Grid Name="GridConfigTools" Grid.Row="1" Margin="10,0,10,0">

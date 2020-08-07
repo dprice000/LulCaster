@@ -38,20 +38,10 @@
             <MenuItem Header="Export Selected" />
           </MenuItem>
         </MenuItem>
-        <MenuItem Header="_Tools">
-          <MenuItem Header="_Cut" Command="Cut">
+        <MenuItem Header="_Help">
+          <MenuItem Header="Documentation" InputGestureText="Ctrl+H">
             <MenuItem.Icon>
-              <materialDesign:PackIcon Kind="ContentCut" />
-            </MenuItem.Icon>
-          </MenuItem>
-          <MenuItem Header="_Copy" Command="Copy">
-            <MenuItem.Icon>
-              <materialDesign:PackIcon Kind="ContentCopy" />
-            </MenuItem.Icon>
-          </MenuItem>
-          <MenuItem Header="_Paste" Command="Paste">
-            <MenuItem.Icon>
-              <materialDesign:PackIcon Kind="ContentPaste" />
+              <materialDesign:PackIcon Kind="Help" />
             </MenuItem.Icon>
           </MenuItem>
         </MenuItem>
