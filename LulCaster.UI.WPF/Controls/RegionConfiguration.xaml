@@ -19,15 +19,15 @@
         <StackPanel Orientation="Horizontal">
           <Label>Name:</Label>
           <TextBox Width="517" 
-                   Text="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.Name}"></TextBox>
+                   Text="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.Name, Mode=TwoWay}"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
           <Label>Trigger Text:</Label>
-          <TextBox Width="517" Text="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.TriggerValue}"></TextBox>
+          <TextBox Width="517" Text="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.TriggerValue, Mode=TwoWay}"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
           <Label>Sound File:</Label>
-          <Label Content="{Binding SoundFilePath}" ToolTip="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.SoundFilePath}"></Label>
+          <Label Content="{Binding SoundFilePath}" ToolTip="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.SoundFilePath, Mode=TwoWay}"></Label>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
           <Button Name="btnSoundBrowser" Click="btnSoundBrowser_Click">Browse</Button>

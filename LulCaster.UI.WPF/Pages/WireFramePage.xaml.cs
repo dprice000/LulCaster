@@ -9,9 +9,7 @@ using LulCaster.Utility.ScreenCapture.Windows.Snipping;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -23,12 +21,9 @@ namespace LulCaster.UI.WPF.Pages
   /// <summary>
   /// Interaction logic for WireFramePage.xaml
   /// </summary>
-  public partial class WireFramePage : Page, INotifyPropertyChanged
+  public partial class WireFramePage : Page
   {
     #region "Private Members"
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
     private readonly ScreenCaptureTimer _screenCaptureTimer;
     private const double CAPTURE_TIMER_INTERVAL = 3000;
     private readonly BoundingBoxBrush _boundingBoxBrush = new BoundingBoxBrush();
@@ -72,6 +67,15 @@ namespace LulCaster.UI.WPF.Pages
 
       //User Control Events
       LstGamePresets.SelectionChanged += LstGamePresets_SelectionChanged;
+      Controls.RegionConfiguration.SaveConfigTriggered += RegionConfiguration_SaveConfigTriggered;
+    }
+
+    private void InitializeDialogs()
+    {
+      LstGamePresets.InputDialog = _inputDialog;
+      LstGamePresets.MessageBoxService = _messageBoxService;
+      LstScreenRegions.InputDialog = _inputDialog;
+      LstScreenRegions.MessageBoxService = _messageBoxService;
     }
 
     private void LstGamePresets_SelectionChanged(object sender, Controls.IListItem e)
@@ -81,12 +85,9 @@ namespace LulCaster.UI.WPF.Pages
         : null;
     }
 
-    private void InitializeDialogs()
+    private void RegionConfiguration_SaveConfigTriggered(object sender, RegionViewModel e)
     {
-      LstGamePresets.InputDialog = _inputDialog;
-      LstGamePresets.MessageBoxService = _messageBoxService;
-      LstGamePresets.InputDialog = _inputDialog;
-      LstGamePresets.MessageBoxService = _messageBoxService;
+      throw new NotImplementedException();
     }
 
     private void _screenCaptureTimer_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
@@ -151,11 +152,7 @@ namespace LulCaster.UI.WPF.Pages
       });
     }
 
-    protected void OnPropertyChanged([CallerMemberName] string name = null)
-    {
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
-
+    #region "Dialog Events"
     private void LstGamePresets_NewPresetDialogExecuted(object sender, Dialogs.Models.InputDialogResult e)
     {
       if (e.DialogResult == Dialogs.Models.DialogResults.Ok)
@@ -194,5 +191,6 @@ namespace LulCaster.UI.WPF.Pages
         ViewModel.SelectedRegion = null;
       }
     }
+    #endregion
   }
 }

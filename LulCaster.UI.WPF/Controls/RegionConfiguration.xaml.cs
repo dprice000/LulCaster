@@ -1,7 +1,6 @@
 ﻿using LulCaster.UI.WPF.ViewModels;
 using Microsoft.Win32;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -12,6 +11,8 @@ namespace LulCaster.UI.WPF.Controls
   /// </summary>
   public partial class RegionConfiguration : UserControl
   {
+    //HACK: This being static will cause issues if there are more than one instance of this control
+    public static event EventHandler<RegionViewModel> SaveConfigTriggered;
 
     #region "Dependency Properties"
 
@@ -20,23 +21,29 @@ namespace LulCaster.UI.WPF.Controls
     (
         "SelectedRegion",
         typeof(RegionViewModel),
-        typeof(RegionConfiguration)
+        typeof(RegionConfiguration),
+        new FrameworkPropertyMetadata(SelectedRegionPropertyChanged)
     );
 
-    #endregion
+    //public static readonly DependencyProperty SaveTimeoutProperty =
+    //DependencyProperty.Register
+    //(
+    //    "SaveTimeout",
+    //    typeof(TimeSpan),
+    //    typeof(RegionConfiguration)
+    //);
+
+    #endregion "Dependency Properties"
 
     #region "Properties"
 
     public RegionViewModel SelectedRegion
     {
       get { return (RegionViewModel)GetValue(SelectedRegionProperty); }
-      set 
-      { 
-        SetValue(SelectedRegionProperty, value);
-      }
+      set { SetValue(SelectedRegionProperty, value); }
     }
-    #endregion
 
+    #endregion "Properties"
 
     public RegionConfiguration()
     {
@@ -50,6 +57,22 @@ namespace LulCaster.UI.WPF.Controls
 
       if (openFileDialog.ShowDialog() == true)
         SelectedRegion.SoundFilePath = openFileDialog.FileName;
+    }
+
+    private static void SelectedRegionPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+    {
+      if (sender is RegionConfiguration thisControl)
+      {
+        if (thisControl.SelectedRegion != null)
+        {
+          thisControl.SelectedRegion.PropertyChanged += SelectedRegion_PropertyChanged;
+        }
+      }
+    }
+
+    private static void SelectedRegion_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+      SaveConfigTriggered?.Invoke(null, (RegionViewModel)sender);
     }
   }
 }
