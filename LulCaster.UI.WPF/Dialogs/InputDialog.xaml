@@ -14,7 +14,7 @@
     <Label Grid.Row="0" VerticalAlignment="Bottom" Content="{Binding Message}"></Label>
     <TextBox Grid.Row="1" VerticalAlignment="Top" Margin="5,0,10,0" Text="{Binding Input}"></TextBox>
     <WrapPanel Grid.Row="2" HorizontalAlignment="Right">
-      <Button Margin="3,0,3,0" Name="btnOk" Style="{DynamicResource MaterialDesignRaisedButton}" Click="Button_btnOk">Ok</Button>
+      <Button Margin="3,0,3,0" Name="btnOk" Style="{DynamicResource MaterialDesignRaisedButton}" Click="Button_btnOk" IsDefault="True" >Ok</Button>
       <Button Margin="3,0,3,0" Name="btnCancel" Style="{StaticResource MaterialDesignFlatLightBgButton}" Click="Button_btnCancel">Cancel</Button>
     </WrapPanel>
   </Grid>

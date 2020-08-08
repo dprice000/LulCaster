@@ -27,7 +27,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal">
           <Label>Sound File:</Label>
-          <Label Content="{Binding SoundFilePath}" ToolTip="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.SoundFilePath, Mode=TwoWay}"></Label>
+          <Label Content="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.SoundFilePath, Mode=TwoWay}" ToolTip="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.SoundFilePath, Mode=TwoWay}"></Label>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
           <Button Name="btnSoundBrowser" Click="btnSoundBrowser_Click">Browse</Button>

@@ -2,6 +2,7 @@
 using LulCaster.Utility.Common.Config;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LulCaster.UI.WPF.Config
 {
@@ -13,5 +14,6 @@ namespace LulCaster.UI.WPF.Config
     IEnumerable<RegionViewModel> GetAllRegionsAsViewModels(Guid presetId);
     RegionViewModel GetRegion(Guid presetId, Guid id);
     void UpdateRegion(Guid presetId, RegionViewModel regionViewModel);
+    Task UpdateRegionAsync(Guid presetId, RegionViewModel regionViewModel);
   }
 }

@@ -14,6 +14,23 @@ namespace LulCaster.UI.WPF.Dialogs
     public MessageBoxDialog()
     {
       InitializeComponent();
+
+      Loaded += MessageBoxDialog_Loaded;
+      Closing += MessageBoxDialog_Closing;
+    }
+
+    private void MessageBoxDialog_Loaded(object sender, RoutedEventArgs e)
+    {
+      var currentApp = Application.Current;
+      var mainWindow = currentApp.MainWindow;
+      Left = mainWindow.Left + (mainWindow.Width - ActualWidth) / 2;
+      Top = mainWindow.Top + (mainWindow.Height - ActualHeight) / 2;
+    }
+
+    private void MessageBoxDialog_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    {
+      e.Cancel = true;
+      Visibility = Visibility.Hidden;
     }
 
     public LulDialogResult Show(string title, string message, DialogButtons messageBoxButtons)

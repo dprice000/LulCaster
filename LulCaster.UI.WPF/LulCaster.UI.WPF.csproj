@@ -20,10 +20,10 @@
 
   <ItemGroup>
     <None Update="Presets\fb425faa-8ed6-48b7-9ee6-1bffa4df8730.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Presets\3406149e-d6c5-4eb1-97f2-2f4fd5145882.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

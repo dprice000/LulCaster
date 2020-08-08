@@ -2,6 +2,7 @@
 using LulCaster.UI.WPF.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LulCaster.UI.WPF.Controllers
 {
@@ -19,14 +20,26 @@ namespace LulCaster.UI.WPF.Controllers
       return _regionConfigService.CreateRegion(presetId, regionName);
     }
 
+    public IEnumerable<RegionViewModel> GetRegions(Guid presetId)
+    {
+      return _regionConfigService.GetAllRegionsAsViewModels(presetId);
+    }
+
+    public void UpdateRegion(Guid presetId, RegionViewModel region)
+    {
+      _regionConfigService.UpdateRegion(presetId, region);
+    }
+
+    public async Task UpdateRegionAsync(Guid presetId, RegionViewModel region)
+    {
+      await _regionConfigService.UpdateRegionAsync(presetId, region);
+    }
+
     public void DeleteRegion(Guid presetId, Guid regionId)
     {
       _regionConfigService.DeleteRegion(presetId, regionId);
     }
 
-    public IEnumerable<RegionViewModel> GetRegions(Guid presetId)
-    {
-      return _regionConfigService.GetAllRegionsAsViewModels(presetId);
-    }
+
   }
 }

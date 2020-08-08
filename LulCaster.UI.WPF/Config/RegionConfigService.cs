@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LulCaster.UI.WPF.Config
 {
@@ -45,6 +46,12 @@ namespace LulCaster.UI.WPF.Config
       return JsonConvert.DeserializeObject<IEnumerable<RegionConfig>>(File.ReadAllText(PresetFile.ResolvePresetFilePath(presetId)));
     }
 
+    public async Task<IEnumerable<RegionConfig>> GetAllRegionsAsync(Guid presetId)
+    {
+      var contents = await File.ReadAllTextAsync(PresetFile.ResolvePresetFilePath(presetId));
+      return JsonConvert.DeserializeObject<IEnumerable<RegionConfig>>(contents);
+    }
+
     public RegionViewModel GetRegion(Guid presetId, Guid id)
     {
       var regions = GetAllRegions(presetId);
@@ -59,6 +66,15 @@ namespace LulCaster.UI.WPF.Config
       region = _mapper.Map<RegionConfig>(regionViewModel);
 
       File.WriteAllText(PresetFile.ResolvePresetFilePath(presetId), JsonConvert.SerializeObject(regions));
+    }
+
+    public async Task UpdateRegionAsync(Guid presetId, RegionViewModel regionViewModel)
+    {
+      var regions = (await GetAllRegionsAsync(presetId)).ToList();
+      var index = regions.IndexOf(regions.First(x => x.Id == regionViewModel.Id));
+      regions[index] = _mapper.Map<RegionConfig>(regionViewModel);
+
+      await File.WriteAllTextAsync(PresetFile.ResolvePresetFilePath(presetId), JsonConvert.SerializeObject(regions));
     }
 
     public void DeleteRegion(Guid presetId, Guid regionId)

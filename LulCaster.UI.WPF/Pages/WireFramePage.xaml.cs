@@ -85,9 +85,9 @@ namespace LulCaster.UI.WPF.Pages
         : null;
     }
 
-    private void RegionConfiguration_SaveConfigTriggered(object sender, RegionViewModel e)
+    private async void RegionConfiguration_SaveConfigTriggered(object sender, RegionViewModel e)
     {
-      throw new NotImplementedException();
+      await _regionListController.UpdateRegionAsync(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion);
     }
 
     private void _screenCaptureTimer_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
@@ -153,7 +153,7 @@ namespace LulCaster.UI.WPF.Pages
     }
 
     #region "Dialog Events"
-    private void LstGamePresets_NewPresetDialogExecuted(object sender, Dialogs.Models.InputDialogResult e)
+    private void LstGamePresets_NewPresetDialogExecuted(object sender, InputDialogResult e)
     {
       if (e.DialogResult == Dialogs.Models.DialogResults.Ok)
       {
@@ -163,7 +163,7 @@ namespace LulCaster.UI.WPF.Pages
       }
     }
 
-    private void LstGamePresets_DeletePresetDialogExecuted(object sender, Dialogs.Models.LulDialogResult e)
+    private void LstGamePresets_DeletePresetDialogExecuted(object sender, LulDialogResult e)
     {
       if (e.DialogResult == Dialogs.Models.DialogResults.Yes)
       {
@@ -173,21 +173,22 @@ namespace LulCaster.UI.WPF.Pages
       }
     }
 
-    private void LstScreenRegions_NewRegionDialogExecuted(object sender, Dialogs.Models.InputDialogResult e)
+    private void LstScreenRegions_NewRegionDialogExecuted(object sender, InputDialogResult e)
     {
       if (e.DialogResult == Dialogs.Models.DialogResults.Ok)
       {
-        var newRegion = _regionListController.CreateRegion(Guid.NewGuid(), e.Input);
+        var newRegion = _regionListController.CreateRegion(ViewModel.SelectedPreset.Id, e.Input);
         ViewModel.Regions.Add(newRegion);
         ViewModel.SelectedRegion = newRegion;
       }
     }
 
-    private void LstScreenRegions_DeleteRegionDialogExecuted(object sender, Dialogs.Models.LulDialogResult e)
+    private void LstScreenRegions_DeleteRegionDialogExecuted(object sender, LulDialogResult e)
     {
       if (e.DialogResult == Dialogs.Models.DialogResults.Yes)
       {
         _regionListController.DeleteRegion(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion.Id);
+        ViewModel.Regions.Remove(ViewModel.SelectedRegion);
         ViewModel.SelectedRegion = null;
       }
     }
