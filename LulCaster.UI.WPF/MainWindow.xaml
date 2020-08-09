@@ -34,8 +34,8 @@
           </MenuItem>
           <Separator />
           <MenuItem Header="Presets" InputGestureText="Ctrl+D">
-            <MenuItem Header="Import" />
-            <MenuItem Header="Export Selected" />
+            <MenuItem x:Name="MenuItemImport" Header="Import" Click="MenuItemImport_Click" />
+            <MenuItem x:Name="MenuItemExport" Header="Export Selected" Click="MenuItemExport_Click" />
           </MenuItem>
         </MenuItem>
         <MenuItem Header="_Help">

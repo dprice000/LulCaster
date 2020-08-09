@@ -36,6 +36,11 @@ namespace LulCaster.UI.WPF.Config
       return _mapper.Map<RegionViewModel>(newRegion);
     }
 
+    public void WriteAllRegions(string filePath, IEnumerable<RegionViewModel> regions)
+    {
+      File.WriteAllText(filePath, JsonConvert.SerializeObject(_mapper.Map<IEnumerable<RegionConfig>>(regions)));
+    }
+
     public IEnumerable<RegionViewModel> GetAllRegionsAsViewModels(Guid presetId)
     {
       return _mapper.Map<IEnumerable<RegionViewModel>>(GetAllRegions(presetId));
@@ -44,6 +49,11 @@ namespace LulCaster.UI.WPF.Config
     public IEnumerable<RegionConfig> GetAllRegions(Guid presetId)
     {
       return JsonConvert.DeserializeObject<IEnumerable<RegionConfig>>(File.ReadAllText(PresetFile.ResolvePresetFilePath(presetId)));
+    }
+
+    public IEnumerable<RegionConfig> GetAllRegions(string importFilePath)
+    {
+      return JsonConvert.DeserializeObject<IEnumerable<RegionConfig>>(File.ReadAllText(importFilePath));
     }
 
     public async Task<IEnumerable<RegionConfig>> GetAllRegionsAsync(Guid presetId)

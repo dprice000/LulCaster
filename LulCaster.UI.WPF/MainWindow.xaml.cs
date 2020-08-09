@@ -1,4 +1,11 @@
-﻿using LulCaster.UI.WPF.Pages;
+﻿using LulCaster.UI.WPF.Controllers;
+using LulCaster.UI.WPF.Dialogs;
+using LulCaster.UI.WPF.Dialogs.Models;
+using LulCaster.UI.WPF.Pages;
+using LulCaster.UI.WPF.Utility;
+using LulCaster.UI.WPF.ViewModels;
+using Microsoft.Win32;
+using System.IO;
 using System.Windows;
 
 namespace LulCaster.UI.WPF
@@ -9,16 +16,53 @@ namespace LulCaster.UI.WPF
   public partial class MainWindow : Window
   {
     private readonly WireFramePage _wireFramePage;
+    private readonly PresetListController _presetListController;
+    private readonly RegionListController _regionListController;
+    private readonly InputDialog _inputDialog;
 
-    public MainWindow(WireFramePage wireFramePage)
+    public MainWindow(WireFramePage wireFramePage, PresetListController presetListController, RegionListController regionListController, InputDialog inputDialog)
     {
       InitializeComponent();
       _wireFramePage = wireFramePage;
+      _presetListController = presetListController;
+      _regionListController = regionListController;
+      _inputDialog = inputDialog;
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
       NavigationFrame.Navigate(_wireFramePage);
+    }
+
+    private void MenuItemImport_Click(object sender, RoutedEventArgs e)
+    {
+      OpenFileDialog openFileDialog = new OpenFileDialog();
+      openFileDialog.Filter = "JSON|*.json";
+
+      if (openFileDialog.ShowDialog() != true)
+        return;
+
+      if (_inputDialog.Show("Import Preset", "Preset Name:", DialogButtons.OkCancel) is InputDialogResult dialogResult 
+        && dialogResult.DialogResult == DialogResults.Ok)
+      {
+        var presetViewModel = _presetListController.CreatePreset(dialogResult.Input);
+        var regionList = _regionListController.GetAllRegions(openFileDialog.FileName);
+        _regionListController.WriteAllRegions(PresetFile.ResolvePresetFilePath(presetViewModel.Id), regionList);
+
+        var wirePageViewModel = (WireFrameViewModel)_wireFramePage.DataContext;
+        wirePageViewModel.Presets.Add(presetViewModel);
+        wirePageViewModel.SelectedPreset = presetViewModel;
+      }
+    }
+
+    private void MenuItemExport_Click(object sender, RoutedEventArgs e)
+    {
+      SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+      if (saveFileDialog.ShowDialog() != true)
+        return;
+
+      _regionListController.WriteAllRegions(saveFileDialog.FileName, ((WireFrameViewModel)_wireFramePage.DataContext).Regions);
     }
   }
 }

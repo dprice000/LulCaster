@@ -20,6 +20,16 @@ namespace LulCaster.UI.WPF.Controllers
       return _regionConfigService.CreateRegion(presetId, regionName);
     }
 
+    public void WriteAllRegions(string filePath, IEnumerable<RegionViewModel> regions)
+    {
+      _regionConfigService.WriteAllRegions(filePath, regions);
+    }
+
+    public IEnumerable<LulCaster.Utility.Common.Config.RegionConfig> GetAllRegions(string importFilePath)
+    {
+      return _regionConfigService.GetAllRegions(importFilePath);
+    }
+
     public IEnumerable<RegionViewModel> GetRegions(Guid presetId)
     {
       return _regionConfigService.GetAllRegionsAsViewModels(presetId);
