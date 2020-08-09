@@ -5,7 +5,6 @@ using LulCaster.UI.WPF.Pages;
 using LulCaster.UI.WPF.Utility;
 using LulCaster.UI.WPF.ViewModels;
 using Microsoft.Win32;
-using System.IO;
 using System.Windows;
 
 namespace LulCaster.UI.WPF
@@ -15,6 +14,7 @@ namespace LulCaster.UI.WPF
   /// </summary>
   public partial class MainWindow : Window
   {
+    private const string configFileExtension = "JSON|*.json";
     private readonly WireFramePage _wireFramePage;
     private readonly IPresetListController _presetListController;
     private readonly IRegionListController _regionListController;
@@ -36,13 +36,15 @@ namespace LulCaster.UI.WPF
 
     private void MenuItemImport_Click(object sender, RoutedEventArgs e)
     {
-      OpenFileDialog openFileDialog = new OpenFileDialog();
-      openFileDialog.Filter = "JSON|*.json";
+      var openFileDialog = new OpenFileDialog
+      {
+        Filter = configFileExtension
+      };
 
       if (openFileDialog.ShowDialog() != true)
         return;
 
-      if (_inputDialog.Show("Import Preset", "Preset Name:", DialogButtons.OkCancel) is InputDialogResult dialogResult 
+      if (_inputDialog.Show("Import Preset", "Preset Name:", DialogButtons.OkCancel) is InputDialogResult dialogResult
         && dialogResult.DialogResult == DialogResults.Ok)
       {
         var presetViewModel = _presetListController.CreatePreset(dialogResult.Input);
@@ -57,7 +59,10 @@ namespace LulCaster.UI.WPF
 
     private void MenuItemExport_Click(object sender, RoutedEventArgs e)
     {
-      SaveFileDialog saveFileDialog = new SaveFileDialog();
+      var saveFileDialog = new SaveFileDialog()
+      {
+        Filter = configFileExtension
+      };
 
       if (saveFileDialog.ShowDialog() != true)
         return;
