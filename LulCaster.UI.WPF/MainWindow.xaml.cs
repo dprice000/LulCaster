@@ -16,11 +16,11 @@ namespace LulCaster.UI.WPF
   public partial class MainWindow : Window
   {
     private readonly WireFramePage _wireFramePage;
-    private readonly PresetListController _presetListController;
-    private readonly RegionListController _regionListController;
+    private readonly IPresetListController _presetListController;
+    private readonly IRegionListController _regionListController;
     private readonly InputDialog _inputDialog;
 
-    public MainWindow(WireFramePage wireFramePage, PresetListController presetListController, RegionListController regionListController, InputDialog inputDialog)
+    public MainWindow(WireFramePage wireFramePage, IPresetListController presetListController, IRegionListController regionListController, InputDialog inputDialog)
     {
       InitializeComponent();
       _wireFramePage = wireFramePage;
