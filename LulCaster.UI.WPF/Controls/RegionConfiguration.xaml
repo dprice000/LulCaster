@@ -1,38 +1,47 @@
 ﻿<UserControl x:Name="ctrlRegionConfiguration" x:Class="LulCaster.UI.WPF.Controls.RegionConfiguration"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:nulConv="clr-namespace:LulCaster.UI.WPF.Converter"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
-    <nulConv:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
+    <nulConv:NullToBooleanConverter x:Key="NullToBooleanConverter" />
   </UserControl.Resources>
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition></RowDefinition>
     </Grid.RowDefinitions>
-    <GroupBox Name="GroupingConfigs" Grid.Row="0" Margin="5,8,5,5" Header="Region Configuration" 
+    <GroupBox Name="GroupingConfigs" Grid.Row="0" Margin="5,8,5,5" Header="Region Configuration"
               IsEnabled="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion, Converter={StaticResource NullToBooleanConverter}}">
-      <StackPanel Orientation="Vertical">
-        <StackPanel Orientation="Horizontal">
-          <Label>Name:</Label>
-          <TextBox Width="517" 
+      <ScrollViewer>
+        <StackPanel Orientation="Vertical">
+          <StackPanel Orientation="Horizontal">
+            <Label>Region Name:</Label>
+            <TextBox Width="517"
                    Text="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.Name, Mode=TwoWay}"></TextBox>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal">
+            <Label>Triggers:</Label>
+            <ComboBox DisplayMemberPath="Name" SelectedIndex="0"
+            ItemsSource="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.Triggers, Mode=TwoWay}"
+            SelectedItem="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedTrigger, Mode=TwoWay}"></ComboBox>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal">
+            <Label>Trigger Text:</Label>
+            <TextBox Width="517" Text="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedTrigger.ThresholdValue, Mode=TwoWay}"></TextBox>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal">
+            <Label>Sound File:</Label>
+            <Label Content="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedTrigger.SoundFilePath, Mode=TwoWay}"
+                 ToolTip="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedTrigger.SoundFilePath, Mode=TwoWay}"></Label>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal">
+            <Button Name="btnSoundBrowser" Click="btnSoundBrowser_Click">Browse</Button>
+          </StackPanel>
         </StackPanel>
-        <StackPanel Orientation="Horizontal">
-          <Label>Trigger Text:</Label>
-          <TextBox Width="517" Text="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.TriggerValue, Mode=TwoWay}"></TextBox>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-          <Label>Sound File:</Label>
-          <Label Content="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.SoundFilePath, Mode=TwoWay}" ToolTip="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.SoundFilePath, Mode=TwoWay}"></Label>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-          <Button Name="btnSoundBrowser" Click="btnSoundBrowser_Click">Browse</Button>
-        </StackPanel>
-      </StackPanel>
+      </ScrollViewer>
     </GroupBox>
   </Grid>
 </UserControl>

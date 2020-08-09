@@ -1,4 +1,4 @@
-﻿namespace LulCaster.UI.WPF.Workers
+﻿namespace LulCaster.UI.WPF.Workers.EventArguments
 {
     internal class ScreenCaptureCompletedArgs
     {

@@ -1,10 +1,10 @@
 ﻿namespace LulCaster.Utility.Common.Logic
 {
-  public enum LogicSets
+  public enum TriggerTypes
   {
-    TriggerText,
+    Text,
     IncrementingNumber,
     DecrementingNumber,
-    TriggerColor
+    Color
   }
 }

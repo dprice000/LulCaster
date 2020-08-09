@@ -1,6 +1,7 @@
 ﻿using LulCaster.UI.WPF.Controls;
 using LulCaster.Utility.Common.Logic;
 using System;
+using System.Collections.ObjectModel;
 using System.Drawing;
 
 namespace LulCaster.UI.WPF.ViewModels
@@ -8,11 +9,10 @@ namespace LulCaster.UI.WPF.ViewModels
   public class RegionViewModel : ViewModelBase, IListItem
   {
     private Guid _id;
-    private LogicSets _logicSet;
+    private TriggerTypes _logicSet;
     private string _name;
-    private string _triggerValue;
-    private string _soundFilePath;
     private Rectangle _boundingBox;
+    private ObservableCollection<TriggerViewModel> _triggers;
 
     public Guid Id
     {
@@ -27,7 +27,7 @@ namespace LulCaster.UI.WPF.ViewModels
       }
     }
 
-    public LogicSets LogicSet
+    public TriggerTypes LogicSet
     {
       get
       {
@@ -53,31 +53,6 @@ namespace LulCaster.UI.WPF.ViewModels
       }
     }
 
-    public string TriggerValue
-   {
-      get
-      {
-        return _triggerValue;
-      }
-      set
-      {
-        _triggerValue = value;
-        OnPropertyChanged(nameof(TriggerValue));
-      }
-    }
-    public string SoundFilePath
-    {
-      get
-      {
-        return _soundFilePath;
-      }
-      set
-      {
-        _soundFilePath = value;
-        OnPropertyChanged(nameof(SoundFilePath));
-      }
-    }
-
     public Rectangle BoundingBox
     {
       get
@@ -88,6 +63,19 @@ namespace LulCaster.UI.WPF.ViewModels
       {
         _boundingBox = value;
         OnPropertyChanged(nameof(BoundingBox));
+      }
+    }
+
+    public ObservableCollection<TriggerViewModel> Triggers
+    {
+      get
+      {
+        return _triggers;
+      }
+      set
+      {
+        _triggers = value;
+        OnPropertyChanged(nameof(Triggers));
       }
     }
   }

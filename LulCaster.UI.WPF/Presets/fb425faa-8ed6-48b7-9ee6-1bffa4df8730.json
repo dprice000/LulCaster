@@ -8,6 +8,13 @@
     "Width": 100,
     "X": 100,
     "Y": 100,
-    "SoundFilePath": "C:\\Poop.wav"
+    "Triggers": [
+      {
+        "Name": "Trigger1",
+        "TriggerType": 0,
+        "ThresholdValue":  "poop",
+        "SoundFilePath": "C:\\poop.wav"
+      }
+    ]
   }
 ]

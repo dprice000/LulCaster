@@ -43,6 +43,8 @@ namespace LulCaster.UI.WPF.Controls
       set { SetValue(SelectedRegionProperty, value); }
     }
 
+    public TriggerViewModel SelectedTrigger { get; set; }
+
     #endregion "Properties"
 
     public RegionConfiguration()
@@ -56,7 +58,7 @@ namespace LulCaster.UI.WPF.Controls
       openFileDialog.Filter = "MP3|*.mp3|WAV (*.wav)|*.wav|WMA|*.wma";
 
       if (openFileDialog.ShowDialog() == true)
-        SelectedRegion.SoundFilePath = openFileDialog.FileName;
+        SelectedTrigger.SoundFilePath = openFileDialog.FileName;
     }
 
     private static void SelectedRegionPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
