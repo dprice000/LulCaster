@@ -51,9 +51,10 @@ namespace LulCaster.UI.WPF.Config
       return JsonConvert.DeserializeObject<IEnumerable<RegionConfig>>(File.ReadAllText(PresetFile.ResolvePresetFilePath(presetId)));
     }
 
-    public IEnumerable<RegionConfig> GetAllRegions(string importFilePath)
+    public IEnumerable<RegionViewModel> GetAllRegions(string importFilePath)
     {
-      return JsonConvert.DeserializeObject<IEnumerable<RegionConfig>>(File.ReadAllText(importFilePath));
+      var regionConfigs = JsonConvert.DeserializeObject<IEnumerable<RegionConfig>>(File.ReadAllText(importFilePath));
+      return _mapper.Map<IEnumerable<RegionViewModel>>(regionConfigs);
     }
 
     public async Task<IEnumerable<RegionConfig>> GetAllRegionsAsync(Guid presetId)

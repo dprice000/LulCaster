@@ -25,7 +25,7 @@ namespace LulCaster.UI.WPF.Controllers
       _regionConfigService.WriteAllRegions(filePath, regions);
     }
 
-    public IEnumerable<LulCaster.Utility.Common.Config.RegionConfig> GetAllRegions(string importFilePath)
+    public IEnumerable<RegionViewModel> GetAllRegions(string importFilePath)
     {
       return _regionConfigService.GetAllRegions(importFilePath);
     }

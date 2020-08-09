@@ -11,7 +11,7 @@ namespace LulCaster.UI.WPF.Config
     RegionViewModel CreateRegion(Guid presetId, string regionName);
     void WriteAllRegions(string filePath, IEnumerable<RegionViewModel> regions);
     void DeleteRegion(Guid presetId, Guid regionId);
-    IEnumerable<RegionConfig> GetAllRegions(string importFilePath);
+    IEnumerable<RegionViewModel> GetAllRegions(string importFilePath);
     IEnumerable<RegionConfig> GetAllRegions(Guid presetId);
     IEnumerable<RegionViewModel> GetAllRegionsAsViewModels(Guid presetId);
     RegionViewModel GetRegion(Guid presetId, Guid id);
