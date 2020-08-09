@@ -19,14 +19,18 @@ namespace LulCaster.UI.WPF
     private readonly IPresetListController _presetListController;
     private readonly IRegionListController _regionListController;
     private readonly InputDialog _inputDialog;
+    private readonly MessageBoxDialog _messageBoxDialog;
 
-    public MainWindow(WireFramePage wireFramePage, IPresetListController presetListController, IRegionListController regionListController, InputDialog inputDialog)
+    private WireFrameViewModel WireFrameViewModel { get => (WireFrameViewModel)_wireFramePage.DataContext; }
+
+    public MainWindow(WireFramePage wireFramePage, IPresetListController presetListController, IRegionListController regionListController, InputDialog inputDialog, MessageBoxDialog messageBoxDialog)
     {
       InitializeComponent();
       _wireFramePage = wireFramePage;
       _presetListController = presetListController;
       _regionListController = regionListController;
       _inputDialog = inputDialog;
+      _messageBoxDialog = messageBoxDialog;
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -51,14 +55,19 @@ namespace LulCaster.UI.WPF
         var regionList = _regionListController.GetAllRegions(openFileDialog.FileName);
         _regionListController.WriteAllRegions(PresetFile.ResolvePresetFilePath(presetViewModel.Id), regionList);
 
-        var wirePageViewModel = (WireFrameViewModel)_wireFramePage.DataContext;
-        wirePageViewModel.Presets.Add(presetViewModel);
-        wirePageViewModel.SelectedPreset = presetViewModel;
+        WireFrameViewModel.Presets.Add(presetViewModel);
+        WireFrameViewModel.SelectedPreset = presetViewModel;
       }
     }
 
     private void MenuItemExport_Click(object sender, RoutedEventArgs e)
     {
+      if (WireFrameViewModel.SelectedPreset == null)
+      {
+        _messageBoxDialog.Show("Export Fail!", "Unable to export as no preset is selected!", DialogButtons.Ok);
+        return;
+      }
+
       var saveFileDialog = new SaveFileDialog()
       {
         Filter = configFileExtension
@@ -67,7 +76,7 @@ namespace LulCaster.UI.WPF
       if (saveFileDialog.ShowDialog() != true)
         return;
 
-      _regionListController.WriteAllRegions(saveFileDialog.FileName, ((WireFrameViewModel)_wireFramePage.DataContext).Regions);
+      _regionListController.WriteAllRegions(saveFileDialog.FileName, WireFrameViewModel.Regions);
     }
   }
 }
