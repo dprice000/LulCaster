@@ -3,30 +3,49 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:nulConv="clr-namespace:LulCaster.UI.WPF.Converter"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
     <nulConv:NullToBooleanConverter x:Key="NullToBooleanConverter" />
   </UserControl.Resources>
-  <Grid>
+  <Grid IsEnabled="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion, Converter={StaticResource NullToBooleanConverter}}">
     <Grid.RowDefinitions>
-      <RowDefinition></RowDefinition>
+      <RowDefinition Height="25"></RowDefinition>
+      <RowDefinition Height="127*"></RowDefinition>
     </Grid.RowDefinitions>
-    <GroupBox Name="GroupingConfigs" Grid.Row="0" Margin="5,8,5,5" Header="Region Configuration"
-              IsEnabled="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion, Converter={StaticResource NullToBooleanConverter}}">
+    <StackPanel Orientation="Horizontal" Grid.Row="0">
+      <Label>Region Name:</Label>
+      <TextBox Width="517" Text="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.Name, Mode=TwoWay}"></TextBox>
+    </StackPanel>
+    <GroupBox Name="GroupingConfigs" Grid.Row="1" Margin="5,8,5,5" Header="Region Configuration">
       <ScrollViewer>
         <StackPanel Orientation="Vertical">
           <StackPanel Orientation="Horizontal">
-            <Label>Region Name:</Label>
-            <TextBox Width="517"
-                   Text="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.Name, Mode=TwoWay}"></TextBox>
+            <Label>Triggers:</Label>
+            <ComboBox Width="200" DisplayMemberPath="Name" SelectedIndex="0"
+            ItemsSource="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.Triggers, Mode=TwoWay}"
+            SelectedItem="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedTrigger, Mode=TwoWay}" Margin="0,0,15,0"></ComboBox>
+            <Button x:Name="BtnAddTrigger" Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                            Height="25"
+                                            materialDesign:ButtonAssist.CornerRadius="24"
+                                            ToolTip="Add New Trigger" Width="25">
+              <materialDesign:PackIcon Kind="Add" Opacity=".56" Height="18" Width="18" />
+            </Button>
+            <Button x:Name="BtnDeleteTrigger" Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                                IsEnabled="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedTrigger, Converter={StaticResource NullToBooleanConverter}}"
+                                                Height="25"
+                                                materialDesign:ButtonAssist.CornerRadius="24"
+                                                ToolTip="Delete Selected Trigger" Width="25">
+              <materialDesign:PackIcon Kind="Minus" Opacity=".56" Height="18" Width="18" />
+            </Button>
           </StackPanel>
           <StackPanel Orientation="Horizontal">
-            <Label>Triggers:</Label>
-            <ComboBox DisplayMemberPath="Name" SelectedIndex="0"
-            ItemsSource="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.Triggers, Mode=TwoWay}"
-            SelectedItem="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedTrigger, Mode=TwoWay}"></ComboBox>
+            <Label>Trigger Type:</Label>
+            <ComboBox Width="200" SelectedIndex="0"
+                      ItemsSource="{Binding ElementName=ctrlRegionConfiguration, Path=TriggerTypes, Mode=OneTime}"
+                      SelectedItem="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedTrigger.TriggerType, Mode=TwoWay}"></ComboBox>
           </StackPanel>
           <StackPanel Orientation="Horizontal">
             <Label>Trigger Text:</Label>

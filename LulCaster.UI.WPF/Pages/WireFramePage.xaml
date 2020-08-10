@@ -54,7 +54,7 @@
                                       NewItemDialogExecuted="LstScreenRegions_NewRegionDialogExecuted"
                                       DeleteItemDialogExecuted="LstScreenRegions_DeleteRegionDialogExecuted"
                                       Grid.Column="1" Margin="6,0,3,0" />
-      <lulCon:RegionConfiguration x:Name="cntrlRegionConfig" SelectedRegion="{Binding SelectedRegion}" Grid.Column="2" Margin="3,0,3,0" />
+      <lulCon:RegionConfiguration x:Name="cntrlRegionConfig" SelectedRegion="{Binding SelectedRegion}" SelectedTrigger="{Binding SelectedTrigger}" Grid.Column="2" Margin="3,0,3,0" />
     </Grid>
   </Grid>
 </Page>

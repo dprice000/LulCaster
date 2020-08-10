@@ -8,6 +8,7 @@ namespace LulCaster.UI.WPF.ViewModels
     private PresetViewModel _selectedPreset;
     private ObservableCollection<RegionViewModel> _regions;
     private RegionViewModel _selectedRegion;
+    private TriggerViewModel _selectedTrigger;
 
     public ObservableCollection<PresetViewModel> Presets 
     {
@@ -58,6 +59,19 @@ namespace LulCaster.UI.WPF.ViewModels
       {
         _selectedRegion = value;
         OnPropertyChanged(nameof(SelectedRegion));
+      }
+    }
+
+    public TriggerViewModel SelectedTrigger
+    {
+      get
+      {
+        return _selectedTrigger;
+      }
+      set
+      {
+        _selectedTrigger = value;
+        OnPropertyChanged(nameof(SelectedTrigger));
       }
     }
   }

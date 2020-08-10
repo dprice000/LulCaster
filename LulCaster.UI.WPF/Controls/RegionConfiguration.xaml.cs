@@ -1,6 +1,10 @@
 ﻿using LulCaster.UI.WPF.ViewModels;
+using LulCaster.Utility.Common.Logic;
 using Microsoft.Win32;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -25,6 +29,14 @@ namespace LulCaster.UI.WPF.Controls
         new FrameworkPropertyMetadata(SelectedRegionPropertyChanged)
     );
 
+    public static readonly DependencyProperty SelectedTriggerProperty =
+DependencyProperty.Register
+(
+    "SelectedTrigger",
+    typeof(TriggerViewModel),
+    typeof(RegionConfiguration)
+);
+
     //public static readonly DependencyProperty SaveTimeoutProperty =
     //DependencyProperty.Register
     //(
@@ -43,7 +55,13 @@ namespace LulCaster.UI.WPF.Controls
       set { SetValue(SelectedRegionProperty, value); }
     }
 
-    public TriggerViewModel SelectedTrigger { get; set; }
+    public TriggerViewModel SelectedTrigger 
+    {
+      get { return (TriggerViewModel)GetValue(SelectedTriggerProperty); }
+      set { SetValue(SelectedTriggerProperty, value); }
+    }
+
+    public IEnumerable<TriggerTypes> TriggerTypes { get => Enum.GetValues(typeof(TriggerTypes)).Cast<TriggerTypes>(); } 
 
     #endregion "Properties"
 

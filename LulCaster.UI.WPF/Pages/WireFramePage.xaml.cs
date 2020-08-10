@@ -7,6 +7,7 @@ using LulCaster.UI.WPF.Workers;
 using LulCaster.UI.WPF.Workers.EventArguments;
 using LulCaster.Utility.ScreenCapture.Windows;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -25,12 +26,13 @@ namespace LulCaster.UI.WPF.Pages
   {
     #region "Private Members"
     private readonly ScreenCaptureTimer _screenCaptureTimer;
-    private const double CAPTURE_TIMER_INTERVAL = 3000;
+    private const double CAPTURE_TIMER_INTERVAL = 1000;
     private readonly BoundingBoxBrush _boundingBoxBrush = new BoundingBoxBrush();
     private readonly Dictionary<string, Rectangle> _boundingBoxCollection = new Dictionary<string, Rectangle>(); //TODO: This will live in the region configuration tool
     private Rectangle _currentBoundingBox; //TODO: This will live in the region configuration tool
     private readonly IPresetListController _presetListController;
     private readonly IRegionListController _regionListController;
+    private readonly ITriggerController _triggerController;
     private readonly IDialogService<InputDialog, InputDialogResult> _inputDialog;
     private readonly IDialogService<MessageBoxDialog, LulDialogResult> _messageBoxService;
 
@@ -44,6 +46,7 @@ namespace LulCaster.UI.WPF.Pages
 
     public WireFramePage(IPresetListController presetListController
                           , IRegionListController regionListController
+                          , ITriggerController triggerController
                           , IScreenCaptureService screenCaptureService
                           , IDialogService<InputDialog, InputDialogResult> inputDialog
                           , IDialogService<MessageBoxDialog, LulDialogResult> messageBoxService)
@@ -54,11 +57,12 @@ namespace LulCaster.UI.WPF.Pages
       _inputDialog = inputDialog;
       _messageBoxService = messageBoxService;
       InitializeDialogs();
+      InitializeRegionConfigEvents();
 
       //Controllers
       _presetListController = presetListController;
       _regionListController = regionListController;
-
+      _triggerController = triggerController;
       ViewModel.Presets = new ObservableCollection<PresetViewModel>(_presetListController.GetAllPresets());
 
       _screenCaptureTimer = new ScreenCaptureTimer(screenCaptureService, CAPTURE_TIMER_INTERVAL);
@@ -68,6 +72,12 @@ namespace LulCaster.UI.WPF.Pages
       //User Control Events
       LstGamePresets.SelectionChanged += LstGamePresets_SelectionChanged;
       Controls.RegionConfiguration.SaveConfigTriggered += RegionConfiguration_SaveConfigTriggered;
+    }
+
+    private void InitializeRegionConfigEvents()
+    {
+      cntrlRegionConfig.BtnAddTrigger.Click += BtnAddTrigger_Click;
+      cntrlRegionConfig.BtnDeleteTrigger.Click += BtnDeleteTrigger_Click;
     }
 
     private void InitializeDialogs()
@@ -165,7 +175,7 @@ namespace LulCaster.UI.WPF.Pages
 
     private void LstGamePresets_DeletePresetDialogExecuted(object sender, LulDialogResult e)
     {
-      if (e.DialogResult == Dialogs.Models.DialogResults.Yes)
+      if (e.DialogResult == DialogResults.Yes)
       {
         _presetListController.DeletePreset(ViewModel.SelectedPreset);
         ViewModel.Presets.Remove(ViewModel.SelectedPreset);
@@ -175,7 +185,7 @@ namespace LulCaster.UI.WPF.Pages
 
     private void LstScreenRegions_NewRegionDialogExecuted(object sender, InputDialogResult e)
     {
-      if (e.DialogResult == Dialogs.Models.DialogResults.Ok)
+      if (e.DialogResult == DialogResults.Ok)
       {
         var newRegion = _regionListController.CreateRegion(ViewModel.SelectedPreset.Id, e.Input);
         ViewModel.Regions.Add(newRegion);
@@ -185,11 +195,35 @@ namespace LulCaster.UI.WPF.Pages
 
     private void LstScreenRegions_DeleteRegionDialogExecuted(object sender, LulDialogResult e)
     {
-      if (e.DialogResult == Dialogs.Models.DialogResults.Yes)
+      if (e.DialogResult == DialogResults.Yes)
       {
         _regionListController.DeleteRegion(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion.Id);
         ViewModel.Regions.Remove(ViewModel.SelectedRegion);
         ViewModel.SelectedRegion = null;
+      }
+    }
+    #endregion
+
+    #region "Region Config Events"
+    private void BtnAddTrigger_Click(object sender, System.Windows.RoutedEventArgs e)
+    {
+      if (_inputDialog.Show("New Trigger", "New Trigger Name:", DialogButtons.OkCancel) is InputDialogResult dialogResult && dialogResult.DialogResult == DialogResults.Ok)
+      {
+        var newTrigger = _triggerController.CreateTrigger(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion.Id, dialogResult.Input);
+
+        ViewModel.SelectedRegion.Triggers.Add(newTrigger);
+        ViewModel.SelectedTrigger = newTrigger;
+      }
+    }
+
+    private void BtnDeleteTrigger_Click(object sender, System.Windows.RoutedEventArgs e)
+    {
+      if (_messageBoxService.Show("Delete Trigger","Delete selected trigger?", DialogButtons.YesNo) is LulDialogResult dialogResult 
+        && dialogResult.DialogResult == DialogResults.Yes)
+      {
+        _triggerController.DeleteTrigger(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion.Id, ViewModel.SelectedTrigger);
+        ViewModel.SelectedRegion.Triggers.Remove(ViewModel.SelectedTrigger);
+        ViewModel.SelectedTrigger = null;
       }
     }
     #endregion

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.Configuration;
 using LulCaster.UI.WPF.Config;
 using LulCaster.UI.WPF.Config.Models;
 using LulCaster.UI.WPF.Controllers;
@@ -91,6 +90,7 @@ namespace LulCaster.UI.WPF
     {
       services.AddScoped<IPresetListController, PresetListController>();
       services.AddScoped<IRegionListController, RegionListController>();
+      services.AddScoped<ITriggerController, TriggerController>();
     }
 
     private void RegisterDialogServices(IServiceCollection services)
