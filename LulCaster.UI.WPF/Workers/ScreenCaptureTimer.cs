@@ -79,14 +79,14 @@ namespace LulCaster.UI.WPF.Workers
         IsRunning = true;
         DoWork();
 
-        ProgressChanged.Invoke(this, new ScreenCaptureProgressArgs
+        ProgressChanged.Invoke(null, new ScreenCaptureProgressArgs
         {
           Status = "Screen capture is running."
         });
       }
       else
       {
-        ProgressChanged.Invoke(this, new ScreenCaptureProgressArgs
+        ProgressChanged.Invoke(null, new ScreenCaptureProgressArgs
         {
           Status = "Screen capture is already running and attempt to start a new instance."
         });
@@ -95,7 +95,7 @@ namespace LulCaster.UI.WPF.Workers
 
     public void Stop()
     {
-      ProgressChanged.Invoke(this, new ScreenCaptureProgressArgs
+      ProgressChanged.Invoke(null, new ScreenCaptureProgressArgs
       {
         Status = "Screen capture is halting."
       });
@@ -132,6 +132,11 @@ namespace LulCaster.UI.WPF.Workers
 
     private void HaltUntilNextInterval()
     {
+      ProgressChanged(null, new ScreenCaptureProgressArgs
+      {
+        Status = $"Screen capture interval completed in {_stopWatch.Elapsed.Milliseconds}ms"
+      });
+
       var haltTime = CaptureInterval - _stopWatch.Elapsed.Milliseconds;
       _stopWatch.Restart();
 
