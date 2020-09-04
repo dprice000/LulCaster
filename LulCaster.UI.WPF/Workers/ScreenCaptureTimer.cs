@@ -41,7 +41,7 @@ namespace LulCaster.UI.WPF.Workers
     }
 
     /// <summary>
-    /// The lower limit in milliseconds on how fast a capture can run. Defaults ato 60,000.
+    /// The lower limit in milliseconds on how fast a capture can run. Defaults to 60,000 ms.
     /// </summary>
     public int CaptureInterval { get; set; } = 60000;
     public bool AutoReset 
@@ -81,14 +81,14 @@ namespace LulCaster.UI.WPF.Workers
 
         ProgressChanged.Invoke(null, new ScreenCaptureProgressArgs
         {
-          Status = "Screen capture is running."
+          Status = "Screen capture is now running."
         });
       }
       else
       {
         ProgressChanged.Invoke(null, new ScreenCaptureProgressArgs
         {
-          Status = "Screen capture is already running and attempt to start a new instance."
+          Status = "Screen capture is already running. An attempt was made to start a new instance."
         });
       }
     }
@@ -134,7 +134,7 @@ namespace LulCaster.UI.WPF.Workers
     {
       ProgressChanged(null, new ScreenCaptureProgressArgs
       {
-        Status = $"Screen capture interval completed in {_stopWatch.Elapsed.Milliseconds}ms"
+        Status = $"Screen capture interval completed in {_stopWatch.Elapsed.Milliseconds}ms."
       });
 
       var haltTime = CaptureInterval - _stopWatch.Elapsed.Milliseconds;
