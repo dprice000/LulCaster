@@ -1,6 +1,8 @@
 ﻿using LulCaster.UI.WPF.Workers.EventArguments;
 using LulCaster.Utility.ScreenCapture.Windows;
 using System;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -8,84 +10,140 @@ namespace LulCaster.UI.WPF.Workers
 {
   internal class ScreenCaptureTimer
   {
-    private object _lockAutoReset = new object();
+    private object _autoResetLock = new object();
+    private object _runningFlagLock = new object();
 
     private readonly IScreenCaptureService _screenCaptureService;
-    private double _timerInterval;
-    private readonly Timer _screenShotTimer;
     private Task _workerTask;
     private IProgress<ScreenCaptureProgressArgs> _progressHandler;
-    private bool _autoReset = true;
+    private bool _isRunning, _autoReset = true;
+    private Stopwatch _stopWatch = new Stopwatch();
 
     public event EventHandler<ScreenCaptureCompletedArgs> ScreenCaptureCompleted;
     public event EventHandler<ScreenCaptureProgressArgs> ProgressChanged;
 
-    public TimeSpan TickInterval { get; }
+    private bool IsRunning
+    {
+      get
+      {
+        lock (_runningFlagLock)
+        {
+          return _isRunning;
+        }
+      }
+      set
+      {
+        lock (_runningFlagLock)
+        {
+          _isRunning = value;
+        }
+      }
+    }
+
+    /// <summary>
+    /// The lower limit in milliseconds on how fast a capture can run. Defaults ato 60,000.
+    /// </summary>
+    public int CaptureInterval { get; set; } = 60000;
     public bool AutoReset 
     {
       get
       {
-        lock (_lockAutoReset)
+        lock (_autoResetLock)
         {
           return _autoReset;
         }
       }
       set
       {
-        lock (_lockAutoReset)
+        lock (_autoResetLock)
         {
           _autoReset = value;
         }
       }
     }
 
-    public ScreenCaptureTimer(IScreenCaptureService screenCapService, double timerInterval)
+    public ScreenCaptureTimer(IScreenCaptureService screenCaptureService, int captureInterval)
     {
-      _screenCaptureService = screenCapService;
-      _timerInterval = timerInterval;
-      _screenShotTimer = new Timer(_timerInterval);
-      InitializeTimer();
+      _screenCaptureService = screenCaptureService;
+      CaptureInterval = captureInterval;
 
       _progressHandler = new Progress<ScreenCaptureProgressArgs>(progressArgs => {
         ProgressChanged.Invoke(this, progressArgs);
       });
     }
 
-    private void InitializeTimer()
-    {
-      _screenShotTimer.Elapsed += NextScreenShotTimer_Elapsed;
-      _screenShotTimer.AutoReset = false;
-    }
-
     public void Start()
     {
-      _screenShotTimer.Start();
+      if (!IsRunning)
+      {
+        IsRunning = true;
+        DoWork();
+
+        ProgressChanged.Invoke(this, new ScreenCaptureProgressArgs
+        {
+          Status = "Screen capture is running."
+        });
+      }
+      else
+      {
+        ProgressChanged.Invoke(this, new ScreenCaptureProgressArgs
+        {
+          Status = "Screen capture is already running and attempt to start a new instance."
+        });
+      }
     }
 
-    private void NextScreenShotTimer_Elapsed(object sender, ElapsedEventArgs e)
+    public void Stop()
     {
-      DoWork();
+      ProgressChanged.Invoke(this, new ScreenCaptureProgressArgs
+      {
+        Status = "Screen capture is halting."
+      });
+
+      IsRunning = false;
+      AutoReset = false;
     }
 
     private void DoWork()
     {
       _workerTask = Task.Run(() =>
       {
-        var captureArgs = new ScreenCaptureCompletedArgs
+        while (IsRunning)
         {
-          ScreenImageStream = _screenCaptureService.CaptureScreenshot()
-        };
+          _stopWatch.Start();
 
-        OnScreenCaptureCompleted(captureArgs);
+          var captureArgs = new ScreenCaptureCompletedArgs
+          {
+            ScreenImageStream = _screenCaptureService.CaptureScreenshot()
+          };
+
+          OnScreenCaptureCompleted(captureArgs);
+
+          if (!AutoReset)
+          {
+            IsRunning = false;
+            break;
+          }
+          
+          HaltUntilNextInterval();
+        }
       });
+    }
+
+    private void HaltUntilNextInterval()
+    {
+      var haltTime = CaptureInterval - _stopWatch.Elapsed.Milliseconds;
+      _stopWatch.Restart();
+
+      if (haltTime > 0)
+      {
+        Thread.Sleep(haltTime);
+      }
     }
 
     private void OnScreenCaptureCompleted(ScreenCaptureCompletedArgs captureArgs)
     {
       ScreenCaptureCompleted?.Invoke(this, captureArgs);
-
-      if (AutoReset)
-        _screenShotTimer.Start();
     }
   }
 }

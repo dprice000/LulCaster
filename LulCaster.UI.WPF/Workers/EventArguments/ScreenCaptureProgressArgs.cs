@@ -2,5 +2,6 @@
 {
   public class ScreenCaptureProgressArgs
   {
+    public string Status { get; set; }
   }
 }
