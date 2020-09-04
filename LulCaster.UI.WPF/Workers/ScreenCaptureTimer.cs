@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 
 namespace LulCaster.UI.WPF.Workers
 {
@@ -79,14 +78,14 @@ namespace LulCaster.UI.WPF.Workers
         IsRunning = true;
         DoWork();
 
-        ProgressChanged.Invoke(null, new ScreenCaptureProgressArgs
+        ProgressChanged?.Invoke(null, new ScreenCaptureProgressArgs
         {
           Status = "Screen capture is now running."
         });
       }
       else
       {
-        ProgressChanged.Invoke(null, new ScreenCaptureProgressArgs
+        ProgressChanged?.Invoke(null, new ScreenCaptureProgressArgs
         {
           Status = "Screen capture is already running. An attempt was made to start a new instance."
         });
@@ -95,7 +94,7 @@ namespace LulCaster.UI.WPF.Workers
 
     public void Stop()
     {
-      ProgressChanged.Invoke(null, new ScreenCaptureProgressArgs
+      ProgressChanged?.Invoke(null, new ScreenCaptureProgressArgs
       {
         Status = "Screen capture is halting."
       });
@@ -132,7 +131,7 @@ namespace LulCaster.UI.WPF.Workers
 
     private void HaltUntilNextInterval()
     {
-      ProgressChanged(null, new ScreenCaptureProgressArgs
+      ProgressChanged?.Invoke(null, new ScreenCaptureProgressArgs
       {
         Status = $"Screen capture interval completed in {_stopWatch.Elapsed.Milliseconds}ms."
       });

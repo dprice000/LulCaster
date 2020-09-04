@@ -7,15 +7,13 @@ using LulCaster.UI.WPF.Workers;
 using LulCaster.UI.WPF.Workers.EventArguments;
 using LulCaster.Utility.ScreenCapture.Windows;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace LulCaster.UI.WPF.Pages
 {
@@ -28,8 +26,6 @@ namespace LulCaster.UI.WPF.Pages
     private readonly ScreenCaptureTimer _screenCaptureTimer;
     private const int CAPTURE_TIMER_INTERVAL = 1000;
     private readonly BoundingBoxBrush _boundingBoxBrush = new BoundingBoxBrush();
-    private readonly Dictionary<string, Rectangle> _boundingBoxCollection = new Dictionary<string, Rectangle>(); //TODO: This will live in the region configuration tool
-    private Rectangle _currentBoundingBox; //TODO: This will live in the region configuration tool
     private readonly IPresetListController _presetListController;
     private readonly IRegionListController _regionListController;
     private readonly ITriggerController _triggerController;
@@ -72,6 +68,15 @@ namespace LulCaster.UI.WPF.Pages
       //User Control Events
       LstGamePresets.SelectionChanged += LstGamePresets_SelectionChanged;
       Controls.RegionConfiguration.SaveConfigTriggered += RegionConfiguration_SaveConfigTriggered;
+      ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+    }
+
+    private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+      if (e.PropertyName == nameof(ViewModel.SelectedRegion))
+      {
+        DrawSelectedRegion();
+      }
     }
 
     private void InitializeRegionConfigEvents()
@@ -115,6 +120,8 @@ namespace LulCaster.UI.WPF.Pages
         var imageBrush = new ImageBrush(screenCaptureImage);
 
         canvasScreenFeed.Background = imageBrush;
+
+        DrawSelectedRegion();
       }, System.Windows.Threading.DispatcherPriority.Background);
     }
 
@@ -122,25 +129,24 @@ namespace LulCaster.UI.WPF.Pages
     {
       this.Dispatcher?.Invoke(() =>
       {
-        if (e.LeftButton == MouseButtonState.Released) return;
-
         canvasScreenFeed.Children.Clear();
-        var newBox = _boundingBoxBrush.OnMouseDown(e);
-        var windowsBox = _boundingBoxBrush.ConvertRectToWindowsRect(newBox);
-        canvasScreenFeed.Children.Add(windowsBox);
-        Canvas.SetLeft(windowsBox, newBox.X);
-        Canvas.SetTop(windowsBox, newBox.Y);
-        _boundingBoxCollection[""] = windowsBox; //TODO: The name needs to be taken from the segment configuration control
-        _currentBoundingBox = windowsBox;
+
+        if (e.LeftButton == MouseButtonState.Released || ViewModel.SelectedRegion == null) return;
+
+        ViewModel.SelectedRegion.BoundingBox = _boundingBoxBrush.OnMouseDown(e);
       });
     }
 
     private void CanvasScreenFeed_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
-      this.Dispatcher?.Invoke(() =>
+      this.Dispatcher?.Invoke(async () =>
       {
         if (e.LeftButton == MouseButtonState.Pressed) return;
-        //TODO: Update the configuration of the selected bounding box in the segment configuration control
+
+        if (ViewModel.SelectedRegion?.BoundingBox != null)
+        {
+          await _regionListController.UpdateRegionAsync(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion);
+        }
       });
     }
 
@@ -148,18 +154,27 @@ namespace LulCaster.UI.WPF.Pages
     {
       this.Dispatcher?.Invoke(() =>
       {
-        if (e.LeftButton == MouseButtonState.Released) return;
-
         canvasScreenFeed.Children.Clear();
 
-        var newBox = _boundingBoxBrush.OnMouseMove(e);
-        var windowsBox = _boundingBoxBrush.ConvertRectToWindowsRect(newBox);
-        canvasScreenFeed.Children.Add(windowsBox);
-        Canvas.SetLeft(windowsBox, newBox.X);
-        Canvas.SetTop(windowsBox, newBox.Y);
-        _boundingBoxCollection[""] = windowsBox;
-        _currentBoundingBox = windowsBox;
+        if (e.LeftButton == MouseButtonState.Released || ViewModel.SelectedRegion == null) return;
+
+        ViewModel.SelectedRegion.BoundingBox = _boundingBoxBrush.OnMouseMove(e);
       });
+    }
+
+    private void DrawSelectedRegion()
+    {
+      canvasScreenFeed.Children.Clear();
+
+      if (ViewModel?.SelectedRegion?.BoundingBox != null)
+      {
+        var selectedBox = ViewModel.SelectedRegion.BoundingBox;
+        var windowsBox = _boundingBoxBrush.ConvertRectToWindowsRect(selectedBox);
+        canvasScreenFeed.Children.Add(windowsBox);
+        Canvas.SetLeft(windowsBox, selectedBox.X);
+        Canvas.SetTop(windowsBox, selectedBox.Y);
+        ViewModel.SelectedRegion.BoundingBox = selectedBox;
+      }
     }
 
     #region "Dialog Events"

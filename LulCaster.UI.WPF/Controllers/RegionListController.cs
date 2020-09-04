@@ -2,6 +2,7 @@
 using LulCaster.UI.WPF.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading.Tasks;
 
 namespace LulCaster.UI.WPF.Controllers
@@ -49,7 +50,5 @@ namespace LulCaster.UI.WPF.Controllers
     {
       _regionConfigService.DeleteRegion(presetId, regionId);
     }
-
-
   }
 }

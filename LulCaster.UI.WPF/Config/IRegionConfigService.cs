@@ -3,6 +3,7 @@ using LulCaster.Utility.Common.Config;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Shapes;
 
 namespace LulCaster.UI.WPF.Config
 {
