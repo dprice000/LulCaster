@@ -23,7 +23,7 @@ namespace LulCaster.UI.WPF.Pages
   public partial class WireFramePage : Page
   {
     #region "Private Members"
-    private readonly ScreenCaptureTimer _screenCaptureTimer;
+    private readonly ScreenCaptureWorker _screenCaptureTimer;
     private const int CAPTURE_TIMER_INTERVAL = 1000;
     private readonly BoundingBoxBrush _boundingBoxBrush = new BoundingBoxBrush();
     private readonly IPresetListController _presetListController;
@@ -61,7 +61,7 @@ namespace LulCaster.UI.WPF.Pages
       _triggerController = triggerController;
       ViewModel.Presets = new ObservableCollection<PresetViewModel>(_presetListController.GetAllPresets());
 
-      _screenCaptureTimer = new ScreenCaptureTimer(screenCaptureService, CAPTURE_TIMER_INTERVAL);
+      _screenCaptureTimer = new ScreenCaptureWorker(screenCaptureService, CAPTURE_TIMER_INTERVAL);
       _screenCaptureTimer.ScreenCaptureCompleted += _screenCaptureTimer_ScreenCaptureCompleted;
       _screenCaptureTimer.Start();
 

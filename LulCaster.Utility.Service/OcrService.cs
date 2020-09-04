@@ -3,7 +3,7 @@ using System.IO;
 
 namespace LulCaster.Utility.Service
 {
-  public class OcrService
+  public class OcrService : IOcrService
   {
     public string ProcessImage(MemoryStream imageStream)
     {
