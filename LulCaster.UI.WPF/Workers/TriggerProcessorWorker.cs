@@ -51,10 +51,12 @@ namespace LulCaster.UI.WPF.Workers
 
           foreach (var region in screenCapture.RegionViewModels)
           {
-            var croppedImage = CropBitmap(screenBitmap.StreamSource, region.BoundingBox);
-            var scrappedText = ScrapeImage(croppedImage);
+            using (var croppedImage = CropBitmap(screenBitmap.StreamSource, region.BoundingBox))
+            {
+              var scrappedText = ScrapeImage(croppedImage);
 
-            ProcessTriggers(region.Triggers, scrappedText);
+              ProcessTriggers(region.Triggers, scrappedText);
+            }
           }
 
           if (!AutoReset)
@@ -68,10 +70,12 @@ namespace LulCaster.UI.WPF.Workers
 
     private string ScrapeImage(Bitmap image)
     {
-      MemoryStream memoryStream = new MemoryStream();
-      image.Save(memoryStream, ImageFormat.Bmp);
+      using (MemoryStream memoryStream = new MemoryStream())
+      {
+        image.Save(memoryStream, ImageFormat.Tiff);
 
-      return _ocrService.ProcessImage(memoryStream);
+        return _ocrService.ProcessImage(memoryStream);
+      }
     }
 
     private void ProcessTriggers(IList<TriggerViewModel> triggers, string scrappedText)
@@ -94,16 +98,18 @@ namespace LulCaster.UI.WPF.Workers
 
     private Bitmap CropBitmap(Stream bitmapStream, Rectangle boundingBox)
     {
-      Image image = Image.FromStream(bitmapStream);
-      Bitmap croppedBitmap = new Bitmap(boundingBox.Width, boundingBox.Height);
-
-      using (Graphics graphics = Graphics.FromImage(croppedBitmap))
+      using (var image = Image.FromStream(bitmapStream))
       {
-        graphics.DrawImage(image, new Rectangle(0, 0, croppedBitmap.Width, croppedBitmap.Height), boundingBox,
-                         GraphicsUnit.Pixel);
-      }
+        Bitmap croppedBitmap = new Bitmap(boundingBox.Width, boundingBox.Height);
 
-      return croppedBitmap;
+        using (Graphics graphics = Graphics.FromImage(croppedBitmap))
+        {
+          graphics.DrawImage(image, new Rectangle(0, 0, croppedBitmap.Width, croppedBitmap.Height), boundingBox,
+                           GraphicsUnit.Pixel);
+        }
+
+        return croppedBitmap;
+      }
     }
 
     private BitmapImage ConvertStreamToBitmap(MemoryStream imageStream)
