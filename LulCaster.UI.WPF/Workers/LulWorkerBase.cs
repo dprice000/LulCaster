@@ -52,26 +52,26 @@ namespace LulCaster.UI.WPF.Workers
         IsRunning = true;
         DoWork();
 
-        ProgressChanged?.Invoke(null, new ScreenCaptureProgressArgs
-        {
-          Status = "Screen capture is now running."
-        });
+        //ProgressChanged?.Invoke(null, new ScreenCaptureProgressArgs
+        //{
+        //  Status = "Screen capture is now running."
+        //});
       }
       else
       {
-        ProgressChanged?.Invoke(null, new ScreenCaptureProgressArgs
-        {
-          Status = "Screen capture is already running. An attempt was made to start a new instance."
-        });
+        //ProgressChanged?.Invoke(null, new ScreenCaptureProgressArgs
+        //{
+        //  Status = "Screen capture is already running. An attempt was made to start a new instance."
+        //});
       }
     }
 
     public void Stop()
     {
-      ProgressChanged?.Invoke(null, new ScreenCaptureProgressArgs
-      {
-        Status = "Screen capture is halting."
-      });
+      //ProgressChanged?.Invoke(null, new ScreenCaptureProgressArgs
+      //{
+      //  Status = "Screen capture is halting."
+      //});
 
       IsRunning = false;
       AutoReset = false;

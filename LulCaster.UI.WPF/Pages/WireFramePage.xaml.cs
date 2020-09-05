@@ -8,7 +8,6 @@ using LulCaster.UI.WPF.Workers.EventArguments;
 using LulCaster.Utility.ScreenCapture.Windows;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
 using System.Collections.ObjectModel;
-using System.Drawing;
 using System.IO;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -23,7 +22,8 @@ namespace LulCaster.UI.WPF.Pages
   public partial class WireFramePage : Page
   {
     #region "Private Members"
-    private readonly ScreenCaptureWorker _screenCaptureTimer;
+    private readonly ScreenCaptureWorker _screenCaptureWorker;
+    private readonly TriggerProcessorWorker _triggerWorker;
     private const int CAPTURE_TIMER_INTERVAL = 1000;
     private readonly BoundingBoxBrush _boundingBoxBrush = new BoundingBoxBrush();
     private readonly IPresetListController _presetListController;
@@ -49,6 +49,7 @@ namespace LulCaster.UI.WPF.Pages
     {
       InitializeComponent();
       DataContext = new WireFrameViewModel();
+
       // Dialog Services
       _inputDialog = inputDialog;
       _messageBoxService = messageBoxService;
@@ -61,9 +62,13 @@ namespace LulCaster.UI.WPF.Pages
       _triggerController = triggerController;
       ViewModel.Presets = new ObservableCollection<PresetViewModel>(_presetListController.GetAllPresets());
 
-      _screenCaptureTimer = new ScreenCaptureWorker(screenCaptureService, CAPTURE_TIMER_INTERVAL);
-      _screenCaptureTimer.ScreenCaptureCompleted += _screenCaptureTimer_ScreenCaptureCompleted;
-      _screenCaptureTimer.Start();
+      //Worker Initialization
+      _screenCaptureWorker = new ScreenCaptureWorker(screenCaptureService, CAPTURE_TIMER_INTERVAL);
+      _screenCaptureWorker.ScreenCaptureCompleted += _screenCaptureTimer_ScreenCaptureCompleted;
+      _screenCaptureWorker.Start();
+
+      _triggerWorker = new TriggerProcessorWorker();
+      _triggerWorker.Start();
 
       //User Control Events
       LstGamePresets.SelectionChanged += LstGamePresets_SelectionChanged;
@@ -116,6 +121,12 @@ namespace LulCaster.UI.WPF.Pages
         screenCaptureImage.CacheOption = BitmapCacheOption.OnLoad;
         screenCaptureImage.EndInit();
         screenCaptureImage.Freeze();
+
+        _triggerWorker.ProcessingQueue.Enqueue(new ScreenCapture()
+        {
+          ScreenMemoryStream = imageStream,
+          RegionViewModels = ViewModel.Regions
+        });
 
         var imageBrush = new ImageBrush(screenCaptureImage);
 

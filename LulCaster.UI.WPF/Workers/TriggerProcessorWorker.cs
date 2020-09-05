@@ -10,6 +10,9 @@ using System.Windows.Media.Imaging;
 using System.Drawing;
 using LulCaster.Utility.Service;
 using System.Drawing.Imaging;
+using System.Threading;
+using System.Media;
+using System.Linq;
 
 namespace LulCaster.UI.WPF.Workers
 {
@@ -17,24 +20,36 @@ namespace LulCaster.UI.WPF.Workers
   {
     public event EventHandler<ScreenCaptureProgressArgs> ProgressChanged;
 
+    private int _idleHaltTimeout = 2000;
     private Task _workerTask;
-    private List<RegionViewModel> _regionViewModels;
-    private IOcrService _ocrService;
+    private IOcrService _ocrService = new OcrService();
 
-    public ConcurrentQueue<ScreenCapture> ProcessingQueue { get; set; }
+    public ConcurrentQueue<ScreenCapture> ProcessingQueue { get; set; } = new ConcurrentQueue<ScreenCapture>();
 
     protected override void DoWork()
     {
       _workerTask = Task.Run(() =>
       {
-        while (IsRunning && !ProcessingQueue.IsEmpty)
+        while (IsRunning)
         {
+          if (ProcessingQueue.IsEmpty)
+          {
+            Thread.Sleep(_idleHaltTimeout);
+            continue;
+          }
+
           ProcessingQueue.TryDequeue(out var screenCapture);
+
+          if (screenCapture.RegionViewModels == null || !screenCapture.RegionViewModels.Any())
+          {
+            Thread.Sleep(_idleHaltTimeout);
+            continue;
+          }
 
           // Convert to image file type needed for processing
           var screenBitmap = ConvertStreamToBitmap(screenCapture.ScreenMemoryStream);
 
-          foreach (var region in _regionViewModels)
+          foreach (var region in screenCapture.RegionViewModels)
           {
             var croppedImage = CropBitmap(screenBitmap.StreamSource, region.BoundingBox);
             var scrappedText = ScrapeImage(croppedImage);
@@ -63,7 +78,17 @@ namespace LulCaster.UI.WPF.Workers
     {
       foreach(var trigger in triggers)
       {
-
+        //TODO: This needs to eventually tap into a trigger factory.
+        if (scrappedText.Contains(trigger.ThresholdValue))
+        {
+          ThreadPool.QueueUserWorkItem(ignoredState =>
+          {
+            using (var player = new SoundPlayer(trigger.SoundFilePath))
+            {
+              player.PlaySync();
+            }
+          });
+        }
       }
     }
 
