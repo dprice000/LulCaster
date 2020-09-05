@@ -31,8 +31,7 @@ namespace LulCaster.Utility.ScreenCapture.Windows
 
     public byte[] CaptureScreenshot()
     {
-      using (Bitmap screencapImage = new Bitmap(_screenOptions.ScreenWidth,
-                                            _screenOptions.ScreenHeight))
+      using (Bitmap screencapImage = new Bitmap(_screenOptions.ScreenWidth, _screenOptions.ScreenHeight))
       using (Graphics graphic = Graphics.FromImage(screencapImage))
       {
         graphic.CopyFromScreen(_screenOptions.X,
@@ -41,14 +40,15 @@ namespace LulCaster.Utility.ScreenCapture.Windows
                          screencapImage.Size,
                          CopyPixelOperation.SourceCopy);
 
-        var memoryStream = new MemoryStream();
-        screencapImage.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Tiff);
-        //screencapImage.Save(@"LastFrame.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
+        using (var memoryStream = new MemoryStream())
+        {
+          screencapImage.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Tiff);
 
-        byte[] byteImage = new Byte[memoryStream.Length];
-        byteImage = memoryStream.ToArray();
+          byte[] byteImage = new Byte[memoryStream.Length];
+          byteImage = memoryStream.ToArray();
 
-        return byteImage;
+          return byteImage;
+        }
       }
     }
   }

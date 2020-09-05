@@ -76,14 +76,7 @@ namespace LulCaster.UI.WPF.Pages
       ViewModel.PropertyChanged += ViewModel_PropertyChanged;
     }
 
-    private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-      if (e.PropertyName == nameof(ViewModel.SelectedRegion))
-      {
-        DrawSelectedRegion();
-      }
-    }
-
+    #region "Initialization Methods"
     private void InitializeRegionConfigEvents()
     {
       cntrlRegionConfig.BtnAddTrigger.Click += BtnAddTrigger_Click;
@@ -96,6 +89,15 @@ namespace LulCaster.UI.WPF.Pages
       LstGamePresets.MessageBoxService = _messageBoxService;
       LstScreenRegions.InputDialog = _inputDialog;
       LstScreenRegions.MessageBoxService = _messageBoxService;
+    }
+    #endregion
+
+    private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+      if (e.PropertyName == nameof(ViewModel.SelectedRegion))
+      {
+        DrawSelectedRegion();
+      }
     }
 
     private void LstGamePresets_SelectionChanged(object sender, Controls.IListItem e)
@@ -110,6 +112,7 @@ namespace LulCaster.UI.WPF.Pages
       await _regionListController.UpdateRegionAsync(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion);
     }
 
+    #region "Screen Capture Events"
     private void _screenCaptureTimer_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
     {
       this.Dispatcher?.Invoke(() =>
@@ -136,43 +139,6 @@ namespace LulCaster.UI.WPF.Pages
       }, System.Windows.Threading.DispatcherPriority.Background);
     }
 
-    private void CanvasScreenFeed_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-    {
-      this.Dispatcher?.Invoke(() =>
-      {
-        canvasScreenFeed.Children.Clear();
-
-        if (e.LeftButton == MouseButtonState.Released || ViewModel.SelectedRegion == null) return;
-
-        ViewModel.SelectedRegion.BoundingBox = _boundingBoxBrush.OnMouseDown(e);
-      });
-    }
-
-    private void CanvasScreenFeed_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-    {
-      this.Dispatcher?.Invoke(async () =>
-      {
-        if (e.LeftButton == MouseButtonState.Pressed) return;
-
-        if (ViewModel.SelectedRegion?.BoundingBox != null)
-        {
-          await _regionListController.UpdateRegionAsync(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion);
-        }
-      });
-    }
-
-    private void CanvasScreenFeed_MouseMove(object sender, MouseEventArgs e)
-    {
-      this.Dispatcher?.Invoke(() =>
-      {
-        canvasScreenFeed.Children.Clear();
-
-        if (e.LeftButton == MouseButtonState.Released || ViewModel.SelectedRegion == null) return;
-
-        ViewModel.SelectedRegion.BoundingBox = _boundingBoxBrush.OnMouseMove(e);
-      });
-    }
-
     private void DrawSelectedRegion()
     {
       canvasScreenFeed.Children.Clear();
@@ -187,6 +153,43 @@ namespace LulCaster.UI.WPF.Pages
         ViewModel.SelectedRegion.BoundingBox = selectedBox;
       }
     }
+    #endregion
+
+    #region "Mouse Events"
+    private void CanvasScreenFeed_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+      this.Dispatcher?.Invoke(() =>
+      {
+        if (e.LeftButton == MouseButtonState.Released || ViewModel.SelectedRegion == null) return;
+
+        ViewModel.SelectedRegion.BoundingBox = _boundingBoxBrush.OnMouseDown(e);
+      });
+    }
+
+    private void CanvasScreenFeed_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+      this.Dispatcher?.Invoke(async () =>
+      {
+        if (e.LeftButton == MouseButtonState.Pressed) return;
+
+        if (ViewModel?.SelectedRegion?.BoundingBox != null)
+        {
+          await _regionListController.UpdateRegionAsync(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion);
+        }
+      });
+    }
+
+    private void CanvasScreenFeed_MouseMove(object sender, MouseEventArgs e)
+    {
+      this.Dispatcher?.Invoke(() =>
+      {
+        if (e.LeftButton == MouseButtonState.Released || ViewModel.SelectedRegion == null) return;
+
+        ViewModel.SelectedRegion.BoundingBox = _boundingBoxBrush.OnMouseMove(e);
+      });
+    }
+
+    #endregion
 
     #region "Dialog Events"
     private void LstGamePresets_NewPresetDialogExecuted(object sender, InputDialogResult e)
