@@ -128,7 +128,9 @@ namespace LulCaster.UI.WPF.Pages
         _triggerWorker.ProcessingQueue.Enqueue(new ScreenCapture()
         {
           ScreenMemoryStream = imageStream,
-          RegionViewModels = ViewModel.Regions
+          RegionViewModels = ViewModel.Regions,
+          ScreenBounds = captureArgs.ScreenBounds,
+          CanvasBounds = canvasScreenFeed.RenderSize
         });
 
         var imageBrush = new ImageBrush(screenCaptureImage);

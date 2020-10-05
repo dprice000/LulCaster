@@ -41,7 +41,7 @@ namespace LulCaster.UI.WPF
       services.AddSingleton<MainWindow>();
       services.AddSingleton<IPresetConfigService, PresetConfigService>();
       services.AddSingleton<IRegionConfigService, RegionConfigService>();
-      services.AddScoped<IScreenCaptureService, ScreenCaptureService>();
+      services.AddScoped<IScreenCaptureService, GameCaptureService>();
 
       RegisterControllers(services);
       RegisterPages(services);

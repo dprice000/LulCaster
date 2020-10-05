@@ -1,0 +1,132 @@
+﻿using LulCaster.Utility.Common.Config;
+using System;
+using System.Drawing;
+using System.IO;
+using System.Runtime.InteropServices;
+using WpfScreenHelper;
+
+namespace LulCaster.Utility.ScreenCapture.Windows
+{
+  public class GameCaptureService : IScreenCaptureService
+  {
+    public ScreenOptions ScreenOptions { get; set; } = new ScreenOptions();
+    private IntPtr _processPtr;
+
+    public GameCaptureService()
+    {
+      InitializeBounds();
+    }
+
+    public GameCaptureService(ScreenOptions screenOptions)
+    {
+      ScreenOptions = screenOptions;
+    }
+
+    private void InitializeBounds()
+    {
+      ScreenOptions.ScreenHeight = 2160; //TODO: This should not be hardcoded
+      ScreenOptions.ScreenWidth = 3840;
+      ScreenOptions.X = (int)Screen.PrimaryScreen.Bounds.X;
+      ScreenOptions.Y = (int)Screen.PrimaryScreen.Bounds.Y;
+    }
+
+    public void SetProcessPointer(IntPtr processPtr)
+    {
+      _processPtr = processPtr;
+    }
+
+    /// <summary>
+    /// Gets Image object containing screen shot
+    /// </summary>
+    /// <param name="handle">The handle to the window. 
+    /// <returns></returns>
+    public byte[] CaptureScreenshot()
+    {
+      var hdcSrc = User32.GetWindowDC(_processPtr);
+      var windowRect = new User32.Rect();
+      User32.GetWindowRect(_processPtr, ref windowRect);
+      var width = windowRect.right - windowRect.left;
+      var height = windowRect.bottom - windowRect.top;
+      var destinationPtr = Gdi32.CreateCompatibleDC(hdcSrc);
+      var bitmapPtr = Gdi32.CreateCompatibleBitmap(hdcSrc, width, height);
+
+      try
+      {
+        var hOld = Gdi32.SelectObject(destinationPtr, bitmapPtr);
+        Gdi32.BitBlt(destinationPtr, 0, 0, width, height, hdcSrc, 0, 0, Gdi32.Srccopy);
+        Gdi32.SelectObject(destinationPtr, hOld);
+
+        using (var screenCaptureImage = Image.FromHbitmap(bitmapPtr))
+        using (var bitmap = new Bitmap(screenCaptureImage))
+        using (var memoryStream = new MemoryStream())
+        {
+          screenCaptureImage.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Tiff);
+
+          byte[] byteImage = new byte[memoryStream.Length];
+          byteImage = memoryStream.ToArray();
+
+          return byteImage;
+        }
+      }
+      finally
+      {
+        Gdi32.DeleteDC(destinationPtr);
+        User32.ReleaseDC(_processPtr, hdcSrc);
+        Gdi32.DeleteObject(bitmapPtr);
+      }
+    }
+
+    /// <summary>
+    /// Gdi32 API functions
+    /// </summary>
+    private class Gdi32
+    {
+      public const int Srccopy = 0x00CC0020; // BitBlt dwRop parameter
+
+      [DllImport("gdi32.dll")]
+      public static extern bool BitBlt(IntPtr hObject, int nXDest, int nYDest,
+          int nWidth, int nHeight, IntPtr hObjectSource,
+          int nXSrc, int nYSrc, int dwRop);
+
+      [DllImport("gdi32.dll")]
+      public static extern IntPtr CreateCompatibleDC(IntPtr hDc);
+
+      [DllImport("gdi32.dll")]
+      public static extern IntPtr CreateCompatibleBitmap(IntPtr hDc, int nWidth,
+          int nHeight);
+
+      [DllImport("gdi32.dll")]
+      public static extern IntPtr SelectObject(IntPtr hDc, IntPtr hObject);
+
+      [DllImport("gdi32.dll")]
+      public static extern bool DeleteDC(IntPtr hDc);
+
+      [DllImport("gdi32.dll")]
+      public static extern bool DeleteObject(IntPtr hObject);
+
+    }
+
+    /// <summary>
+    /// User32 API functions
+    /// </summary>
+    private class User32
+    {
+      [StructLayout(LayoutKind.Sequential)]
+      public struct Rect
+      {
+        public readonly int top;
+        public readonly int left;
+        public readonly int bottom;
+        public readonly int right;
+      }
+      [DllImport("user32.dll")]
+      public static extern IntPtr GetWindowRect(IntPtr hWnd, ref Rect rect);
+
+      [DllImport("user32.dll")]
+      public static extern IntPtr ReleaseDC(IntPtr hWnd, IntPtr hDc);
+
+      [DllImport("user32.dll")]
+      public static extern IntPtr GetWindowDC(IntPtr hWnd);
+    }
+  }
+}

@@ -8,7 +8,7 @@ namespace LulCaster.Utility.ScreenCapture.Windows
 {
   public class ScreenCaptureService : IScreenCaptureService
   {
-    private ScreenOptions _screenOptions;
+    public ScreenOptions ScreenOptions { get; set; } = new ScreenOptions();
 
     public ScreenCaptureService()
     {
@@ -17,25 +17,24 @@ namespace LulCaster.Utility.ScreenCapture.Windows
 
     public ScreenCaptureService(ScreenOptions screenOptions)
     {
-      _screenOptions = screenOptions;
+      ScreenOptions = screenOptions;
     }
 
     private void InitializeBounds()
     {
-      _screenOptions = new ScreenOptions();
-      _screenOptions.ScreenHeight = 2160; //TODO: This should not be hardcoded
-      _screenOptions.ScreenWidth = 3840;
-      _screenOptions.X = (int)Screen.PrimaryScreen.Bounds.X;
-      _screenOptions.Y = (int)Screen.PrimaryScreen.Bounds.Y;
+      ScreenOptions.ScreenHeight = 2160; //TODO: This should not be hardcoded
+      ScreenOptions.ScreenWidth = 3840;
+      ScreenOptions.X = (int)Screen.PrimaryScreen.Bounds.X;
+      ScreenOptions.Y = (int)Screen.PrimaryScreen.Bounds.Y;
     }
 
     public byte[] CaptureScreenshot()
     {
-      using (Bitmap screencapImage = new Bitmap(_screenOptions.ScreenWidth, _screenOptions.ScreenHeight))
+      using (Bitmap screencapImage = new Bitmap(ScreenOptions.ScreenWidth, ScreenOptions.ScreenHeight))
       using (Graphics graphic = Graphics.FromImage(screencapImage))
       {
-        graphic.CopyFromScreen(_screenOptions.X,
-                         _screenOptions.Y,
+        graphic.CopyFromScreen(ScreenOptions.X,
+                         ScreenOptions.Y,
                          0, 0,
                          screencapImage.Size,
                          CopyPixelOperation.SourceCopy);

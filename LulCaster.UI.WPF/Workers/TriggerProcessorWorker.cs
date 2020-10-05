@@ -1,6 +1,5 @@
 ﻿using LulCaster.UI.WPF.ViewModels;
 using LulCaster.UI.WPF.Workers.EventArguments;
-using LulCaster.Utility.Common.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -13,6 +12,7 @@ using System.Drawing.Imaging;
 using System.Threading;
 using System.Media;
 using System.Linq;
+using LulCaster.UI.WPF.Utility;
 
 namespace LulCaster.UI.WPF.Workers
 {
@@ -51,9 +51,23 @@ namespace LulCaster.UI.WPF.Workers
 
           foreach (var region in screenCapture.RegionViewModels)
           {
-            using (var croppedImage = CropBitmap(screenBitmap.StreamSource, region.BoundingBox))
+            if (region.BoundingBox.Width < 1 || region.BoundingBox.Height < 1)
+              continue;
+
+            using (var croppedImage = CropBitmap(screenCapture, region.BoundingBox))
             {
+              using (MemoryStream memory = new MemoryStream())
+              {
+                using (FileStream fs = new FileStream(@"C:\Users\David\Documents\Overwatch\poo2.bmp", FileMode.Create, FileAccess.ReadWrite))
+                {
+                  croppedImage.Save(memory, ImageFormat.Jpeg);
+                  byte[] bytes = memory.ToArray();
+                  fs.Write(bytes, 0, bytes.Length);
+                }
+              }
+
               var scrappedText = ScrapeImage(croppedImage);
+
 
               ProcessTriggers(region.Triggers, scrappedText);
             }
@@ -96,15 +110,17 @@ namespace LulCaster.UI.WPF.Workers
       }
     }
 
-    private Bitmap CropBitmap(Stream bitmapStream, Rectangle boundingBox)
+    private Bitmap CropBitmap(ScreenCapture screenCapture, Rectangle regionBoundingBox)
     {
-      using (var image = Image.FromStream(bitmapStream))
+      using (var image = Image.FromStream(screenCapture.ScreenMemoryStream))
       {
-        Bitmap croppedBitmap = new Bitmap(boundingBox.Width, boundingBox.Height);
+        var relativeBounds = AspectRatioConverter.ResolveScreenLocation(screenCapture.ScreenBounds, screenCapture.CanvasBounds, regionBoundingBox);
+
+        Bitmap croppedBitmap = new Bitmap(relativeBounds.Width, relativeBounds.Height);
 
         using (Graphics graphics = Graphics.FromImage(croppedBitmap))
         {
-          graphics.DrawImage(image, new Rectangle(0, 0, croppedBitmap.Width, croppedBitmap.Height), boundingBox,
+          graphics.DrawImage(image, new Rectangle(0, 0, croppedBitmap.Width, croppedBitmap.Height), relativeBounds,
                            GraphicsUnit.Pixel);
         }
 
