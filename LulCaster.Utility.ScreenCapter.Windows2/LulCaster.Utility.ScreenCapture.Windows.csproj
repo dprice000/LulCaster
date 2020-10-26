@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>LulCaster.Utility.ScreenCapture.Windows</RootNamespace>
     <AssemblyName>LulCaster.Utility.ScreenCapture.Windows</AssemblyName>
+    <Configurations>Debug;Release;Debug64</Configurations>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

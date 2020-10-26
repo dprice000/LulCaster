@@ -40,20 +40,19 @@ namespace LulCaster.Utility.ScreenCapture.Windows
     /// </summary>
     /// <param name="handle">The handle to the window. 
     /// <returns></returns>
-    public byte[] CaptureScreenshot()
+    public void CaptureScreenshot(ref byte[] byteImage)
     {
       var hdcSrc = User32.GetWindowDC(_processPtr);
       var windowRect = new User32.Rect();
       User32.GetWindowRect(_processPtr, ref windowRect);
-      var width = windowRect.right - windowRect.left;
-      var height = windowRect.bottom - windowRect.top;
       var destinationPtr = Gdi32.CreateCompatibleDC(hdcSrc);
-      var bitmapPtr = Gdi32.CreateCompatibleBitmap(hdcSrc, width, height);
+      var bitmapPtr = Gdi32.CreateCompatibleBitmap(hdcSrc, ScreenOptions.ScreenWidth, ScreenOptions.ScreenHeight);
+      var hOld = Gdi32.SelectObject(destinationPtr, bitmapPtr);
 
       try
       {
-        var hOld = Gdi32.SelectObject(destinationPtr, bitmapPtr);
-        Gdi32.BitBlt(destinationPtr, 0, 0, width, height, hdcSrc, 0, 0, Gdi32.Srccopy);
+        
+        Gdi32.BitBlt(destinationPtr, 0, 0, ScreenOptions.ScreenWidth, ScreenOptions.ScreenHeight, hdcSrc, 0, 0, Gdi32.Srccopy);
         Gdi32.SelectObject(destinationPtr, hOld);
 
         using (var screenCaptureImage = Image.FromHbitmap(bitmapPtr))
@@ -62,10 +61,9 @@ namespace LulCaster.Utility.ScreenCapture.Windows
         {
           screenCaptureImage.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Tiff);
 
-          byte[] byteImage = new byte[memoryStream.Length];
+          byteImage = new byte[memoryStream.Length];
           byteImage = memoryStream.ToArray();
 
-          return byteImage;
         }
       }
       finally
@@ -73,6 +71,7 @@ namespace LulCaster.Utility.ScreenCapture.Windows
         Gdi32.DeleteDC(destinationPtr);
         User32.ReleaseDC(_processPtr, hdcSrc);
         Gdi32.DeleteObject(bitmapPtr);
+        Gdi32.DeleteObject(hOld);
       }
     }
 

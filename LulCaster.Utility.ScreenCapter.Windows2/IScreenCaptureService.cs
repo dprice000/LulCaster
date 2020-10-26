@@ -5,6 +5,6 @@ namespace LulCaster.Utility.ScreenCapture.Windows
   public interface IScreenCaptureService
   {
     ScreenOptions ScreenOptions { get; set; }
-    byte[] CaptureScreenshot();
+    void CaptureScreenshot(ref byte[] byteImage);
   }
 }
