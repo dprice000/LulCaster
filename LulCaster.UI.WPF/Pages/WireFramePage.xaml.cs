@@ -7,6 +7,7 @@ using LulCaster.UI.WPF.Workers;
 using LulCaster.UI.WPF.Workers.EventArguments;
 using LulCaster.Utility.ScreenCapture.Windows;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Controls;
@@ -66,6 +67,7 @@ namespace LulCaster.UI.WPF.Pages
       _screenCaptureWorker = new ScreenCaptureWorker(screenCaptureService, CAPTURE_TIMER_INTERVAL);
       _screenCaptureWorker.ScreenCaptureCompleted += _screenCaptureTimer_ScreenCaptureCompleted;
       _screenCaptureWorker.Start();
+      
 
       _triggerWorker = new TriggerProcessorWorker();
       _triggerWorker.Start();
@@ -125,13 +127,17 @@ namespace LulCaster.UI.WPF.Pages
         screenCaptureImage.EndInit();
         screenCaptureImage.Freeze();
 
-        _triggerWorker.ProcessingQueue.Enqueue(new ScreenCapture()
+        if (ViewModel.SelectedRegion != null)
         {
-          ScreenMemoryStream = imageStream,
-          RegionViewModels = ViewModel.Regions,
-          ScreenBounds = captureArgs.ScreenBounds,
-          CanvasBounds = canvasScreenFeed.RenderSize
-        });
+          _triggerWorker.EnqueueScreenCapture(new ScreenCapture()
+          {
+            ScreenMemoryStream = imageStream,
+            RegionViewModels = ViewModel.Regions,
+            ScreenBounds = captureArgs.ScreenBounds,
+            CanvasBounds = canvasScreenFeed.RenderSize,
+            CreationTime = DateTime.Now
+          });
+        }
 
         var imageBrush = new ImageBrush(screenCaptureImage);
 

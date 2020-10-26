@@ -27,7 +27,7 @@ namespace LulCaster.UI.WPF.Workers
       }
     }
 
-    protected bool IsRunning
+    public bool IsRunning
     {
       get
       {

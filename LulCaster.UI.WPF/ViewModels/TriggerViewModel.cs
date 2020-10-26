@@ -1,4 +1,5 @@
 ﻿using LulCaster.Utility.Common.Logic;
+using System.Media;
 
 namespace LulCaster.UI.WPF.ViewModels
 {
@@ -8,6 +9,7 @@ namespace LulCaster.UI.WPF.ViewModels
     private TriggerTypes _triggerType;
     private string _thresholdValue;
     private string _soundFilePath;
+
 
     public string Name
     {
@@ -57,8 +59,12 @@ namespace LulCaster.UI.WPF.ViewModels
       set
       {
         _soundFilePath = value;
+        SoundFile = new SoundPlayer(_soundFilePath);
+        SoundFile.Load();
         OnPropertyChanged(nameof(SoundFilePath));
       }
     }
+
+    public SoundPlayer SoundFile { get; private set; }
   }
 }

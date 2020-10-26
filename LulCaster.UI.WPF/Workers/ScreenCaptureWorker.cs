@@ -25,7 +25,7 @@ namespace LulCaster.UI.WPF.Workers
     public ScreenCaptureWorker(IScreenCaptureService screenCaptureService, int captureInterval)
     {
       _screenCaptureService = screenCaptureService;
-      ((GameCaptureService)_screenCaptureService).SetProcessPointer(HandleFinder.GetWindowsHandle("DeadByDaylight"));
+      ((GameCaptureService)_screenCaptureService).SetProcessPointer(HandleFinder.GetWindowsHandle("Valorant"));
       CaptureInterval = captureInterval;
 
       _progressHandler = new Progress<ScreenCaptureProgressArgs>(progressArgs => {
@@ -39,29 +39,24 @@ namespace LulCaster.UI.WPF.Workers
       {
         while (IsRunning)
         {
-          try
+          _stopWatch.Start();
+          byte[] byteImage = new byte[0];
+          _screenCaptureService.CaptureScreenshot(ref byteImage);
+
+          var captureArgs = new ScreenCaptureCompletedArgs
           {
-            _stopWatch.Start();
+            ScreenImageStream = byteImage,
+            ScreenBounds = _screenCaptureService.ScreenOptions.GetBoundsAsRectangle()
+          };
 
-            var captureArgs = new ScreenCaptureCompletedArgs
-            {
-              ScreenImageStream = _screenCaptureService.CaptureScreenshot(),
-              ScreenBounds = _screenCaptureService.ScreenOptions.GetBoundsAsRectangle()
-            };
+          OnScreenCaptureCompleted(captureArgs);
 
-            OnScreenCaptureCompleted(captureArgs);
-
-            if (!AutoReset)
-            {
-              IsRunning = false;
-              break;
-            }
-
-          }
-          catch
+          if (!AutoReset)
           {
-            //TODO Write this to the error log
+            IsRunning = false;
+            break;
           }
+
           HaltUntilNextInterval();
         }
       });

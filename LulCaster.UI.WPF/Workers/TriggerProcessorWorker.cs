@@ -10,9 +10,9 @@ using System.Drawing;
 using LulCaster.Utility.Service;
 using System.Drawing.Imaging;
 using System.Threading;
-using System.Media;
 using System.Linq;
 using LulCaster.UI.WPF.Utility;
+using System.Diagnostics;
 
 namespace LulCaster.UI.WPF.Workers
 {
@@ -20,11 +20,16 @@ namespace LulCaster.UI.WPF.Workers
   {
     public event EventHandler<ScreenCaptureProgressArgs> ProgressChanged;
 
+    private const int LOOP_HALT_TIMEOUT = 500;
     private int _idleHaltTimeout = 2000;
     private Task _workerTask;
     private IOcrService _ocrService = new OcrService();
+    private ConcurrentQueue<ScreenCapture> _processingQueue { get; set; } = new ConcurrentQueue<ScreenCapture>();
 
-    public ConcurrentQueue<ScreenCapture> ProcessingQueue { get; set; } = new ConcurrentQueue<ScreenCapture>();
+    public void EnqueueScreenCapture(ScreenCapture screenCapture)
+    {
+      _processingQueue.Enqueue(screenCapture);
+    }
 
     protected override void DoWork()
     {
@@ -32,44 +37,42 @@ namespace LulCaster.UI.WPF.Workers
       {
         while (IsRunning)
         {
-          if (ProcessingQueue.IsEmpty)
+          if (_processingQueue.IsEmpty)
           {
             Thread.Sleep(_idleHaltTimeout);
             continue;
           }
 
-          ProcessingQueue.TryDequeue(out var screenCapture);
+          _processingQueue.TryDequeue(out var screenCapture);
 
-          if (screenCapture.RegionViewModels == null || !screenCapture.RegionViewModels.Any())
+          using (screenCapture)
           {
-            Thread.Sleep(_idleHaltTimeout);
-            continue;
-          }
-
-          // Convert to image file type needed for processing
-          var screenBitmap = ConvertStreamToBitmap(screenCapture.ScreenMemoryStream);
-
-          foreach (var region in screenCapture.RegionViewModels)
-          {
-            if (region.BoundingBox.Width < 1 || region.BoundingBox.Height < 1)
-              continue;
-
-            using (var croppedImage = CropBitmap(screenCapture, region.BoundingBox))
+            if (screenCapture.RegionViewModels == null || !screenCapture.RegionViewModels.Any())
             {
-              using (MemoryStream memory = new MemoryStream())
+              throw new InvalidOperationException("Region must be selected before queuing screenshots for processing.");
+            }
+
+            foreach (var region in screenCapture.RegionViewModels)
+            {
+              if (region.BoundingBox.Width < 1 || region.BoundingBox.Height < 1)
+                continue;
+
+              using (var croppedImage = CropBitmap(screenCapture, region.BoundingBox))
               {
-                using (FileStream fs = new FileStream(@"C:\Users\David\Documents\Overwatch\poo2.bmp", FileMode.Create, FileAccess.ReadWrite))
-                {
-                  croppedImage.Save(memory, ImageFormat.Jpeg);
-                  byte[] bytes = memory.ToArray();
-                  fs.Write(bytes, 0, bytes.Length);
-                }
+                //TODO: Do we want to remove this? Or do we want to do it better?
+                //using (MemoryStream memory = new MemoryStream())
+                //{
+                //  using (FileStream fs = new FileStream(@"C:\Users\David\Documents\Overwatch\poo2.bmp", FileMode.Create, FileAccess.ReadWrite))
+                //  {
+                //    croppedImage.Save(memory, ImageFormat.Jpeg);
+                //    byte[] bytes = memory.ToArray();
+                //    fs.Write(bytes, 0, bytes.Length);
+                //  }
+                //}
+
+                var scrappedText = ScrapeImage(croppedImage);
+                ProcessTriggers(region.Triggers, screenCapture, scrappedText);
               }
-
-              var scrappedText = ScrapeImage(croppedImage);
-
-
-              ProcessTriggers(region.Triggers, scrappedText);
             }
           }
 
@@ -78,6 +81,8 @@ namespace LulCaster.UI.WPF.Workers
             IsRunning = false;
             break;
           }
+
+          Thread.Sleep(LOOP_HALT_TIMEOUT);
         }
       });
     }
@@ -92,20 +97,15 @@ namespace LulCaster.UI.WPF.Workers
       }
     }
 
-    private void ProcessTriggers(IList<TriggerViewModel> triggers, string scrappedText)
+    private void ProcessTriggers(IList<TriggerViewModel> triggers, ScreenCapture screenCapture, string scrappedText)
     {
       foreach(var trigger in triggers)
       {
         //TODO: This needs to eventually tap into a trigger factory.
         if (scrappedText.Contains(trigger.ThresholdValue))
         {
-          ThreadPool.QueueUserWorkItem(ignoredState =>
-          {
-            using (var player = new SoundPlayer(trigger.SoundFilePath))
-            {
-              player.PlaySync();
-            }
-          });
+          Console.WriteLine($"Seconds before trigger was processed: {DateTime.Now.Subtract(screenCapture.CreationTime).TotalSeconds}");
+          trigger.SoundFile.Play();
         }
       }
     }
