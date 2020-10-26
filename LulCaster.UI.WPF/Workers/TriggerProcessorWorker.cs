@@ -24,7 +24,7 @@ namespace LulCaster.UI.WPF.Workers
     private int _idleHaltTimeout = 2000;
     private Task _workerTask;
     private IOcrService _ocrService = new OcrService();
-    private ConcurrentQueue<ScreenCapture> _processingQueue { get; set; } = new ConcurrentQueue<ScreenCapture>();
+    private ConcurrentQueue<ScreenCapture> _processingQueue = new ConcurrentQueue<ScreenCapture>();
 
     public void EnqueueScreenCapture(ScreenCapture screenCapture)
     {
@@ -47,11 +47,6 @@ namespace LulCaster.UI.WPF.Workers
 
           using (screenCapture)
           {
-            if (screenCapture.RegionViewModels == null || !screenCapture.RegionViewModels.Any())
-            {
-              throw new InvalidOperationException("Region must be selected before queuing screenshots for processing.");
-            }
-
             foreach (var region in screenCapture.RegionViewModels)
             {
               if (region.BoundingBox.Width < 1 || region.BoundingBox.Height < 1)
