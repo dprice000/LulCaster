@@ -104,9 +104,17 @@ namespace LulCaster.UI.WPF.Pages
 
     private void LstGamePresets_SelectionChanged(object sender, Controls.IListItem e)
     {
-      ViewModel.Regions = (ViewModel?.SelectedPreset != null)
-        ? new ObservableCollection<RegionViewModel>(_regionListController.GetRegions(ViewModel.SelectedPreset.Id))
-        : null;
+      if (ViewModel?.SelectedPreset != null)
+      {
+        _screenCaptureWorker.SetGameHandle(HandleFinder.GetWindowsHandle(ViewModel.SelectedPreset.Name));
+        _screenCaptureWorker.Start();
+        ViewModel.Regions = new ObservableCollection<RegionViewModel>(_regionListController.GetRegions(ViewModel.SelectedPreset.Id));
+      }
+      else
+      {
+        _screenCaptureWorker.Stop();
+        ViewModel.Regions = null;
+      }
     }
 
     private async void RegionConfiguration_SaveConfigTriggered(object sender, RegionViewModel e)
