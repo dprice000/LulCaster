@@ -15,22 +15,29 @@ namespace LulCaster.UI.WPF.Workers
     private Stopwatch _stopWatch = new Stopwatch();
 
     public event EventHandler<ScreenCaptureCompletedArgs> ScreenCaptureCompleted;
+
     public event EventHandler<ScreenCaptureProgressArgs> ProgressChanged;
 
     /// <summary>
     /// The lower limit in milliseconds on how fast a capture can run. Defaults to 60,000 ms.
     /// </summary>
-    public int CaptureInterval { get; set; } = 60000;
+    public int CaptureInterval { get; set; }
 
     public ScreenCaptureWorker(IScreenCaptureService screenCaptureService, int captureInterval)
     {
       _screenCaptureService = screenCaptureService;
-      ((GameCaptureService)_screenCaptureService).SetProcessPointer(HandleFinder.GetWindowsHandle("Valorant"));
+
       CaptureInterval = captureInterval;
 
-      _progressHandler = new Progress<ScreenCaptureProgressArgs>(progressArgs => {
+      _progressHandler = new Progress<ScreenCaptureProgressArgs>(progressArgs =>
+      {
         ProgressChanged.Invoke(this, progressArgs);
       });
+    }
+
+    public void SetGameHandle(IntPtr gameHandle)
+    {
+      ((GameCaptureService)_screenCaptureService).SetProcessPointer(gameHandle);
     }
 
     protected override void DoWork()
@@ -40,8 +47,15 @@ namespace LulCaster.UI.WPF.Workers
         while (IsRunning)
         {
           _stopWatch.Start();
+
           byte[] byteImage = new byte[0];
           _screenCaptureService.CaptureScreenshot(ref byteImage);
+
+          // If game handle is not set we will get an empty array. Just do nothing.
+          if (byteImage == null)
+          {
+            HaltUntilNextInterval();
+          }
 
           var captureArgs = new ScreenCaptureCompletedArgs
           {
