@@ -127,7 +127,7 @@ namespace LulCaster.UI.WPF.Pages
         screenCaptureImage.EndInit();
         screenCaptureImage.Freeze();
 
-        if (ViewModel.SelectedRegion != null)
+        if (ViewModel.SelectedPreset != null)
         {
           _triggerWorker.EnqueueScreenCapture(new ScreenCapture()
           {
