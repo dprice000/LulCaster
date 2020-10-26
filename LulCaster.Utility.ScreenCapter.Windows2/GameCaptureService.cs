@@ -9,8 +9,27 @@ namespace LulCaster.Utility.ScreenCapture.Windows
 {
   public class GameCaptureService : IScreenCaptureService
   {
+    private object _gameHandleLock = new object();
     public ScreenOptions ScreenOptions { get; set; } = new ScreenOptions();
     private IntPtr _processPtr;
+
+    private IntPtr ProcessPtr
+    {
+      get
+      {
+        lock (_gameHandleLock)
+        {
+          return _processPtr;
+        }
+      }
+      set
+      {
+        lock (_gameHandleLock)
+        {
+          _processPtr = value;
+        }
+      }
+    }
 
     public GameCaptureService()
     {
@@ -32,7 +51,7 @@ namespace LulCaster.Utility.ScreenCapture.Windows
 
     public void SetProcessPointer(IntPtr processPtr)
     {
-      _processPtr = processPtr;
+      ProcessPtr = processPtr;
     }
 
     /// <summary>
@@ -42,9 +61,15 @@ namespace LulCaster.Utility.ScreenCapture.Windows
     /// <returns></returns>
     public void CaptureScreenshot(ref byte[] byteImage)
     {
-      var hdcSrc = User32.GetWindowDC(_processPtr);
+      if (ProcessPtr == null)
+      {
+        byteImage = null;
+        return;
+      }
+
+      var hdcSrc = User32.GetWindowDC(ProcessPtr);
       var windowRect = new User32.Rect();
-      User32.GetWindowRect(_processPtr, ref windowRect);
+      User32.GetWindowRect(ProcessPtr, ref windowRect);
       var destinationPtr = Gdi32.CreateCompatibleDC(hdcSrc);
       var bitmapPtr = Gdi32.CreateCompatibleBitmap(hdcSrc, ScreenOptions.ScreenWidth, ScreenOptions.ScreenHeight);
       var hOld = Gdi32.SelectObject(destinationPtr, bitmapPtr);
@@ -69,7 +94,7 @@ namespace LulCaster.Utility.ScreenCapture.Windows
       finally
       {
         Gdi32.DeleteDC(destinationPtr);
-        User32.ReleaseDC(_processPtr, hdcSrc);
+        User32.ReleaseDC(ProcessPtr, hdcSrc);
         Gdi32.DeleteObject(bitmapPtr);
         Gdi32.DeleteObject(hOld);
       }
