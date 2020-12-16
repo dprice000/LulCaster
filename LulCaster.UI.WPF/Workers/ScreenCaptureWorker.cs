@@ -3,7 +3,6 @@ using LulCaster.Utility.ScreenCapture.Windows;
 using System;
 using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace LulCaster.UI.WPF.Workers
 {

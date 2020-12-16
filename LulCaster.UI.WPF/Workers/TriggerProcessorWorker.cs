@@ -16,15 +16,16 @@ namespace LulCaster.UI.WPF.Workers
   public class TriggerProcessorWorker : LulWorkerBase
   {
     public event EventHandler<ScreenCaptureProgressArgs> ProgressChanged;
+    public event EventHandler<TriggerViewModel> TriggerActivated;
 
     private const int LOOP_HALT_TIMEOUT = 100;
     private int _idleHaltTimeout = 500;
     private IOcrService _ocrService = new OcrService();
-    private ConcurrentQueue<ScreenCapture> _processingQueue = new ConcurrentQueue<ScreenCapture>();
+    private readonly ConcurrentQueue<ScreenCapture> _processingQueue = new ConcurrentQueue<ScreenCapture>();
 
-    public void EnqueueScreenCapture(ScreenCapture screenCapture)
+    public TriggerProcessorWorker(ConcurrentQueue<ScreenCapture> processingQueue)
     {
-      _processingQueue.Enqueue(screenCapture);
+      _processingQueue = processingQueue;
     }
 
     protected override void DoWork()
@@ -93,7 +94,7 @@ namespace LulCaster.UI.WPF.Workers
         if (scrappedText.Contains(trigger.ThresholdValue))
         {
           Console.WriteLine($"Seconds before trigger was processed: {DateTime.Now.Subtract(screenCapture.CreationTime).TotalSeconds}");
-          trigger.SoundFile.Play();
+          
         }
       }
     }
@@ -126,6 +127,11 @@ namespace LulCaster.UI.WPF.Workers
       imageBitmap.Freeze();
 
       return imageBitmap;
+    }
+
+    private void OnTriggerActivated(TriggerViewModel trigger)
+    {
+      TriggerActivated?.Invoke(this, trigger);
     }
   }
 }
