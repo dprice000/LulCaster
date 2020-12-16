@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using LulCaster.UI.WPF.Config;
-using LulCaster.UI.WPF.Config.Models;
+using LulCaster.UI.WPF.Config.UserSettings;
+using LulCaster.UI.WPF.Config.UserSettings.Models;
 using LulCaster.UI.WPF.Controllers;
 using LulCaster.UI.WPF.Dialogs;
 using LulCaster.UI.WPF.Dialogs.Models;
@@ -53,7 +53,7 @@ namespace LulCaster.UI.WPF
     {
       services.AddScoped<IMapper>(provider =>
       {
-        var config = new MapperConfiguration(cfg => 
+        var config = new MapperConfiguration(cfg =>
         {
           cfg.CreateMap<PresetViewModel, PresetConfig>();
           cfg.CreateMap<TriggerViewModel, TriggerConfig>();
@@ -69,7 +69,7 @@ namespace LulCaster.UI.WPF
             .ForMember(dest => dest.Y, opt => opt.MapFrom(s => s.BoundingBox.Y))
             .ForMember(dest => dest.Widht, opt => opt.MapFrom(s => s.BoundingBox.Width))
             .ForMember(dest => dest.Height, opt => opt.MapFrom(s => s.BoundingBox.Height));
-         });
+        });
 
         return new Mapper(config);
       });

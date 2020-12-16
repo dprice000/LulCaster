@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using LulCaster.UI.WPF.Config.Models;
+using LulCaster.UI.WPF.Config.UserSettings.Models;
 using LulCaster.UI.WPF.ViewModels;
 using System;
 using System.Collections.Generic;
 
-namespace LulCaster.UI.WPF.Config
+namespace LulCaster.UI.WPF.Config.UserSettings
 {
   public class PresetConfigService : IPresetConfigService
   {

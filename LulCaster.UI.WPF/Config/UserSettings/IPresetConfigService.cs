@@ -1,7 +1,7 @@
 ﻿using LulCaster.UI.WPF.ViewModels;
 using System.Collections.Generic;
 
-namespace LulCaster.UI.WPF.Config
+namespace LulCaster.UI.WPF.Config.UserSettings
 {
   public interface IPresetConfigService
   {

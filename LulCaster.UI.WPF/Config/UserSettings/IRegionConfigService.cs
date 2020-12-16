@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Shapes;
 
-namespace LulCaster.UI.WPF.Config
+namespace LulCaster.UI.WPF.Config.UserSettings
 {
   public interface IRegionConfigService
   {

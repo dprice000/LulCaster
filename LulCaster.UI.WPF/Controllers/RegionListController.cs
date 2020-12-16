@@ -1,8 +1,7 @@
-﻿using LulCaster.UI.WPF.Config;
+﻿using LulCaster.UI.WPF.Config.UserSettings;
 using LulCaster.UI.WPF.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Threading.Tasks;
 
 namespace LulCaster.UI.WPF.Controllers

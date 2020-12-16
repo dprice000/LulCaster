@@ -76,7 +76,6 @@ namespace LulCaster.Utility.ScreenCapture.Windows
 
       try
       {
-        
         Gdi32.BitBlt(destinationPtr, 0, 0, ScreenOptions.ScreenWidth, ScreenOptions.ScreenHeight, hdcSrc, 0, 0, Gdi32.Srccopy);
         Gdi32.SelectObject(destinationPtr, hOld);
 
@@ -88,7 +87,6 @@ namespace LulCaster.Utility.ScreenCapture.Windows
 
           byteImage = new byte[memoryStream.Length];
           byteImage = memoryStream.ToArray();
-
         }
       }
       finally

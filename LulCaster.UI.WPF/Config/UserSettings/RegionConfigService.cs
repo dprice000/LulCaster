@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Shapes;
 
-namespace LulCaster.UI.WPF.Config
+namespace LulCaster.UI.WPF.Config.UserSettings
 {
   // TODO: This class is super inefficient but I just wanted to get it working.
   public class RegionConfigService : IRegionConfigService

@@ -11,16 +11,12 @@ namespace LulCaster.Utility.Common.Logic
       {
         case TriggerTypes.Text:
           return new TextTrigger();
-          break;
         case TriggerTypes.Color:
           throw new NotImplementedException();
-          break;
         case TriggerTypes.IncrementingNumber:
           throw new NotImplementedException();
-          break;
         case TriggerTypes.DecrementingNumber:
           throw new NotImplementedException();
-          break;
         default:
           throw new ArgumentException($"Type does not exist for passed in Trigger Type {triggerType}");
       }

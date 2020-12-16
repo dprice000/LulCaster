@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace LulCaster.UI.WPF.Config.Models
+namespace LulCaster.UI.WPF.Config.UserSettings.Models
 {
   public class PresetConfigSection : ConfigurationSection
   {

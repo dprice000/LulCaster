@@ -1,4 +1,4 @@
-﻿using LulCaster.UI.WPF.Config;
+﻿using LulCaster.UI.WPF.Config.UserSettings;
 using LulCaster.UI.WPF.ViewModels;
 using System;
 
