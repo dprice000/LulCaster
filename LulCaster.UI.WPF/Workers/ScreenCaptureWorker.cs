@@ -11,24 +11,24 @@ namespace LulCaster.UI.WPF.Workers
   {
     private readonly IScreenCaptureService _screenCaptureService;
     private Task _workerTask;
-    private IProgress<ScreenCaptureProgressArgs> _progressHandler;
     private Stopwatch _stopWatch = new Stopwatch();
-
-    public event EventHandler<ScreenCaptureCompletedArgs> ScreenCaptureCompleted;
-
-    public event EventHandler<ScreenCaptureProgressArgs> ProgressChanged;
 
     /// <summary>
     /// The lower limit in milliseconds on how fast a capture can run. Defaults to 60,000 ms.
     /// </summary>
     public int CaptureInterval { get; } = 1000;
 
+    public IProgress<ScreenCaptureProgressArgs> ProgressHandler { get; }
+
+    public event EventHandler<ScreenCaptureProgressArgs> ProgressChanged;
+    public event EventHandler<ScreenCaptureCompletedArgs> ScreenCaptureCompleted;
+
     public ScreenCaptureWorker(IScreenCaptureService screenCaptureService, int captureFps)
     {
       _screenCaptureService = screenCaptureService;
       CaptureInterval = CalculateHaltInterval(captureFps);
 
-      _progressHandler = new Progress<ScreenCaptureProgressArgs>(progressArgs =>
+      ProgressHandler = new Progress<ScreenCaptureProgressArgs>(progressArgs =>
       {
         ProgressChanged.Invoke(this, progressArgs);
       });
