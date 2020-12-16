@@ -1,5 +1,4 @@
-﻿using LulCaster.UI.WPF.Workers.EventArguments;
-using System;
+﻿using System.Threading.Tasks;
 
 namespace LulCaster.UI.WPF.Workers
 {
@@ -8,6 +7,7 @@ namespace LulCaster.UI.WPF.Workers
     protected object _autoResetLock = new object();
     protected object _runningFlagLock = new object();
     protected bool _isRunning, _autoReset = true;
+    protected readonly Task _workerTask;
 
     public bool AutoReset
     {
@@ -45,12 +45,17 @@ namespace LulCaster.UI.WPF.Workers
       }
     }
 
+    protected LulWorkerBase()
+    {
+      _workerTask = new Task(() => DoWork());
+    }
+
     public void Start()
     {
       if (!IsRunning)
       {
         IsRunning = true;
-        DoWork();
+        _workerTask.Start();
 
         //ProgressChanged?.Invoke(null, new ScreenCaptureProgressArgs
         //{

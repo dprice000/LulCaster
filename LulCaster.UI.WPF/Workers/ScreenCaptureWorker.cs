@@ -10,7 +10,6 @@ namespace LulCaster.UI.WPF.Workers
   internal class ScreenCaptureWorker : LulWorkerBase
   {
     private readonly IScreenCaptureService _screenCaptureService;
-    private Task _workerTask;
     private Stopwatch _stopWatch = new Stopwatch();
 
     /// <summary>
@@ -41,39 +40,36 @@ namespace LulCaster.UI.WPF.Workers
 
     protected override void DoWork()
     {
-      _workerTask = Task.Run(() =>
+      while (IsRunning)
       {
-        while (IsRunning)
+        _stopWatch.Start();
+
+        byte[] byteImage = new byte[0];
+        _screenCaptureService.CaptureScreenshot(ref byteImage);
+
+        // If game handle is not set we will get an empty array. Just do nothing.
+        if (byteImage == null)
         {
-          _stopWatch.Start();
-
-          byte[] byteImage = new byte[0];
-          _screenCaptureService.CaptureScreenshot(ref byteImage);
-
-          // If game handle is not set we will get an empty array. Just do nothing.
-          if (byteImage == null)
-          {
-            HaltUntilNextInterval();
-          }
-
-          var captureArgs = new ScreenCaptureCompletedArgs
-          {
-            ScreenImageStream = byteImage,
-            ScreenBounds = _screenCaptureService.ScreenOptions.GetBoundsAsRectangle()
-          };
-
-          OnScreenCaptureCompleted(captureArgs);
-
-          if (!AutoReset)
-          {
-            IsRunning = false;
-            break;
-          }
-
           HaltUntilNextInterval();
-          _stopWatch.Restart();
         }
-      });
+
+        var captureArgs = new ScreenCaptureCompletedArgs
+        {
+          ScreenImageStream = byteImage,
+          ScreenBounds = _screenCaptureService.ScreenOptions.GetBoundsAsRectangle()
+        };
+
+        OnScreenCaptureCompleted(captureArgs);
+
+        if (!AutoReset)
+        {
+          IsRunning = false;
+          break;
+        }
+
+        HaltUntilNextInterval();
+        _stopWatch.Restart();
+      }
     }
 
     private void HaltUntilNextInterval()
