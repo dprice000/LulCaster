@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.IO;
 using System.Windows.Media.Imaging;
 
 namespace LulCaster.UI.WPF.Workers
@@ -30,7 +29,7 @@ namespace LulCaster.UI.WPF.Workers
         Stop();
         return;
       }
-       
+
       using (var croppedImage = CropBitmap(_screenCapture, _region.BoundingBox))
       {
         //TODO: Do we want to remove this? Or do we want to do it better?

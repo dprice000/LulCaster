@@ -48,7 +48,6 @@ namespace LulCaster.UI.WPF.Workers
       while (IsRunning)
       {
         if (_screenCaptureQueue.IsEmpty 
-            || IsFull
             || !_screenCaptureQueue.TryDequeue(out ScreenCapture screenCapture))
         {
           Wait(IDLE_HALT_TIMEOUT);
