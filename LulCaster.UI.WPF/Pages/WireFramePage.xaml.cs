@@ -26,7 +26,7 @@ namespace LulCaster.UI.WPF.Pages
   {
     #region "Private Members"
     private readonly ScreenCaptureWorker _screenCaptureWorker;
-    private readonly TriggerProcessorWorker _triggerWorker;
+    private readonly RegionWorkerPool _triggerWorkerPool;
     private readonly SoundEffectWorker _soundEffectWorker = new SoundEffectWorker();
     private readonly BoundingBoxBrush _boundingBoxBrush = new BoundingBoxBrush();
     private readonly IPresetListController _presetListController;
@@ -35,7 +35,6 @@ namespace LulCaster.UI.WPF.Pages
     private readonly IConfigManagerService _configManagerService;
     private readonly IDialogService<InputDialog, InputDialogResult> _inputDialog;
     private readonly IDialogService<MessageBoxDialog, LulDialogResult> _messageBoxService;
-    private readonly ConcurrentQueue<ScreenCapture> _screenCaptureQueue = new ConcurrentQueue<ScreenCapture>();
 
     #endregion "Private Members"
 
@@ -72,7 +71,7 @@ namespace LulCaster.UI.WPF.Pages
 
       //Worker Initialization
       _screenCaptureWorker = new ScreenCaptureWorker(screenCaptureService, _configManagerService.GetAsInteger("CaptureFps"));
-      _triggerWorker = new TriggerProcessorWorker(_screenCaptureQueue);
+      _triggerWorkerPool = new RegionWorkerPool(_configManagerService.GetAsInteger("MaxRegionThreads"));
 
       InitializeWorkers();
       InitializeUserControlEvents();
@@ -106,8 +105,8 @@ namespace LulCaster.UI.WPF.Pages
       _screenCaptureWorker.ScreenCaptureCompleted += _screenCaptureTimer_ScreenCaptureCompleted;
       _screenCaptureWorker.Start();
 
-      _triggerWorker.TriggerActivated += _triggerWorker_TriggerActivated;
-      _triggerWorker.Start();
+      _triggerWorkerPool.TriggerActivated += _triggerWorkerPool_TriggerActivated;
+      _triggerWorkerPool.Start();
     }
 
     #endregion
@@ -157,7 +156,7 @@ namespace LulCaster.UI.WPF.Pages
 
         if (ViewModel.SelectedPreset != null)
         {
-          _screenCaptureQueue.Enqueue(new ScreenCapture()
+          _triggerWorkerPool.EnqueueScreenCapture(new ScreenCapture()
           {
             ScreenMemoryStream = imageStream,
             RegionViewModels = ViewModel.Regions,
@@ -175,7 +174,7 @@ namespace LulCaster.UI.WPF.Pages
       }, System.Windows.Threading.DispatcherPriority.Background);
     }
 
-    private void _triggerWorker_TriggerActivated(object sender, TriggerViewModel triggerArgs)
+    private void _triggerWorkerPool_TriggerActivated(object sender, TriggerViewModel triggerArgs)
     {
       _soundEffectWorker.EnqueueSound(triggerArgs);
     }
