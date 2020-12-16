@@ -25,7 +25,7 @@ namespace LulCaster.UI.WPF.Pages
     #region "Private Members"
     private readonly ScreenCaptureWorker _screenCaptureWorker;
     private readonly TriggerProcessorWorker _triggerWorker;
-    private const int CAPTURE_TIMER_INTERVAL = 1000;
+    private const int CAPTURE_FPS = 2;
     private readonly BoundingBoxBrush _boundingBoxBrush = new BoundingBoxBrush();
     private readonly IPresetListController _presetListController;
     private readonly IRegionListController _regionListController;
@@ -64,7 +64,7 @@ namespace LulCaster.UI.WPF.Pages
       ViewModel.Presets = new ObservableCollection<PresetViewModel>(_presetListController.GetAllPresets());
 
       //Worker Initialization
-      _screenCaptureWorker = new ScreenCaptureWorker(screenCaptureService, CAPTURE_TIMER_INTERVAL);
+      _screenCaptureWorker = new ScreenCaptureWorker(screenCaptureService, CAPTURE_FPS);
       _screenCaptureWorker.ScreenCaptureCompleted += _screenCaptureTimer_ScreenCaptureCompleted;
       _screenCaptureWorker.Start();
       

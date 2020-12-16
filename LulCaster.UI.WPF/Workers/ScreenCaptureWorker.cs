@@ -13,6 +13,7 @@ namespace LulCaster.UI.WPF.Workers
     private Task _workerTask;
     private IProgress<ScreenCaptureProgressArgs> _progressHandler;
     private Stopwatch _stopWatch = new Stopwatch();
+    private readonly int _captureInterval = 1000;
 
     public event EventHandler<ScreenCaptureCompletedArgs> ScreenCaptureCompleted;
 
@@ -21,13 +22,18 @@ namespace LulCaster.UI.WPF.Workers
     /// <summary>
     /// The lower limit in milliseconds on how fast a capture can run. Defaults to 60,000 ms.
     /// </summary>
-    public int CaptureInterval { get; set; }
+    public int CaptureInterval
+    {
+      get
+      {
+        return _captureInterval;
+      }
+    }
 
-    public ScreenCaptureWorker(IScreenCaptureService screenCaptureService, int captureInterval)
+    public ScreenCaptureWorker(IScreenCaptureService screenCaptureService, int captureFps)
     {
       _screenCaptureService = screenCaptureService;
-
-      CaptureInterval = captureInterval;
+      _captureInterval = CalculateHaltInterval(captureFps);
 
       _progressHandler = new Progress<ScreenCaptureProgressArgs>(progressArgs =>
       {
@@ -72,6 +78,7 @@ namespace LulCaster.UI.WPF.Workers
           }
 
           HaltUntilNextInterval();
+          _stopWatch.Restart();
         }
       });
     }
@@ -83,13 +90,18 @@ namespace LulCaster.UI.WPF.Workers
         Status = $"Screen capture interval completed in {_stopWatch.Elapsed.Milliseconds}ms."
       });
 
-      var haltTime = CaptureInterval - _stopWatch.Elapsed.Milliseconds;
-      _stopWatch.Restart();
+      var haltTime = CaptureInterval - (int)_stopWatch.Elapsed.TotalMilliseconds;
 
       if (haltTime > 0)
       {
         Thread.Sleep(haltTime);
       }
+    }
+
+    private int CalculateHaltInterval(int captureFps)
+    {
+      const int SECOND_AS_MS = 1000;
+      return SECOND_AS_MS / captureFps;
     }
 
     private void OnScreenCaptureCompleted(ScreenCaptureCompletedArgs captureArgs)
