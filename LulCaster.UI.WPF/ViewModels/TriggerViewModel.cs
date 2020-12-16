@@ -60,7 +60,6 @@ namespace LulCaster.UI.WPF.ViewModels
       {
         _soundFilePath = value;
         SoundFile = new SoundPlayer(_soundFilePath);
-        SoundFile.Load();
         OnPropertyChanged(nameof(SoundFilePath));
       }
     }
