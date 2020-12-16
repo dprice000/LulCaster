@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LulCaster.UI.WPF.Config;
 using LulCaster.UI.WPF.Config.UserSettings;
 using LulCaster.UI.WPF.Config.UserSettings.Models;
 using LulCaster.UI.WPF.Controllers;
@@ -39,6 +40,7 @@ namespace LulCaster.UI.WPF
     private void ConfigureServices(IServiceCollection services)
     {
       services.AddSingleton<MainWindow>();
+      services.AddSingleton<IConfigManagerService, ConfigManagerService>();
       services.AddSingleton<IPresetConfigService, PresetConfigService>();
       services.AddSingleton<IRegionConfigService, RegionConfigService>();
       services.AddScoped<IScreenCaptureService, GameCaptureService>();
