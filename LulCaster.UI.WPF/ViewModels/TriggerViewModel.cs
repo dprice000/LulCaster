@@ -59,11 +59,8 @@ namespace LulCaster.UI.WPF.ViewModels
       set
       {
         _soundFilePath = value;
-        SoundFile = new SoundPlayer(_soundFilePath);
         OnPropertyChanged(nameof(SoundFilePath));
       }
     }
-
-    public SoundPlayer SoundFile { get; private set; }
   }
 }

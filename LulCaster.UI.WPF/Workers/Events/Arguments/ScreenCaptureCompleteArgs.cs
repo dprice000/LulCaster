@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace LulCaster.UI.WPF.Workers.EventArguments
+namespace LulCaster.UI.WPF.Workers.Events.Arguments
 {
     internal class ScreenCaptureCompletedArgs
     {

@@ -1,6 +1,4 @@
-﻿using LulCaster.UI.WPF.Dialogs;
-using LulCaster.UI.WPF.Dialogs.Models;
-using LulCaster.UI.WPF.ViewModels;
+﻿using LulCaster.UI.WPF.ViewModels;
 using System.Collections.Generic;
 
 namespace LulCaster.UI.WPF.Controllers

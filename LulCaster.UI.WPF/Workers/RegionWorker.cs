@@ -1,5 +1,6 @@
 ﻿using LulCaster.UI.WPF.Utility;
 using LulCaster.UI.WPF.ViewModels;
+using LulCaster.UI.WPF.Workers.Events;
 using LulCaster.Utility.Service;
 using System;
 using System.Collections.Generic;
@@ -75,6 +76,11 @@ namespace LulCaster.UI.WPF.Workers
         //TODO: This needs to eventually tap into a trigger factory.
         if (scrappedText.Contains(trigger.ThresholdValue))
         {
+          TriggerEmitter.OnTriggerActivated(new Events.Arguments.TriggerSoundArgs()
+          {
+            FilePath = trigger.SoundFilePath
+          });
+
           Console.WriteLine($"Seconds before trigger was processed: {DateTime.Now.Subtract(screenCapture.CreationTime).TotalSeconds}");
         }
       }

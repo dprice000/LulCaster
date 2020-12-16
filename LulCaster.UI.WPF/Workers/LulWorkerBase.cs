@@ -7,7 +7,7 @@ namespace LulCaster.UI.WPF.Workers
     protected object _autoResetLock = new object();
     protected object _runningFlagLock = new object();
     protected bool _isRunning, _autoReset = true;
-    private readonly Task _workerTask;
+    private Task _workerTask;
 
     public bool AutoReset
     {
@@ -57,6 +57,12 @@ namespace LulCaster.UI.WPF.Workers
         IsRunning = true;
         _workerTask.Start();
       }
+    }
+
+    public void Reset()
+    {
+      _workerTask = new Task(() => DoWork());
+      Start();
     }
 
     public void Stop()

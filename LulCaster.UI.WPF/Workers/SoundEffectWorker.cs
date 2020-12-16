@@ -1,46 +1,45 @@
 ﻿using LulCaster.UI.WPF.ViewModels;
-using System;
+using LulCaster.UI.WPF.Workers.Events.Arguments;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Media;
 
 namespace LulCaster.UI.WPF.Workers
 {
   internal class SoundEffectWorker : LulWorkerBase
   {
     private Stopwatch _stopwatch = new Stopwatch();
-    private ConcurrentQueue<TriggerViewModel> _processingQueue = new ConcurrentQueue<TriggerViewModel>();
+    private ConcurrentQueue<TriggerSoundArgs> _soundQueue = new ConcurrentQueue<TriggerSoundArgs>();
     
     public SoundEffectWorker()
     {
     }
 
-    public SoundEffectWorker(TriggerViewModel trigger)
+    public void EnqueueSound(TriggerSoundArgs sound)
     {
-      _processingQueue.Enqueue(trigger);
-    }
-
-    public void EnqueueSound(TriggerViewModel trigger)
-    {
-      _processingQueue.Enqueue(trigger);
+      _soundQueue.Enqueue(sound);
 
       if (!IsRunning)
       {
+        Reset();
         Start();
       }
     }
 
     protected override void DoWork()
     {
-      while (!_processingQueue.IsEmpty)
+      while (!_soundQueue.IsEmpty)
       {
-        if (!_processingQueue.TryDequeue(out TriggerViewModel trigger)) 
+        if (!_soundQueue.TryDequeue(out TriggerSoundArgs sound)) 
         {
           Wait(1000);
           continue;
         }
 
         _stopwatch.Start();
-        trigger.SoundFile.Play();
+        SoundPlayer player = new SoundPlayer(sound.FilePath);
+        player.Load();
+        player.Play();
         _stopwatch.Reset();
       }
 

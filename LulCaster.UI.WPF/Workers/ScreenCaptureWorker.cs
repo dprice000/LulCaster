@@ -1,4 +1,4 @@
-﻿using LulCaster.UI.WPF.Workers.EventArguments;
+﻿using LulCaster.UI.WPF.Workers.Events.Arguments;
 using LulCaster.Utility.ScreenCapture.Windows;
 using System;
 using System.Diagnostics;
