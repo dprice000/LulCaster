@@ -11,11 +11,19 @@ namespace LulCaster.UI.WPF.Config.UserSettings.Models
       get { return (Guid)this["Id"]; }
       set { this["Id"] = value; }
     }
+
     [ConfigurationProperty("Name", IsRequired = true)]
     public string Name 
     {
       get { return (string)this["Name"]; }
       set { this["Name"] = value; }
+    }
+
+    [ConfigurationProperty("ProcessName", IsRequired = true)]
+    public string ProcessName
+    {
+      get { return (string)this["ProcessName"]; }
+      set { this["ProcessName"] = value; }
     }
   }
 }

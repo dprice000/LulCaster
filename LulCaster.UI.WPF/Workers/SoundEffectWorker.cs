@@ -1,5 +1,4 @@
-﻿using LulCaster.UI.WPF.ViewModels;
-using LulCaster.UI.WPF.Workers.Events.Arguments;
+﻿using LulCaster.UI.WPF.Workers.Events.Arguments;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Media;

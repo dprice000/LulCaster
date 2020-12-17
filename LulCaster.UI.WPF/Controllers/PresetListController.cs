@@ -13,9 +13,9 @@ namespace LulCaster.UI.WPF.Controllers
       _presetConfigService = configService;
     }
 
-    public PresetViewModel CreatePreset(string name)
+    public PresetViewModel CreatePreset(string name, string processName)
     {
-      return _presetConfigService.CreatePreset(name);
+      return _presetConfigService.CreatePreset(name, processName);
     }
 
     public IEnumerable<PresetViewModel> GetAllPresets()

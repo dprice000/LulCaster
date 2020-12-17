@@ -11,9 +11,10 @@ namespace LulCaster.UI.WPF.Workers
   {
     public event EventHandler<ScreenCaptureProgressArgs> ProgressChanged;
 
-    private const int IDLE_HALT_TIMEOUT = 100;
+    private const int IDLE_HALT_TIMEOUT = 50;
+    private readonly int _captureFps;
     private readonly List<RegionWorker> _regionWorkers = new List<RegionWorker>();
-    private List<ScreenCapture> _oldScreenCaptures = new List<ScreenCapture>();
+    private Queue<ScreenCapture> _oldScreenCaptures = new Queue<ScreenCapture>();
 
     public ConcurrentQueue<ScreenCapture> ScreenCaptureQueue { get; } = new ConcurrentQueue<ScreenCapture>();
 
@@ -27,9 +28,10 @@ namespace LulCaster.UI.WPF.Workers
     
     public int MaxPoolSize { get; }
 
-    public RegionWorkerPool(int maxPoolSize)
+    public RegionWorkerPool(int maxPoolSize, int captureFps)
     {
       MaxPoolSize = maxPoolSize;
+      _captureFps = captureFps;
     }
 
     protected override void DoWork()
@@ -49,7 +51,7 @@ namespace LulCaster.UI.WPF.Workers
             CreateWorker(screenCapture, region);
           }
 
-        _oldScreenCaptures.Add(screenCapture);
+        _oldScreenCaptures.Enqueue(screenCapture);
       }
     }
 
@@ -57,9 +59,15 @@ namespace LulCaster.UI.WPF.Workers
     {
       while (IsFull)
       {
-        Wait(IDLE_HALT_TIMEOUT);
-        PruneFinishedWorkers();
-        DisposeOldScreenCaptures();
+        try
+        {
+          Wait(IDLE_HALT_TIMEOUT);
+          PruneFinishedWorkers();
+        }
+        finally
+        {
+          DisposeOldScreenCaptures();
+        }
       }
     }
 
@@ -76,9 +84,14 @@ namespace LulCaster.UI.WPF.Workers
 
     public void DisposeOldScreenCaptures()
     {
-      foreach (var screenCapture in _oldScreenCaptures)
+      var extraFramesCount = _oldScreenCaptures.Count - _captureFps;
+
+      if (extraFramesCount > 0)
       {
-        screenCapture.Dispose();
+        for (int i = 0; i < extraFramesCount; i++)
+        {
+          _oldScreenCaptures.Dequeue().Dispose();
+        }
       }
     }
 

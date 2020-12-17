@@ -15,14 +15,15 @@ namespace LulCaster.UI.WPF.Config.UserSettings
       _mapper = mapper;
     }
 
-    public PresetViewModel CreatePreset(string name)
+    public PresetViewModel CreatePreset(string name, string processName)
     {
       var id = Guid.NewGuid();
       var newPreset = new PresetViewModel()
       {
         Id = id,
         Name = name,
-        FilePath = $"{id}.json"
+        FilePath = $"{id}.json",
+        ProcessName = processName
       };
 
       var presetConfig = _mapper.Map<PresetConfig>(newPreset);

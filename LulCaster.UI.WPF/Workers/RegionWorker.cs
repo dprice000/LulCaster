@@ -74,7 +74,7 @@ namespace LulCaster.UI.WPF.Workers
       foreach (var trigger in triggers)
       {
         //TODO: This needs to eventually tap into a trigger factory.
-        if (scrappedText.Contains(trigger.ThresholdValue))
+        if (scrappedText.Contains(trigger.ThresholdValue, StringComparison.OrdinalIgnoreCase))
         {
           TriggerEmitter.OnTriggerActivated(new Events.Arguments.TriggerSoundArgs()
           {

@@ -35,12 +35,7 @@ namespace LulCaster.UI.WPF.Dialogs
 
     public LulDialogResult Show(string title, string message, DialogButtons messageBoxButtons)
     {
-      DataContext = new MessageBoxViewModel()
-      {
-        Title = title,
-        Message = message,
-        MessageBoxButtons = messageBoxButtons
-      };
+      DataContext = new MessageBoxViewModel(title, message, messageBoxButtons);
 
       ShowDialog();
 

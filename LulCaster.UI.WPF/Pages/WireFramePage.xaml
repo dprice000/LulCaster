@@ -42,17 +42,21 @@
       </Grid.ColumnDefinitions>
       <lulCon:InteractableListControl x:Name="LstGamePresets" Title="Game Presets"
                                       ItemDescriptor="Game Preset"
+                                      IsPresetControl="True"
                                       ItemList="{Binding Presets}" 
                                       SelectedItem="{Binding SelectedPreset, Mode=TwoWay}"
                                       NewItemDialogExecuted="LstGamePresets_NewPresetDialogExecuted"
                                       DeleteItemDialogExecuted="LstGamePresets_DeletePresetDialogExecuted"
+                                      ItemEditedDialogExecuted="LstGamePresets_EditPresetDialogExecuted"
                                       Grid.Column="0" Margin="6,0,3,0" />
       <lulCon:InteractableListControl x:Name="LstScreenRegions" Title="Screen Regions"
                                       ItemDescriptor="Screen Region"
+                                      IsPresetControl="False"
                                       ItemList="{Binding Regions}" 
                                       SelectedItem="{Binding SelectedRegion, Mode=TwoWay}"
                                       NewItemDialogExecuted="LstScreenRegions_NewRegionDialogExecuted"
                                       DeleteItemDialogExecuted="LstScreenRegions_DeleteRegionDialogExecuted"
+                                      ItemEditedDialogExecuted="LstScreenRegions_EditRegionDialogExecuted"
                                       Grid.Column="1" Margin="6,0,3,0" />
       <lulCon:RegionConfiguration x:Name="cntrlRegionConfig" SelectedRegion="{Binding SelectedRegion}" SelectedTrigger="{Binding SelectedTrigger}" Grid.Column="2" Margin="3,0,3,0" />
     </Grid>

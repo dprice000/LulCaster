@@ -38,6 +38,13 @@
                                                 ToolTip="{Binding ElementName=CtrlInteractableListControl, Path=DeleteToolTip}" Width="25" Click="Button_BtnDeletePreset">
             <materialDesign:PackIcon Kind="Minus" Opacity=".56" Height="18" Width="18" />
           </Button>
+          <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                                IsEnabled="{Binding ElementName=CtrlInteractableListControl, Path=SelectedItem, Converter={StaticResource NullToBooleanConverter}}"
+                                                Height="25"
+                                                materialDesign:ButtonAssist.CornerRadius="24"
+                                                ToolTip="{Binding ElementName=CtrlInteractableListControl, Path=EditToolTip}" Width="25" Click="Button_BtnEditPreset">
+            <materialDesign:PackIcon Kind="Cog" Opacity=".56" Height="18" Width="18" />
+          </Button>
         </WrapPanel>
       </Grid>
 

@@ -13,14 +13,9 @@
   <Grid IsEnabled="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion, Converter={StaticResource NullToBooleanConverter}}">
     <Grid.RowDefinitions>
       <RowDefinition Height="25"></RowDefinition>
-      <RowDefinition Height="25"></RowDefinition>
       <RowDefinition Height="127*"></RowDefinition>
     </Grid.RowDefinitions>
-    <StackPanel Orientation="Horizontal" Grid.Row="0">
-      <Label>Region Name:</Label>
-      <TextBox Width="517" Text="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.Name, Mode=TwoWay}"></TextBox>
-    </StackPanel>
-    <StackPanel Grid.Row="1" Orientation="Horizontal">
+    <StackPanel Grid.Row="0" Orientation="Horizontal">
       <Label>Triggers:</Label>
       <ComboBox Width="200" DisplayMemberPath="Name" SelectedIndex="0"
             ItemsSource="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedRegion.Triggers, Mode=TwoWay}"
@@ -39,7 +34,7 @@
         <materialDesign:PackIcon Kind="Minus" Opacity=".56" Height="18" Width="18" />
       </Button>
     </StackPanel>
-    <GroupBox Name="GroupingConfigs" Grid.Row="2" Margin="5,8,5,5" Header="Trigger Configuration">
+    <GroupBox Name="GroupingConfigs" Grid.Row="1" Margin="5,8,5,5" Header="Trigger Configuration">
       <ScrollViewer IsEnabled="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedTrigger, Mode=TwoWay, Converter={StaticResource NullToBooleanConverter}}">
         <StackPanel Orientation="Vertical">
           <StackPanel Orientation="Horizontal">

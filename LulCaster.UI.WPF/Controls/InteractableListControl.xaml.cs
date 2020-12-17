@@ -14,9 +14,12 @@ namespace LulCaster.UI.WPF.Controls
   public partial class InteractableListControl : UserControl
   {
     #region "Public Events"
+
     public event EventHandler<InputDialogResult> NewItemDialogExecuted;
 
     public event EventHandler<LulDialogResult> DeleteItemDialogExecuted;
+
+    public event EventHandler<InputDialogResult> ItemEditedDialogExecuted;
 
     public event EventHandler<IListItem> SelectionChanged;
 
@@ -29,6 +32,14 @@ namespace LulCaster.UI.WPF.Controls
     (
         "Title",
         typeof(string),
+        typeof(InteractableListControl)
+    );
+
+    public static readonly DependencyProperty IsPresetProperty =
+    DependencyProperty.Register
+    (
+        "IsPresetControl",
+        typeof(bool),
         typeof(InteractableListControl)
     );
 
@@ -75,6 +86,12 @@ namespace LulCaster.UI.WPF.Controls
       set { SetValue(TitleProperty, value); }
     }
 
+    public bool IsPresetControl
+    {
+      get { return (bool)GetValue(IsPresetProperty); }
+      set { SetValue(IsPresetProperty, value); }
+    }
+
     /// <summary>
     /// This is the word that will be used to describe a item in the list.
     /// </summary>
@@ -94,6 +111,11 @@ namespace LulCaster.UI.WPF.Controls
       get => $"Delete Selected {ItemDescriptor}";
     }
 
+    public string EditToolTip
+    {
+      get => $"Edit Selected {ItemDescriptor}";
+    }
+
     public IList ItemList
     {
       get { return (IList)GetValue(ItemListProperty); }
@@ -103,8 +125,8 @@ namespace LulCaster.UI.WPF.Controls
     public IListItem SelectedItem
     {
       get { return (IListItem)GetValue(SelectedItemProperty); }
-      set 
-      { 
+      set
+      {
         SetValue(SelectedItemProperty, value);
         SelectionChanged?.Invoke(this, value);
       }
@@ -112,6 +134,8 @@ namespace LulCaster.UI.WPF.Controls
 
     public IDialogService<InputDialog, InputDialogResult> InputDialog { get; set; }
     public IDialogService<MessageBoxDialog, LulDialogResult> MessageBoxService { get; set; }
+
+    public PresetInputDialog PresetInputDialog { get; set; }
 
     #endregion "Properties"
 
@@ -122,16 +146,10 @@ namespace LulCaster.UI.WPF.Controls
 
     private void Button_btnAddPreset(object sender, RoutedEventArgs e)
     {
-      if (InputDialog.Show($"New {ItemDescriptor}", $"Enter New {ItemDescriptor} Name: ", DialogButtons.OkCancel) is InputDialogResult dialogResult)
-      {
-        if (dialogResult.DialogResult == DialogResults.Ok && string.IsNullOrWhiteSpace(dialogResult.Input))
-        {
-          MessageBoxService.Show("Empty Preset Name", "No Preset Name Provided!!", Dialogs.DialogButtons.Ok);
-          return;
-        }
+      var action = "Creating New";
+      var dialogResult = IsPresetControl ? CreatePresetPrompt(ItemDescriptor, action, string.Empty, string.Empty) : CreateRegionPrompt(ItemDescriptor, action);
 
-        NewItemDialogExecuted?.Invoke(this, dialogResult);
-      }
+      NewItemDialogExecuted?.Invoke(this, dialogResult);
     }
 
     private void Button_BtnDeletePreset(object sender, RoutedEventArgs e)
@@ -140,6 +158,34 @@ namespace LulCaster.UI.WPF.Controls
       {
         DeleteItemDialogExecuted?.Invoke(this, dialogResult);
       }
+    }
+
+    private void Button_BtnEditPreset(object sender, RoutedEventArgs e)
+    {
+      var action = "Editing";
+      InputDialogResult dialogResult = null;
+
+      if (IsPresetControl)
+      {
+        var presetItem = (IPresetListItem)SelectedItem;
+        CreatePresetPrompt(ItemDescriptor, action, presetItem.Name, presetItem.ProcessName);
+      }
+      else
+      {
+        CreateRegionPrompt(ItemDescriptor, action);
+      }
+
+      ItemEditedDialogExecuted?.Invoke(this, dialogResult);
+    }
+
+    private PresetInputDialogResult CreatePresetPrompt(string itemDescriptor, string action, string presetName, string processName)
+    {
+      return (PresetInputDialogResult)PresetInputDialog.Show($"{action} {itemDescriptor}", $"{action} {itemDescriptor}: ", presetName, processName, DialogButtons.OkCancel);
+    }
+
+    private InputDialogResult CreateRegionPrompt(string itemDescriptor, string action)
+    {
+      return InputDialog.Show($"{action} {itemDescriptor}", $"{action} {itemDescriptor}: ", DialogButtons.OkCancel);
     }
   }
 }

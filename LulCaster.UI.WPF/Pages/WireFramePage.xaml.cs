@@ -35,6 +35,7 @@ namespace LulCaster.UI.WPF.Pages
     private readonly IConfigManagerService _configManagerService;
     private readonly IDialogService<InputDialog, InputDialogResult> _inputDialog;
     private readonly IDialogService<MessageBoxDialog, LulDialogResult> _messageBoxService;
+    private readonly PresetInputDialog _presetInputDialog;
 
     #endregion "Private Members"
 
@@ -51,7 +52,8 @@ namespace LulCaster.UI.WPF.Pages
                           , IScreenCaptureService screenCaptureService
                           , IConfigManagerService configManagerService
                           , IDialogService<InputDialog, InputDialogResult> inputDialog
-                          , IDialogService<MessageBoxDialog, LulDialogResult> messageBoxService)
+                          , IDialogService<MessageBoxDialog, LulDialogResult> messageBoxService
+                          , PresetInputDialog presetInputDialog)
     {
       InitializeComponent();
       DataContext = new WireFrameViewModel();
@@ -60,6 +62,7 @@ namespace LulCaster.UI.WPF.Pages
       _inputDialog = inputDialog;
       _messageBoxService = messageBoxService;
       _configManagerService = configManagerService;
+      _presetInputDialog = presetInputDialog;
       InitializeDialogs();
       InitializeRegionConfigEvents();
 
@@ -70,8 +73,9 @@ namespace LulCaster.UI.WPF.Pages
       ViewModel.Presets = new ObservableCollection<PresetViewModel>(_presetListController.GetAllPresets());
 
       //Worker Initialization
-      _screenCaptureWorker = new ScreenCaptureWorker(screenCaptureService, _configManagerService.GetAsInteger("CaptureFps"));
-      _regionWorkerPool = new RegionWorkerPool(_configManagerService.GetAsInteger("MaxRegionThreads"));
+      var captureFps = _configManagerService.GetAsInteger("CaptureFps");
+      _screenCaptureWorker = new ScreenCaptureWorker(screenCaptureService, captureFps);
+      _regionWorkerPool = new RegionWorkerPool(_configManagerService.GetAsInteger("MaxRegionThreads"), captureFps);
 
       InitializeWorkers();
       InitializeUserControlEvents();
@@ -96,8 +100,10 @@ namespace LulCaster.UI.WPF.Pages
     {
       LstGamePresets.InputDialog = _inputDialog;
       LstGamePresets.MessageBoxService = _messageBoxService;
+      LstGamePresets.PresetInputDialog = _presetInputDialog;
       LstScreenRegions.InputDialog = _inputDialog;
       LstScreenRegions.MessageBoxService = _messageBoxService;
+      LstScreenRegions.PresetInputDialog = _presetInputDialog;
     }
 
     private void InitializeWorkers()
@@ -234,9 +240,11 @@ namespace LulCaster.UI.WPF.Pages
     #region "Dialog Events"
     private void LstGamePresets_NewPresetDialogExecuted(object sender, InputDialogResult e)
     {
+      var result = (PresetInputDialogResult)e;
+
       if (e.DialogResult == Dialogs.Models.DialogResults.Ok)
       {
-        var newPreset = _presetListController.CreatePreset(e.Input);
+        var newPreset = _presetListController.CreatePreset(result.PresetName, result.ProcessName);
         ViewModel.Presets.Add(newPreset);
         ViewModel.SelectedPreset = newPreset;
       }
@@ -249,6 +257,20 @@ namespace LulCaster.UI.WPF.Pages
         _presetListController.DeletePreset(ViewModel.SelectedPreset);
         ViewModel.Presets.Remove(ViewModel.SelectedPreset);
         ViewModel.SelectedPreset = null;
+      }
+    }
+
+    private void LstGamePresets_EditPresetDialogExecuted(object sender, InputDialogResult e)
+    {
+      var result = (PresetInputDialogResult)e;
+
+      if (e.DialogResult == DialogResults.Ok)
+      {
+        var existingPresetIndex = ViewModel.Presets.IndexOf(ViewModel.SelectedPreset);
+        _presetListController.DeletePreset(ViewModel.SelectedPreset);
+        var newPreset = _presetListController.CreatePreset(result.PresetName, result.ProcessName);
+        ViewModel.Presets[existingPresetIndex] = newPreset;
+        ViewModel.SelectedPreset = newPreset;
       }
     }
 
@@ -269,6 +291,21 @@ namespace LulCaster.UI.WPF.Pages
         _regionListController.DeleteRegion(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion.Id);
         ViewModel.Regions.Remove(ViewModel.SelectedRegion);
         ViewModel.SelectedRegion = null;
+      }
+    }
+
+    private void LstScreenRegions_EditRegionDialogExecuted(object sender, InputDialogResult e)
+    {
+      if (e == null)
+        return;
+
+      if (e.DialogResult == DialogResults.Ok)
+      {
+        var existingRegionIndex = ViewModel.Regions.IndexOf(ViewModel.SelectedRegion);
+        _regionListController.DeleteRegion(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion.Id);
+        var newRegion = _regionListController.CreateRegion(ViewModel.SelectedPreset.Id, e.Input);
+        ViewModel.Regions[existingRegionIndex] = newRegion;
+        ViewModel.SelectedRegion = newRegion;
       }
     }
     #endregion

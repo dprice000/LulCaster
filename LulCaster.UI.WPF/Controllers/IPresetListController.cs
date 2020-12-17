@@ -5,7 +5,7 @@ namespace LulCaster.UI.WPF.Controllers
 {
   public interface IPresetListController
   {
-    PresetViewModel CreatePreset(string name);
+    PresetViewModel CreatePreset(string name, string processName);
 
     IEnumerable<PresetViewModel> GetAllPresets();
 

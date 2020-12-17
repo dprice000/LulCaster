@@ -98,8 +98,10 @@ namespace LulCaster.UI.WPF
     private void RegisterDialogServices(IServiceCollection services)
     {
       services.AddScoped<InputDialog>();
+      services.AddScoped<PresetInputDialog>();
       services.AddScoped<MessageBoxDialog>();
       services.AddTransient(typeof(IDialogService<InputDialog, InputDialogResult>), typeof(DialogService<InputDialog, InputDialogResult>));
+      services.AddTransient(typeof(IDialogService<PresetInputDialog, PresetInputDialogResult>), typeof(DialogService<PresetInputDialog, PresetInputDialogResult>));
       services.AddTransient(typeof(IDialogService<MessageBoxDialog, LulDialogResult>), typeof(DialogService<MessageBoxDialog, LulDialogResult>));
     }
   }

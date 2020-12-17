@@ -3,11 +3,12 @@ using System;
 
 namespace LulCaster.UI.WPF.ViewModels
 {
-  public class PresetViewModel : ViewModelBase, IListItem
+  public class PresetViewModel : ViewModelBase, IPresetListItem
   {
     private Guid _id;
     private string _name;
     private string _filePath;
+    private string _processName;
 
     public Guid Id
     {
@@ -43,6 +44,19 @@ namespace LulCaster.UI.WPF.ViewModels
       {
         _filePath = value;
         OnPropertyChanged(nameof(FilePath));
+      }
+    }
+
+    public string ProcessName
+    {
+      get
+      {
+        return _processName;
+      }
+      set
+      {
+        _processName = value;
+        OnPropertyChanged(nameof(ProcessName));
       }
     }
   }
