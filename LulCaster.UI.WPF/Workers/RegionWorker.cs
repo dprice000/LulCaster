@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Windows.Media.Imaging;
 
 namespace LulCaster.UI.WPF.Workers
 {
@@ -31,42 +30,14 @@ namespace LulCaster.UI.WPF.Workers
         return;
       }
 
-      using (var croppedImage = CropBitmap(_screenCapture, _region.BoundingBox))
+      using (var croppedImage = BitmapHelper.CropBitmap(_screenCapture, _region.BoundingBox))
+      using (var resizedImage = BitmapHelper.ResizeBitmap(croppedImage, _region.BoundingBox, 2))
       {
-        //TODO: Do we want to remove this? Or do we want to do it better?
-        //using (MemoryStream memory = new MemoryStream())
-        //{
-        //  using (FileStream fs = new FileStream(@"C:\Users\David\Documents\Overwatch\poo2.bmp", FileMode.Create, FileAccess.ReadWrite))
-        //  {
-        //    croppedImage.Save(memory, ImageFormat.Jpeg);
-        //    byte[] bytes = memory.ToArray();
-        //    fs.Write(bytes, 0, bytes.Length);
-        //  }
-        //}
-
         var scrappedText = ScrapeImage(croppedImage);
         ProcessTriggers(_region.Triggers, _screenCapture, scrappedText);
       }
 
       IsRunning = false;
-    }
-
-    private Bitmap CropBitmap(ScreenCapture screenCapture, Rectangle regionBoundingBox)
-    {
-      using (var image = Image.FromStream(screenCapture.ScreenMemoryStream))
-      {
-        var relativeBounds = AspectRatioConverter.ResolveScreenLocation(screenCapture.ScreenBounds, screenCapture.CanvasBounds, regionBoundingBox);
-
-        Bitmap croppedBitmap = new Bitmap(relativeBounds.Width, relativeBounds.Height);
-
-        using (Graphics graphics = Graphics.FromImage(croppedBitmap))
-        {
-          graphics.DrawImage(image, new Rectangle(0, 0, croppedBitmap.Width, croppedBitmap.Height), relativeBounds,
-                           GraphicsUnit.Pixel);
-        }
-
-        return croppedBitmap;
-      }
     }
 
     private void ProcessTriggers(IList<TriggerViewModel> triggers, ScreenCapture screenCapture, string scrappedText)
@@ -94,18 +65,6 @@ namespace LulCaster.UI.WPF.Workers
 
         return _ocrService.ProcessImage(memoryStream);
       }
-    }
-
-    private BitmapImage ConvertStreamToBitmap(MemoryStream imageStream)
-    {
-      var imageBitmap = new BitmapImage();
-      imageBitmap.BeginInit();
-      imageBitmap.StreamSource = imageStream;
-      imageBitmap.CacheOption = BitmapCacheOption.OnLoad;
-      imageBitmap.EndInit();
-      imageBitmap.Freeze();
-
-      return imageBitmap;
     }
   }
 }
