@@ -288,7 +288,7 @@ namespace LulCaster.UI.WPF.Pages
     {
       var result = (PresetInputDialogResult)e;
 
-      if (e.DialogResult == DialogResults.Ok)
+      if (e?.DialogResult == DialogResults.Ok)
       {
         var existingPresetIndex = ViewModel.Presets.IndexOf(ViewModel.SelectedPreset);
         _presetListController.DeletePreset(ViewModel.SelectedPreset);
