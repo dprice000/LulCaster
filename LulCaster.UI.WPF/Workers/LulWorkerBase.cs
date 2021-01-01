@@ -4,6 +4,8 @@ namespace LulCaster.UI.WPF.Workers
 {
   public abstract class LulWorkerBase
   {
+    protected readonly int IDLE_TIMEOUT = 10;
+
     protected object _autoResetLock = new object();
     protected object _runningFlagLock = new object();
     protected bool _isRunning, _autoReset = true;
@@ -45,8 +47,9 @@ namespace LulCaster.UI.WPF.Workers
       }
     }
 
-    protected LulWorkerBase()
+    protected LulWorkerBase(int idleTimeout)
     {
+      IDLE_TIMEOUT = idleTimeout;
       _workerTask = new Task(() => DoWork());
     }
 
@@ -62,7 +65,6 @@ namespace LulCaster.UI.WPF.Workers
     public void Reset()
     {
       _workerTask = new Task(() => DoWork());
-      Start();
     }
 
     public void Stop()

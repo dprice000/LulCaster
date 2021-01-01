@@ -11,7 +11,6 @@ namespace LulCaster.UI.WPF.Workers
   {
     public event EventHandler<ScreenCaptureProgressArgs> ProgressChanged;
 
-    private const int IDLE_HALT_TIMEOUT = 50;
     private readonly int _captureFps;
     private readonly List<RegionWorker> _regionWorkers = new List<RegionWorker>();
     private Queue<ScreenCapture> _oldScreenCaptures = new Queue<ScreenCapture>();
@@ -28,7 +27,7 @@ namespace LulCaster.UI.WPF.Workers
     
     public int MaxPoolSize { get; }
 
-    public RegionWorkerPool(int maxPoolSize, int captureFps)
+    public RegionWorkerPool(int maxPoolSize, int captureFps, int idleTimeout) : base(idleTimeout)
     {
       MaxPoolSize = maxPoolSize;
       _captureFps = captureFps;
@@ -41,7 +40,7 @@ namespace LulCaster.UI.WPF.Workers
         if (ScreenCaptureQueue.IsEmpty 
             || !ScreenCaptureQueue.TryDequeue(out ScreenCapture screenCapture))
         {
-          Wait(IDLE_HALT_TIMEOUT);
+          Wait(IDLE_TIMEOUT);
           continue;
         }
 
@@ -61,7 +60,7 @@ namespace LulCaster.UI.WPF.Workers
       {
         try
         {
-          Wait(IDLE_HALT_TIMEOUT);
+          Wait(IDLE_TIMEOUT);
           PruneFinishedWorkers();
         }
         finally
@@ -97,7 +96,7 @@ namespace LulCaster.UI.WPF.Workers
 
     private void CreateWorker(ScreenCapture screenCapture, RegionViewModel region)
     {
-      var worker = new RegionWorker(screenCapture, region);
+      var worker = new RegionWorker(screenCapture, region, IDLE_TIMEOUT);
       worker.Start();
       _regionWorkers.Add(worker);
     }

@@ -9,8 +9,9 @@ namespace LulCaster.UI.WPF.Workers
   {
     private Stopwatch _stopwatch = new Stopwatch();
     private ConcurrentQueue<TriggerSoundArgs> _soundQueue = new ConcurrentQueue<TriggerSoundArgs>();
-    
-    public SoundEffectWorker()
+    private SoundPlayer player = new SoundPlayer();
+
+    public SoundEffectWorker(int idleTimeout) : base (idleTimeout)
     {
     }
 
@@ -31,12 +32,12 @@ namespace LulCaster.UI.WPF.Workers
       {
         if (!_soundQueue.TryDequeue(out TriggerSoundArgs sound)) 
         {
-          Wait(1000);
+          Wait(IDLE_TIMEOUT);
           continue;
         }
 
         _stopwatch.Start();
-        SoundPlayer player = new SoundPlayer(sound.FilePath);
+        player.SoundLocation = sound.FilePath;
         player.Load();
         player.Play();
         _stopwatch.Reset();
@@ -44,6 +45,5 @@ namespace LulCaster.UI.WPF.Workers
 
       IsRunning = false;
     }
-
   }
 }

@@ -15,11 +15,11 @@ namespace LulCaster
 
       while (true)
       {
-        var bitmap = screenCap.CaptureScreenshot();
-        var text = ocr.ProcessImage(new MemoryStream(bitmap));
+        //var bitmap = screenCap.CaptureScreenshot();
+        //var text = ocr.ProcessImage(new MemoryStream(bitmap));
 
-        Console.WriteLine(text);
-        Thread.Sleep(5000);
+        //Console.WriteLine(text);
+        //Thread.Sleep(5000);
       }
     }
   }

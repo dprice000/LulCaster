@@ -11,6 +11,7 @@ using LulCaster.Utility.ScreenCapture.Windows;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -25,9 +26,10 @@ namespace LulCaster.UI.WPF.Pages
   public partial class WireFramePage : Page
   {
     #region "Private Members"
+
     private readonly ScreenCaptureWorker _screenCaptureWorker;
     private readonly RegionWorkerPool _regionWorkerPool;
-    private readonly SoundEffectWorker _soundEffectWorker = new SoundEffectWorker();
+    private readonly SoundEffectWorker _soundEffectWorker;
     private readonly BoundingBoxBrush _boundingBoxBrush = new BoundingBoxBrush();
     private readonly IPresetListController _presetListController;
     private readonly IRegionListController _regionListController;
@@ -36,6 +38,7 @@ namespace LulCaster.UI.WPF.Pages
     private readonly IDialogService<InputDialog, InputDialogResult> _inputDialog;
     private readonly IDialogService<MessageBoxDialog, LulDialogResult> _messageBoxService;
     private readonly PresetInputDialog _presetInputDialog;
+    private Stopwatch stopWatch = new Stopwatch();
 
     #endregion "Private Members"
 
@@ -46,6 +49,7 @@ namespace LulCaster.UI.WPF.Pages
     #endregion "Properties"
 
     #region "Contructors"
+
     public WireFramePage(IPresetListController presetListController
                           , IRegionListController regionListController
                           , ITriggerController triggerController
@@ -74,15 +78,19 @@ namespace LulCaster.UI.WPF.Pages
 
       //Worker Initialization
       var captureFps = _configManagerService.GetAsInteger("CaptureFps");
-      _screenCaptureWorker = new ScreenCaptureWorker(screenCaptureService, captureFps);
-      _regionWorkerPool = new RegionWorkerPool(_configManagerService.GetAsInteger("MaxRegionThreads"), captureFps);
+      var workerIdleTimeout = _configManagerService.GetAsInteger("WorkIdleTimeout");
+      _soundEffectWorker = new SoundEffectWorker(workerIdleTimeout);
+      _screenCaptureWorker = new ScreenCaptureWorker(screenCaptureService, captureFps, workerIdleTimeout);
+      _regionWorkerPool = new RegionWorkerPool(_configManagerService.GetAsInteger("MaxRegionThreads"), captureFps, workerIdleTimeout);
 
       InitializeWorkers();
       InitializeUserControlEvents();
     }
-    #endregion
+
+    #endregion "Contructors"
 
     #region "Initialization Methods"
+
     private void InitializeRegionConfigEvents()
     {
       cntrlRegionConfig.BtnAddTrigger.Click += BtnAddTrigger_Click;
@@ -91,6 +99,7 @@ namespace LulCaster.UI.WPF.Pages
 
     private void InitializeUserControlEvents()
     {
+      CompositionTarget.Rendering += CompositionTarget_Rendering;
       LstGamePresets.SelectionChanged += LstGamePresets_SelectionChanged;
       Controls.RegionConfiguration.SaveConfigTriggered += RegionConfiguration_SaveConfigTriggered;
       ViewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -108,16 +117,16 @@ namespace LulCaster.UI.WPF.Pages
 
     private void InitializeWorkers()
     {
-      _screenCaptureWorker.ScreenCaptureCompleted += _screenCaptureTimer_ScreenCaptureCompleted;
       _screenCaptureWorker.Start();
 
       TriggerEmitter.TriggerActivated += _triggerWorkerPool_TriggerActivated;
       _regionWorkerPool.Start();
     }
 
-    #endregion
+    #endregion "Initialization Methods"
 
     #region "User Control Events"
+
     private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
       if (e.PropertyName == nameof(ViewModel.SelectedRegion))
@@ -145,13 +154,23 @@ namespace LulCaster.UI.WPF.Pages
     {
       await _regionListController.UpdateRegionAsync(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion);
     }
-    #endregion
+
+    #endregion "User Control Events"
 
     #region "Screen Capture Events"
-    private void _screenCaptureTimer_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
+
+    private void CompositionTarget_Rendering(object sender, EventArgs e)
     {
-      this.Dispatcher?.Invoke(() =>
+      Console.WriteLine($"MS: {stopWatch.ElapsedMilliseconds}");
+
+      Dispatcher?.BeginInvoke(new Action(() =>
       {
+        if (_screenCaptureWorker.Queue.IsEmpty
+            || !_screenCaptureWorker.Queue.TryDequeue(out ScreenCaptureCompletedArgs captureArgs))
+        {
+          return;
+        }
+
         var imageStream = new MemoryStream(captureArgs.ScreenImageStream);
         var screenCaptureImage = new BitmapImage();
         screenCaptureImage.BeginInit();
@@ -160,6 +179,8 @@ namespace LulCaster.UI.WPF.Pages
         screenCaptureImage.EndInit();
         screenCaptureImage.Freeze();
 
+        stopWatch.Reset();
+        stopWatch.Start();
         if (ViewModel.SelectedPreset != null)
         {
           _regionWorkerPool.ScreenCaptureQueue.Enqueue(new ScreenCapture()
@@ -171,13 +192,13 @@ namespace LulCaster.UI.WPF.Pages
             CreationTime = DateTime.Now
           });
         }
+        Console.WriteLine($"MS: {stopWatch.ElapsedMilliseconds}");
+        stopWatch.Reset();
+        stopWatch.Start();
 
-        var imageBrush = new ImageBrush(screenCaptureImage);
-
-        canvasScreenFeed.Background = imageBrush;
-
+        canvasScreenFeed.Background = new ImageBrush(screenCaptureImage);
         DrawSelectedRegion();
-      }, System.Windows.Threading.DispatcherPriority.Background);
+      }), System.Windows.Threading.DispatcherPriority.Render);
     }
 
     private void _triggerWorkerPool_TriggerActivated(object sender, TriggerSoundArgs soundArgs)
@@ -199,9 +220,11 @@ namespace LulCaster.UI.WPF.Pages
         ViewModel.SelectedRegion.BoundingBox = selectedBox;
       }
     }
-    #endregion
+
+    #endregion "Screen Capture Events"
 
     #region "Mouse Events"
+
     private void CanvasScreenFeed_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
       this.Dispatcher?.Invoke(() =>
@@ -235,9 +258,10 @@ namespace LulCaster.UI.WPF.Pages
       });
     }
 
-    #endregion
+    #endregion "Mouse Events"
 
     #region "Dialog Events"
+
     private void LstGamePresets_NewPresetDialogExecuted(object sender, InputDialogResult e)
     {
       var result = (PresetInputDialogResult)e;
@@ -308,9 +332,11 @@ namespace LulCaster.UI.WPF.Pages
         ViewModel.SelectedRegion = newRegion;
       }
     }
-    #endregion
+
+    #endregion "Dialog Events"
 
     #region "Region Config Events"
+
     private void BtnAddTrigger_Click(object sender, System.Windows.RoutedEventArgs e)
     {
       if (_inputDialog.Show("New Trigger", "New Trigger Name:", DialogButtons.OkCancel) is InputDialogResult dialogResult && dialogResult.DialogResult == DialogResults.Ok)
@@ -324,7 +350,7 @@ namespace LulCaster.UI.WPF.Pages
 
     private void BtnDeleteTrigger_Click(object sender, System.Windows.RoutedEventArgs e)
     {
-      if (_messageBoxService.Show("Delete Trigger","Delete selected trigger?", DialogButtons.YesNo) is LulDialogResult dialogResult 
+      if (_messageBoxService.Show("Delete Trigger", "Delete selected trigger?", DialogButtons.YesNo) is LulDialogResult dialogResult
         && dialogResult.DialogResult == DialogResults.Yes)
       {
         _triggerController.DeleteTrigger(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion.Id, ViewModel.SelectedTrigger);
@@ -332,6 +358,7 @@ namespace LulCaster.UI.WPF.Pages
         ViewModel.SelectedTrigger = null;
       }
     }
-    #endregion
+
+    #endregion "Region Config Events"
   }
 }

@@ -7,16 +7,18 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace LulCaster.UI.WPF.Workers
 {
   public class RegionWorker : LulWorkerBase
   {
-    private RegionViewModel _region;
-    private ScreenCapture _screenCapture;
-    private IOcrService _ocrService = new OcrService();
+    private readonly RegionViewModel _region;
+    private readonly ScreenCapture _screenCapture;
+    private readonly IOcrService _ocrService = new OcrService();
+    private const int IMAGE_MULTIPLIER = 2;
 
-    public RegionWorker(ScreenCapture screenCapture, RegionViewModel region)
+    public RegionWorker(ScreenCapture screenCapture, RegionViewModel region, int idleTimeout) : base(idleTimeout)
     {
       _region = region;
       _screenCapture = screenCapture;
@@ -31,9 +33,11 @@ namespace LulCaster.UI.WPF.Workers
       }
 
       using (var croppedImage = BitmapHelper.CropBitmap(_screenCapture, _region.BoundingBox))
-      using (var resizedImage = BitmapHelper.ResizeBitmap(croppedImage, _region.BoundingBox, 2))
+      using (var resizedImage = BitmapHelper.ResizeBitmap(croppedImage, croppedImage.Width, croppedImage.Height, IMAGE_MULTIPLIER))
+      using (var greyScaledImage = BitmapHelper.SetGrayscale(resizedImage))
       {
-        var scrappedText = ScrapeImage(croppedImage);
+        var scrappedText = ScrapeImage(greyScaledImage);
+        scrappedText = Regex.Replace(scrappedText, @"[^0-9a-zA-Z]", "");
         ProcessTriggers(_region.Triggers, _screenCapture, scrappedText);
       }
 
