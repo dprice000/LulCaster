@@ -99,10 +99,10 @@ namespace LulCaster.UI.WPF.Pages
 
     private void InitializeUserControlEvents()
     {
-      CompositionTarget.Rendering += CompositionTarget_Rendering;
       LstGamePresets.SelectionChanged += LstGamePresets_SelectionChanged;
       Controls.RegionConfiguration.SaveConfigTriggered += RegionConfiguration_SaveConfigTriggered;
       ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+      _screenCaptureWorker.ScreenCaptureCompleted += _screenCaptureWorker_ScreenCaptureCompleted;
     }
 
     private void InitializeDialogs()
@@ -158,48 +158,6 @@ namespace LulCaster.UI.WPF.Pages
     #endregion "User Control Events"
 
     #region "Screen Capture Events"
-
-    private void CompositionTarget_Rendering(object sender, EventArgs e)
-    {
-      Console.WriteLine($"MS: {stopWatch.ElapsedMilliseconds}");
-
-      Dispatcher?.BeginInvoke(new Action(() =>
-      {
-        if (_screenCaptureWorker.Queue.IsEmpty
-            || !_screenCaptureWorker.Queue.TryDequeue(out ScreenCaptureCompletedArgs captureArgs))
-        {
-          return;
-        }
-
-        var imageStream = new MemoryStream(captureArgs.ScreenImageStream);
-        var screenCaptureImage = new BitmapImage();
-        screenCaptureImage.BeginInit();
-        screenCaptureImage.StreamSource = imageStream;
-        screenCaptureImage.CacheOption = BitmapCacheOption.OnLoad;
-        screenCaptureImage.EndInit();
-        screenCaptureImage.Freeze();
-
-        stopWatch.Reset();
-        stopWatch.Start();
-        if (ViewModel.SelectedPreset != null)
-        {
-          _regionWorkerPool.ScreenCaptureQueue.Enqueue(new ScreenCapture()
-          {
-            ScreenMemoryStream = imageStream,
-            RegionViewModels = ViewModel.Regions,
-            ScreenBounds = captureArgs.ScreenBounds,
-            CanvasBounds = canvasScreenFeed.RenderSize,
-            CreationTime = DateTime.Now
-          });
-        }
-        Console.WriteLine($"MS: {stopWatch.ElapsedMilliseconds}");
-        stopWatch.Reset();
-        stopWatch.Start();
-
-        canvasScreenFeed.Background = new ImageBrush(screenCaptureImage);
-        DrawSelectedRegion();
-      }), System.Windows.Threading.DispatcherPriority.Render);
-    }
 
     private void _triggerWorkerPool_TriggerActivated(object sender, TriggerSoundArgs soundArgs)
     {
@@ -261,6 +219,40 @@ namespace LulCaster.UI.WPF.Pages
     #endregion "Mouse Events"
 
     #region "Dialog Events"
+
+    private void _screenCaptureWorker_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
+    {
+      Dispatcher?.BeginInvoke(new Action(() =>
+      {
+        var imageStream = new MemoryStream(captureArgs.ScreenImageStream);
+        var screenCaptureImage = new BitmapImage();
+        screenCaptureImage.BeginInit();
+        screenCaptureImage.StreamSource = imageStream;
+        screenCaptureImage.CacheOption = BitmapCacheOption.OnLoad;
+        screenCaptureImage.EndInit();
+        screenCaptureImage.Freeze();
+
+        stopWatch.Reset();
+        stopWatch.Start();
+        if (ViewModel.SelectedPreset != null)
+        {
+          _regionWorkerPool.ScreenCaptureQueue.Enqueue(new ScreenCapture()
+          {
+            ScreenMemoryStream = imageStream,
+            RegionViewModels = ViewModel.Regions,
+            ScreenBounds = captureArgs.ScreenBounds,
+            CanvasBounds = canvasScreenFeed.RenderSize,
+            CreationTime = DateTime.Now
+          });
+        }
+        Console.WriteLine($"MS: {stopWatch.ElapsedMilliseconds}");
+        stopWatch.Reset();
+        stopWatch.Start();
+
+        canvasScreenFeed.Background = new ImageBrush(screenCaptureImage);
+        DrawSelectedRegion();
+      }), System.Windows.Threading.DispatcherPriority.Normal);
+    }
 
     private void LstGamePresets_NewPresetDialogExecuted(object sender, InputDialogResult e)
     {

@@ -32,23 +32,19 @@ namespace LulCaster.UI.WPF.Dialogs
       };
     }
 
-    public LulDialogResult Show(string title, string message, string presetName, string processName, DialogButtons dialogButtons)
+    public LulDialogResult Show(string title, string message, PresetDialogViewModel viewModel, DialogButtons dialogButtons)
     {
-      DataContext = new PresetDialogViewModel(title, message, dialogButtons)
-      {
-        PresetName = presetName,
-        ProcessName = processName
-      };
+      DataContext = viewModel;
 
       ShowDialog();
 
-      var result = (PresetDialogViewModel)DataContext;
+      viewModel = (PresetDialogViewModel)DataContext;
 
       return new PresetInputDialogResult
       {
         DialogResult = DialogResult,
-        PresetName = result.PresetName,
-        ProcessName = result.ProcessName
+        PresetName = viewModel.PresetName,
+        ProcessName = viewModel.ProcessName
       };
     }
 

@@ -1,7 +1,6 @@
 ﻿using LulCaster.UI.WPF.Workers.Events.Arguments;
 using LulCaster.Utility.ScreenCapture.Windows;
 using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Threading;
 
@@ -16,11 +15,11 @@ namespace LulCaster.UI.WPF.Workers
     /// The lower limit in milliseconds on how fast a capture can run. Defaults to 60,000 ms.
     /// </summary>
     public int CaptureInterval { get; } = 1000;
-    public ConcurrentQueue<ScreenCaptureCompletedArgs> Queue { get; } = new ConcurrentQueue<ScreenCaptureCompletedArgs>();
 
     public IProgress<ScreenCaptureProgressArgs> ProgressHandler { get; }
 
     public event EventHandler<ScreenCaptureProgressArgs> ProgressChanged;
+    public event EventHandler<ScreenCaptureCompletedArgs> ScreenCaptureCompleted;
 
     public ScreenCaptureWorker(IScreenCaptureService screenCaptureService, int captureFps, int idleTimeout) : base (idleTimeout)
     {
@@ -95,7 +94,7 @@ namespace LulCaster.UI.WPF.Workers
 
     private void OnScreenCaptureCompleted(ScreenCaptureCompletedArgs captureArgs)
     {
-      Queue.Enqueue(captureArgs);
+      ScreenCaptureCompleted?.Invoke(this, captureArgs);
     }
   }
 }

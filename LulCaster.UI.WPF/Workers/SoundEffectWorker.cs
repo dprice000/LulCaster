@@ -1,5 +1,5 @@
 ﻿using LulCaster.UI.WPF.Workers.Events.Arguments;
-using System.Collections.Concurrent;
+using LulCaster.Utility.Common.Collections;
 using System.Diagnostics;
 using System.Media;
 
@@ -7,11 +7,11 @@ namespace LulCaster.UI.WPF.Workers
 {
   internal class SoundEffectWorker : LulWorkerBase
   {
-    private Stopwatch _stopwatch = new Stopwatch();
-    private ConcurrentQueue<TriggerSoundArgs> _soundQueue = new ConcurrentQueue<TriggerSoundArgs>();
-    private SoundPlayer player = new SoundPlayer();
+    private readonly Stopwatch _stopwatch = new Stopwatch();
+    private readonly ThreadSafeQueue<TriggerSoundArgs> _soundQueue = new ThreadSafeQueue<TriggerSoundArgs>();
+    private readonly SoundPlayer player = new SoundPlayer();
 
-    public SoundEffectWorker(int idleTimeout) : base (idleTimeout)
+    public SoundEffectWorker(int idleTimeout) : base(idleTimeout)
     {
     }
 
@@ -30,11 +30,7 @@ namespace LulCaster.UI.WPF.Workers
     {
       while (!_soundQueue.IsEmpty)
       {
-        if (!_soundQueue.TryDequeue(out TriggerSoundArgs sound)) 
-        {
-          Wait(IDLE_TIMEOUT);
-          continue;
-        }
+        var sound = _soundQueue.Dequeue();
 
         _stopwatch.Start();
         player.SoundLocation = sound.FilePath;

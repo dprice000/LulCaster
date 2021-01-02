@@ -1,9 +1,8 @@
 ﻿using LulCaster.UI.WPF.ViewModels;
 using LulCaster.UI.WPF.Workers.Events.Arguments;
+using LulCaster.Utility.Common.Collections;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace LulCaster.UI.WPF.Workers
 {
@@ -15,7 +14,7 @@ namespace LulCaster.UI.WPF.Workers
     private readonly List<RegionWorker> _regionWorkers = new List<RegionWorker>();
     private Queue<ScreenCapture> _oldScreenCaptures = new Queue<ScreenCapture>();
 
-    public ConcurrentQueue<ScreenCapture> ScreenCaptureQueue { get; } = new ConcurrentQueue<ScreenCapture>();
+    public ThreadSafeQueue<ScreenCapture> ScreenCaptureQueue { get; } = new ThreadSafeQueue<ScreenCapture>();
 
     public bool IsFull
     {
@@ -24,7 +23,7 @@ namespace LulCaster.UI.WPF.Workers
         return _regionWorkers.Count >= MaxPoolSize;
       }
     }
-    
+
     public int MaxPoolSize { get; }
 
     public RegionWorkerPool(int maxPoolSize, int captureFps, int idleTimeout) : base(idleTimeout)
@@ -37,18 +36,19 @@ namespace LulCaster.UI.WPF.Workers
     {
       while (IsRunning)
       {
-        if (ScreenCaptureQueue.IsEmpty 
-            || !ScreenCaptureQueue.TryDequeue(out ScreenCapture screenCapture))
+        if (ScreenCaptureQueue.IsEmpty)
         {
           Wait(IDLE_TIMEOUT);
           continue;
         }
 
-          foreach (var region in screenCapture.RegionViewModels)
-          {
-            WaitForFreeWorker();
-            CreateWorker(screenCapture, region);
-          }
+        var screenCapture = ScreenCaptureQueue.Dequeue();
+
+        foreach (var region in screenCapture.RegionViewModels)
+        {
+          WaitForFreeWorker();
+          CreateWorker(screenCapture, region);
+        }
 
         _oldScreenCaptures.Enqueue(screenCapture);
       }

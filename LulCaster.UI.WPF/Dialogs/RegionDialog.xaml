@@ -1,0 +1,27 @@
+﻿<Window x:Class="LulCaster.UI.WPF.Dialogs.RegionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:LulCaster.UI.WPF.Dialogs"
+        mc:Ignorable="d"
+        Title="{Binding Title}" Height="200" Width="400">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition></RowDefinition>
+      <RowDefinition></RowDefinition>
+      <RowDefinition></RowDefinition>
+      <RowDefinition></RowDefinition>
+    </Grid.RowDefinitions>
+    <Label Grid.Row="0" VerticalAlignment="Bottom" Content="{Binding Message}"></Label>
+    <TextBox Grid.Row="1" VerticalAlignment="Top" Margin="5,0,10,0" Text="{Binding RegionName}"
+             materialDesign:HintAssist.Hint="Region Name"></TextBox>
+    <TextBox Grid.Row="2" VerticalAlignment="Top" Margin="5,0,10,0" Text="{Binding ProcessName}"
+             materialDesign:HintAssist.Hint=""></TextBox>
+    <WrapPanel Grid.Row="3" HorizontalAlignment="Right">
+      <Button Margin="3,0,3,0" Name="btnOk" Style="{DynamicResource MaterialDesignRaisedButton}" Click="btnOk_Click" IsDefault="True" >Ok</Button>
+      <Button Margin="3,0,3,0" Name="btnCancel" Style="{StaticResource MaterialDesignFlatLightBgButton}" Click="btnCancel_Click">Cancel</Button>
+    </WrapPanel>
+  </Grid>
+</Window>
