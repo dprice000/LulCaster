@@ -1,8 +1,11 @@
-﻿using LulCaster.UI.WPF.Dialogs;
+﻿using LulCaster.UI.WPF.Controls.EventArgs;
+using LulCaster.UI.WPF.Dialogs;
 using LulCaster.UI.WPF.Dialogs.Models;
-using LulCaster.UI.WPF.Dialogs.Services;
+using LulCaster.UI.WPF.Dialogs.ViewModels;
+using LulCaster.Utility.Common.Enums;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -15,11 +18,9 @@ namespace LulCaster.UI.WPF.Controls
   {
     #region "Public Events"
 
-    public event EventHandler<InputDialogResult> NewItemDialogExecuted;
-
-    public event EventHandler<LulDialogResult> DeleteItemDialogExecuted;
-
-    public event EventHandler<InputDialogResult> ItemEditedDialogExecuted;
+    public event EventHandler<ButtonClickArgs> NewItemClicked;
+    public event EventHandler<ButtonClickArgs> DeleteItemClicked;
+    public event EventHandler<ButtonClickArgs> EditItemClicked;
 
     public event EventHandler<IListItem> SelectionChanged;
 
@@ -132,11 +133,6 @@ namespace LulCaster.UI.WPF.Controls
       }
     }
 
-    public IDialogService<InputDialog, InputDialogResult> InputDialog { get; set; }
-    public IDialogService<MessageBoxDialog, LulDialogResult> MessageBoxService { get; set; }
-
-    public PresetInputDialog PresetInputDialog { get; set; }
-
     #endregion "Properties"
 
     public InteractableListControl()
@@ -146,46 +142,17 @@ namespace LulCaster.UI.WPF.Controls
 
     private void Button_btnAddPreset(object sender, RoutedEventArgs e)
     {
-      var action = "Creating New";
-      var dialogResult = IsPresetControl ? CreatePresetPrompt(ItemDescriptor, action, string.Empty, string.Empty) : CreateRegionPrompt(ItemDescriptor, action);
-
-      NewItemDialogExecuted?.Invoke(this, dialogResult);
+      NewItemClicked?.Invoke(this, new ButtonClickArgs("Add", ItemDescriptor));
     }
 
     private void Button_BtnDeletePreset(object sender, RoutedEventArgs e)
     {
-      if (MessageBoxService.Show($"Delete {ItemDescriptor}", $"Do you want to delete selected {ItemDescriptor}(s)?", DialogButtons.YesNo) is LulDialogResult dialogResult)
-      {
-        DeleteItemDialogExecuted?.Invoke(this, dialogResult);
-      }
+      DeleteItemClicked?.Invoke(this, new ButtonClickArgs("Delete", ItemDescriptor));
     }
 
     private void Button_BtnEditPreset(object sender, RoutedEventArgs e)
     {
-      var action = "Editing";
-      InputDialogResult dialogResult = null;
-
-      if (IsPresetControl)
-      {
-        var presetItem = (IPresetListItem)SelectedItem;
-        CreatePresetPrompt(ItemDescriptor, action, presetItem.Name, presetItem.ProcessName);
-      }
-      else
-      {
-        CreateRegionPrompt(ItemDescriptor, action);
-      }
-
-      ItemEditedDialogExecuted?.Invoke(this, dialogResult);
-    }
-
-    private PresetInputDialogResult CreatePresetPrompt(string itemDescriptor, string action, string presetName, string processName)
-    {
-      return (PresetInputDialogResult)PresetInputDialog.Show($"{action} {itemDescriptor}", $"{action} {itemDescriptor}: ", presetName, processName, DialogButtons.OkCancel);
-    }
-
-    private InputDialogResult CreateRegionPrompt(string itemDescriptor, string action)
-    {
-      return InputDialog.Show($"{action} {itemDescriptor}", $"{action} {itemDescriptor}: ", DialogButtons.OkCancel);
+      EditItemClicked?.Invoke(this, new ButtonClickArgs("Edit", ItemDescriptor));
     }
   }
 }

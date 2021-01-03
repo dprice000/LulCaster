@@ -1,5 +1,6 @@
 ﻿using LulCaster.UI.WPF.Dialogs.Models;
 using LulCaster.UI.WPF.Dialogs.ViewModels;
+using LulCaster.UI.WPF.ViewModels;
 using System.Windows;
 
 namespace LulCaster.UI.WPF.Dialogs
@@ -7,7 +8,7 @@ namespace LulCaster.UI.WPF.Dialogs
   /// <summary>
   /// Interaction logic for RegionDialog.xaml
   /// </summary>
-  public partial class RegionDialog : Window, ILulDialog
+  public partial class RegionDialog : Window
   {
     public RegionDialog()
     {
@@ -16,32 +17,14 @@ namespace LulCaster.UI.WPF.Dialogs
 
     public new DialogResults DialogResult { get; set; }
 
-    public LulDialogResult Show(string title, string message, DialogButtons dialogButtons)
+    public NestedDialogResults<RegionViewModel> Show(NestedDialogViewModel<RegionViewModel> data)
     {
-      DataContext = new RegionDialogViewModel(title, message, dialogButtons);
+      DataContext = new RegionDialogViewModel(data);
 
       ShowDialog();
+      var viewModel = (RegionDialogViewModel)DataContext;
 
-      return new InputDialogResult
-      {
-        DialogResult = DialogResult,
-        Input = (DialogResult == DialogResults.Ok) ? ((InputDialogViewModel)DataContext).Input : null
-      };
-    }
-
-    public LulDialogResult Show(RegionDialogViewModel viewModel, DialogButtons dialogButtons)
-    {
-      DataContext = viewModel;
-
-      ShowDialog();
-      viewModel = (RegionDialogViewModel)DataContext;
-
-      return new RegionDialogResults
-      {
-        DialogResult = DialogResult,
-        Name = viewModel.Name,
-        Type = viewModel.SelectedType
-      };
+      return new NestedDialogResults<RegionViewModel>(viewModel.InnerItem, DialogResult);
     }
 
     private void btnCancel_Click(object sender, RoutedEventArgs e)

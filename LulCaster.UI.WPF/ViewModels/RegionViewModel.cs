@@ -1,4 +1,5 @@
 ﻿using LulCaster.UI.WPF.Controls;
+using LulCaster.Utility.Common.Enums;
 using LulCaster.Utility.Common.Logic;
 using System;
 using System.Collections.ObjectModel;
@@ -12,6 +13,7 @@ namespace LulCaster.UI.WPF.ViewModels
     private TriggerTypes _logicSet;
     private string _name;
     private Rectangle _boundingBox;
+    private RegionTypes _regionType;
     private ObservableCollection<TriggerViewModel> _triggers;
 
     public Guid Id
@@ -63,6 +65,19 @@ namespace LulCaster.UI.WPF.ViewModels
       {
         _boundingBox = value;
         OnPropertyChanged(nameof(BoundingBox));
+      }
+    }
+
+    public RegionTypes RegionType
+    {
+      get
+      {
+        return _regionType;
+      }
+      set
+      {
+        _regionType = value;
+        OnPropertyChanged(nameof(RegionType));
       }
     }
 

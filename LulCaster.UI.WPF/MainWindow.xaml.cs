@@ -50,10 +50,10 @@ namespace LulCaster.UI.WPF
       if (openFileDialog.ShowDialog() != true)
         return;
 
-      if (_presetInputDialog.Show("Import Preset", "Preset Name:", DialogButtons.OkCancel) is PresetInputDialogResult dialogResult
+      if (_presetInputDialog.Show(new Dialogs.ViewModels.NestedDialogViewModel<PresetViewModel>( "Import Preset", "Preset Name:", new PresetViewModel(), DialogButtons.OkCancel)) is NestedDialogResults<PresetViewModel> dialogResult
         && dialogResult.DialogResult == DialogResults.Ok)
       {
-        var presetViewModel = _presetListController.CreatePreset(dialogResult.PresetName, dialogResult.ProcessName);
+        var presetViewModel = _presetListController.CreatePreset(dialogResult.InnerResults.Name, dialogResult.InnerResults.ProcessName);
         var regionList = _regionListController.GetAllRegions(openFileDialog.FileName);
         _regionListController.WriteAllRegions(PresetFile.ResolvePresetFilePath(presetViewModel.Id), regionList);
 

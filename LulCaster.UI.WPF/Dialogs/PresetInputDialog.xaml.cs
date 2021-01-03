@@ -1,5 +1,6 @@
 ﻿using LulCaster.UI.WPF.Dialogs.Models;
 using LulCaster.UI.WPF.Dialogs.ViewModels;
+using LulCaster.UI.WPF.ViewModels;
 using System.Windows;
 
 namespace LulCaster.UI.WPF.Dialogs
@@ -7,7 +8,7 @@ namespace LulCaster.UI.WPF.Dialogs
   /// <summary>
   /// Interaction logic for PresetInputDialog.xaml
   /// </summary>
-  public partial class PresetInputDialog : Window, ILulDialog
+  public partial class PresetInputDialog : Window
   {
     public PresetInputDialog()
     {
@@ -19,33 +20,13 @@ namespace LulCaster.UI.WPF.Dialogs
 
     public new DialogResults DialogResult { get; set; }
 
-    public LulDialogResult Show(string title, string message, DialogButtons dialogButtons)
+    public NestedDialogResults<PresetViewModel> Show(NestedDialogViewModel<PresetViewModel> data)
     {
-      DataContext = new PresetDialogViewModel(title, message, dialogButtons);
-
+      DataContext = data;
       ShowDialog();
 
-      return new InputDialogResult
-      {
-        DialogResult = DialogResult,
-        Input = (DialogResult == DialogResults.Ok) ? ((InputDialogViewModel)DataContext).Input : null
-      };
-    }
-
-    public LulDialogResult Show(string title, string message, PresetDialogViewModel viewModel, DialogButtons dialogButtons)
-    {
-      DataContext = viewModel;
-
-      ShowDialog();
-
-      viewModel = (PresetDialogViewModel)DataContext;
-
-      return new PresetInputDialogResult
-      {
-        DialogResult = DialogResult,
-        PresetName = viewModel.PresetName,
-        ProcessName = viewModel.ProcessName
-      };
+      var viewModel = (NestedDialogViewModel<PresetViewModel>)DataContext;
+      return new NestedDialogResults<PresetViewModel>(viewModel.InnerItem, DialogResult);
     }
 
     private void PresetInputDialog_Loaded(object sender, RoutedEventArgs e)
