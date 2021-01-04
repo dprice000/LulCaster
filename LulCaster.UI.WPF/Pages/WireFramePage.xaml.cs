@@ -8,13 +8,13 @@ using LulCaster.UI.WPF.Dialogs.ViewModels;
 using LulCaster.UI.WPF.ViewModels;
 using LulCaster.UI.WPF.Workers;
 using LulCaster.UI.WPF.Workers.Events;
-using LulCaster.UI.WPF.Workers.Events.Arguments;
 using LulCaster.Utility.ScreenCapture.Windows;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace LulCaster.UI.WPF.Pages
 {
@@ -81,7 +81,7 @@ namespace LulCaster.UI.WPF.Pages
       var workerIdleTimeout = _configManagerService.GetAsInteger("WorkIdleTimeout");
       _soundEffectWorker = new SoundEffectWorker(workerIdleTimeout);
       _screenCaptureWorker = new ScreenCaptureWorker(screenCaptureService, captureFps, workerIdleTimeout);
-      _regionWorkerPool = new RegionWorkerPool(_configManagerService.GetAsInteger("MaxRegionThreads"), captureFps, workerIdleTimeout, canvasScreenFeed.RenderSize);
+      _regionWorkerPool = new RegionWorkerPool(_configManagerService.GetAsInteger("MaxRegionThreads"), captureFps, workerIdleTimeout, ViewModel, canvasScreenFeed.RenderSize);
 
       InitializeWorkers();
       InitializeUserControlEvents();
@@ -101,14 +101,15 @@ namespace LulCaster.UI.WPF.Pages
     {
       LstGamePresets.SelectionChanged += LstGamePresets_SelectionChanged;
       Controls.RegionConfiguration.SaveConfigTriggered += RegionConfiguration_SaveConfigTriggered;
-      _screenCaptureWorker.ScreenCaptureCompleted += ViewModel._screenCaptureWorker_ScreenCaptureCompleted;
+      _screenCaptureWorker.ScreenCaptureCompleted += ViewModel.screenCaptureWorker_ScreenCaptureCompleted;
+      CompositionTarget.Rendering += CompositionTarget_Rendering;
     }
 
     private void InitializeWorkers()
     {
       _screenCaptureWorker.Start();
 
-      TriggerEmitter.TriggerActivated += _triggerWorkerPool_TriggerActivated;
+      TriggerEmitter.TriggerActivated += _soundEffectWorker.triggerWorkerPool_TriggerActivated;
       _regionWorkerPool.Start();
     }
 
@@ -139,11 +140,6 @@ namespace LulCaster.UI.WPF.Pages
     #endregion "User Control Events"
 
     #region "Screen Capture Events"
-
-    private void _triggerWorkerPool_TriggerActivated(object sender, TriggerSoundArgs soundArgs)
-    {
-      _soundEffectWorker.EnqueueSound(soundArgs);
-    }
 
     private void DrawSelectedRegion()
     {
@@ -227,6 +223,14 @@ namespace LulCaster.UI.WPF.Pages
 
     #region "Special Controls Events"
 
+    /// <summary>
+    /// Used to hook into the render event to only draw region boxes when render happens
+    /// </summary>
+    private void CompositionTarget_Rendering(object sender, System.EventArgs e)
+    {
+      DrawSelectedRegion();
+    }
+
     private void LstGamePresets_NewItemClicked(object sender, ButtonClickArgs e)
     {
       var title = $"{e.Action} {e.ItemDescriptor}";
@@ -256,6 +260,9 @@ namespace LulCaster.UI.WPF.Pages
     {
       var selectedPreset = ViewModel.SelectedPreset;
       var results = _presetInputDialog.Show(new NestedDialogViewModel<PresetViewModel>("Editing Preset", "Editing Preset: ", selectedPreset, DialogButtons.OkCancel));
+
+      if (results.DialogResult != DialogResults.Ok)
+        return;
 
       var existingPresetIndex = ViewModel.Presets.IndexOf(ViewModel.SelectedPreset);
       _presetListController.DeletePreset(ViewModel.SelectedPreset);

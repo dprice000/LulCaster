@@ -29,7 +29,7 @@ namespace LulCaster.UI.WPF.ViewModels
       }
     }
 
-    internal void _screenCaptureWorker_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
+    internal void screenCaptureWorker_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
     {
       var imageStream = new MemoryStream(captureArgs.ScreenImageStream);
       var screenCaptureImage = new BitmapImage();

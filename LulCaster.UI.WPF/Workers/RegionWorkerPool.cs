@@ -16,6 +16,8 @@ namespace LulCaster.UI.WPF.Workers
     private readonly List<RegionWorker> _regionWorkers = new List<RegionWorker>();
     private Queue<ScreenCapture> _oldScreenCaptures = new Queue<ScreenCapture>();
     private static Size _canvasRenderSize;
+    
+    private WireFrameViewModel ViewModel { get; }
 
     public ThreadSafeQueue<ScreenCapture> ScreenCaptureQueue { get; } = new ThreadSafeQueue<ScreenCapture>();
 
@@ -29,11 +31,12 @@ namespace LulCaster.UI.WPF.Workers
 
     public int MaxPoolSize { get; }
 
-    public RegionWorkerPool(int maxPoolSize, int captureFps, int idleTimeout, Size canvasRenderSize) : base(idleTimeout)
+    public RegionWorkerPool(int maxPoolSize, int captureFps, int idleTimeout, WireFrameViewModel viewModel, Size canvasRenderSize) : base(idleTimeout)
     {
       MaxPoolSize = maxPoolSize;
       _captureFps = captureFps;
       _canvasRenderSize = canvasRenderSize;
+      ViewModel = viewModel;
     }
 
     protected override void DoWork()

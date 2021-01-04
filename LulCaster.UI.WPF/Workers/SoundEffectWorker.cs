@@ -41,5 +41,10 @@ namespace LulCaster.UI.WPF.Workers
 
       IsRunning = false;
     }
+
+    internal void triggerWorkerPool_TriggerActivated(object sender, TriggerSoundArgs soundArgs)
+    {
+      _soundQueue.Enqueue(soundArgs);
+    }
   }
 }
