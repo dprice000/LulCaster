@@ -9,9 +9,9 @@ namespace LulCaster.UI.WPF.ViewModels
 {
   public class WireFrameViewModel : ViewModelBase
   {
-    private ObservableCollection<PresetViewModel> _presets;
+    private ObservableCollection<PresetViewModel> _presets = new ObservableCollection<PresetViewModel>();
     private PresetViewModel _selectedPreset;
-    private ObservableCollection<RegionViewModel> _regions;
+    private ObservableCollection<RegionViewModel> _regions = new ObservableCollection<RegionViewModel>();
     private RegionViewModel _selectedRegion;
     private TriggerViewModel _selectedTrigger;
     private Brush _screenCaptureBrush;
@@ -53,7 +53,7 @@ namespace LulCaster.UI.WPF.ViewModels
       }
       set
       {
-        _presets = value;
+        _presets = value ?? new ObservableCollection<PresetViewModel>();
         OnPropertyChanged(nameof(Presets));
       }
     }
@@ -79,7 +79,7 @@ namespace LulCaster.UI.WPF.ViewModels
       }
       set
       {
-        _regions = value;
+        _regions = value ?? new ObservableCollection<RegionViewModel>();
         OnPropertyChanged(nameof(Regions));
       }
     }
