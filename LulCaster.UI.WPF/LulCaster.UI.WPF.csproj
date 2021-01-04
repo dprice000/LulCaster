@@ -6,7 +6,8 @@
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <Configurations>Debug;Release;Debug64</Configurations>
-    <AssemblyName>LulCaster</AssemblyName>
+    <AssemblyName>LulCaster.UI.WPF</AssemblyName>
+    <RootNamespace>LulCaster.UI.WPF</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
