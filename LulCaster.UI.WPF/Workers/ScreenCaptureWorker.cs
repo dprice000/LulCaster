@@ -19,9 +19,10 @@ namespace LulCaster.UI.WPF.Workers
     public IProgress<ScreenCaptureProgressArgs> ProgressHandler { get; }
 
     public event EventHandler<ScreenCaptureProgressArgs> ProgressChanged;
+
     public event EventHandler<ScreenCaptureCompletedArgs> ScreenCaptureCompleted;
 
-    public ScreenCaptureWorker(IScreenCaptureService screenCaptureService, int captureFps, int idleTimeout) : base (idleTimeout)
+    public ScreenCaptureWorker(IScreenCaptureService screenCaptureService, int captureFps, int idleTimeout) : base(idleTimeout)
     {
       _screenCaptureService = screenCaptureService;
       CaptureInterval = CalculateHaltInterval(captureFps);

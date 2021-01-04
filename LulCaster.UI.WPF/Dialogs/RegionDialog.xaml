@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:LulCaster.UI.WPF.Dialogs"
+        xmlns:conv="clr-namespace:LulCaster.UI.WPF.Converter"
         mc:Ignorable="d"
         Title="{Binding Title}" Height="200" Width="400">
   <Grid>
@@ -16,11 +17,12 @@
     </Grid.RowDefinitions>
     <Label Grid.Row="0" VerticalAlignment="Bottom" Content="{Binding Message}"></Label>
     <Label Grid.Row="1">Region Name: </Label>
-    <TextBox Grid.Row="1" Width="225" VerticalAlignment="Top" Margin="5,0,10,0" Text="{Binding Name}"></TextBox>
+    <TextBox Grid.Row="1" Width="225" VerticalAlignment="Top" Margin="5,0,10,0" Text="{Binding InnerItem.Name, Mode=TwoWay}"></TextBox>
     <Label Grid.Row="2">Region Type:</Label>
-    <ComboBox Grid.Row="2" Width="225" DisplayMemberPath="Name" SelectedIndex="0" ToolTip="Applies extra logic to the region the can handle special cases."
-            ItemsSource="{Binding ElementName=ctrlRegionDialog.DataContext, Path=AvailableTypes, Mode=TwoWay}"
-            SelectedItem="{Binding ElementName=ctrlRegionDialog.DataContext, Path=SelectedType, Mode=TwoWay}" Margin="0,0,15,0"></ComboBox>
+    <ComboBox Grid.Row="2" Width="225" SelectedIndex="0" ToolTip="Applies extra logic to the region the can handle special cases."
+            ItemsSource="{Binding Path=AvailableTypes, Mode=TwoWay}"
+            SelectedItem="{Binding ElementName=ctrlRegionDialog, Path=InnerItem.RegionType, Mode=TwoWay}"
+            Margin="0,0,15,0"></ComboBox>
     <WrapPanel Grid.Row="3" HorizontalAlignment="Right">
       <Button Margin="3,0,3,0" Name="btnOk" Style="{DynamicResource MaterialDesignRaisedButton}" Click="btnOk_Click" IsDefault="True" >Ok</Button>
       <Button Margin="3,0,3,0" Name="btnCancel" Style="{StaticResource MaterialDesignFlatLightBgButton}" Click="btnCancel_Click">Cancel</Button>

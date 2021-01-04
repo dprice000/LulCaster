@@ -1,4 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using LulCaster.UI.WPF.Workers.Events.Arguments;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace LulCaster.UI.WPF.ViewModels
 {
@@ -9,8 +14,38 @@ namespace LulCaster.UI.WPF.ViewModels
     private ObservableCollection<RegionViewModel> _regions;
     private RegionViewModel _selectedRegion;
     private TriggerViewModel _selectedTrigger;
+    private Brush _screenCaptureBrush;
 
-    public ObservableCollection<PresetViewModel> Presets 
+    public Brush ScreenCaptureBrush
+    {
+      get
+      {
+        return _screenCaptureBrush;
+      }
+      set
+      {
+        _screenCaptureBrush = value;
+        OnPropertyChanged(nameof(ScreenCaptureBrush));
+      }
+    }
+
+    internal void _screenCaptureWorker_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
+    {
+      var imageStream = new MemoryStream(captureArgs.ScreenImageStream);
+      var screenCaptureImage = new BitmapImage();
+      screenCaptureImage.BeginInit();
+      screenCaptureImage.StreamSource = imageStream;
+      screenCaptureImage.CacheOption = BitmapCacheOption.OnLoad;
+      screenCaptureImage.EndInit();
+      screenCaptureImage.Freeze();
+
+      Application.Current.Dispatcher.Invoke(() =>
+      {
+        ScreenCaptureBrush = new ImageBrush(screenCaptureImage);
+      });
+    }
+
+    public ObservableCollection<PresetViewModel> Presets
     {
       get
       {

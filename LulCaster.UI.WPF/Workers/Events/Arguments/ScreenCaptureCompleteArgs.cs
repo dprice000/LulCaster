@@ -1,5 +1,5 @@
 ﻿using System.Drawing;
-using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace LulCaster.UI.WPF.Workers.Events.Arguments
 {

@@ -11,14 +11,10 @@ using LulCaster.UI.WPF.Workers.Events;
 using LulCaster.UI.WPF.Workers.Events.Arguments;
 using LulCaster.Utility.ScreenCapture.Windows;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace LulCaster.UI.WPF.Pages
 {
@@ -85,7 +81,7 @@ namespace LulCaster.UI.WPF.Pages
       var workerIdleTimeout = _configManagerService.GetAsInteger("WorkIdleTimeout");
       _soundEffectWorker = new SoundEffectWorker(workerIdleTimeout);
       _screenCaptureWorker = new ScreenCaptureWorker(screenCaptureService, captureFps, workerIdleTimeout);
-      _regionWorkerPool = new RegionWorkerPool(_configManagerService.GetAsInteger("MaxRegionThreads"), captureFps, workerIdleTimeout);
+      _regionWorkerPool = new RegionWorkerPool(_configManagerService.GetAsInteger("MaxRegionThreads"), captureFps, workerIdleTimeout, canvasScreenFeed.RenderSize);
 
       InitializeWorkers();
       InitializeUserControlEvents();
@@ -105,8 +101,7 @@ namespace LulCaster.UI.WPF.Pages
     {
       LstGamePresets.SelectionChanged += LstGamePresets_SelectionChanged;
       Controls.RegionConfiguration.SaveConfigTriggered += RegionConfiguration_SaveConfigTriggered;
-      ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-      _screenCaptureWorker.ScreenCaptureCompleted += _screenCaptureWorker_ScreenCaptureCompleted;
+      _screenCaptureWorker.ScreenCaptureCompleted += ViewModel._screenCaptureWorker_ScreenCaptureCompleted;
     }
 
     private void InitializeWorkers()
@@ -120,14 +115,6 @@ namespace LulCaster.UI.WPF.Pages
     #endregion "Initialization Methods"
 
     #region "User Control Events"
-
-    private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-      if (e.PropertyName == nameof(ViewModel.SelectedRegion))
-      {
-        DrawSelectedRegion();
-      }
-    }
 
     private void LstGamePresets_SelectionChanged(object sender, Controls.IListItem e)
     {
@@ -212,44 +199,6 @@ namespace LulCaster.UI.WPF.Pages
 
     #endregion "Mouse Events"
 
-    #region "Worker Events"
-
-    private void _screenCaptureWorker_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
-    {
-      Dispatcher?.BeginInvoke(new Action(() =>
-      {
-        var imageStream = new MemoryStream(captureArgs.ScreenImageStream);
-        var screenCaptureImage = new BitmapImage();
-        screenCaptureImage.BeginInit();
-        screenCaptureImage.StreamSource = imageStream;
-        screenCaptureImage.CacheOption = BitmapCacheOption.OnLoad;
-        screenCaptureImage.EndInit();
-        screenCaptureImage.Freeze();
-
-        _stopWatch.Reset();
-        _stopWatch.Start();
-        if (ViewModel.SelectedPreset != null)
-        {
-          _regionWorkerPool.ScreenCaptureQueue.Enqueue(new ScreenCapture()
-          {
-            ScreenMemoryStream = imageStream,
-            RegionViewModels = ViewModel.Regions,
-            ScreenBounds = captureArgs.ScreenBounds,
-            CanvasBounds = canvasScreenFeed.RenderSize,
-            CreationTime = DateTime.Now
-          });
-        }
-        Console.WriteLine($"MS: {_stopWatch.ElapsedMilliseconds}");
-        _stopWatch.Reset();
-        _stopWatch.Start();
-
-        canvasScreenFeed.Background = new ImageBrush(screenCaptureImage);
-        DrawSelectedRegion();
-      }), System.Windows.Threading.DispatcherPriority.Normal);
-    }
-
-    #endregion "Worker Events"
-
     #region "Region Config Events"
 
     private void BtnAddTrigger_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -277,6 +226,7 @@ namespace LulCaster.UI.WPF.Pages
     #endregion "Region Config Events"
 
     #region "Special Controls Events"
+
     private void LstGamePresets_NewItemClicked(object sender, ButtonClickArgs e)
     {
       var title = $"{e.Action} {e.ItemDescriptor}";
@@ -358,6 +308,7 @@ namespace LulCaster.UI.WPF.Pages
       ViewModel.Regions[existingRegionIndex] = newRegion;
       ViewModel.SelectedRegion = newRegion;
     }
+
     #endregion "Special Controls Events"
   }
 }
