@@ -15,7 +15,6 @@ namespace LulCaster.UI.WPF.Workers
     private readonly int _captureFps;
     private readonly List<RegionWorker> _regionWorkers = new List<RegionWorker>();
     private Queue<ScreenCapture> _oldScreenCaptures = new Queue<ScreenCapture>();
-    private static Size _canvasRenderSize;
     
     private WireFrameViewModel ViewModel { get; }
 
@@ -31,11 +30,10 @@ namespace LulCaster.UI.WPF.Workers
 
     public int MaxPoolSize { get; }
 
-    public RegionWorkerPool(int maxPoolSize, int captureFps, int idleTimeout, WireFrameViewModel viewModel, Size canvasRenderSize) : base(idleTimeout)
+    public RegionWorkerPool(int maxPoolSize, int captureFps, int idleTimeout, WireFrameViewModel viewModel) : base(idleTimeout)
     {
       MaxPoolSize = maxPoolSize;
       _captureFps = captureFps;
-      _canvasRenderSize = canvasRenderSize;
       ViewModel = viewModel;
     }
 
@@ -110,8 +108,11 @@ namespace LulCaster.UI.WPF.Workers
 
     #region "Event Handlers"
 
-    internal void _screenCaptureWorker_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
+    internal void screenCaptureWorker_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
     {
+      if (captureArgs.CanvasBounds.Height == 0 || captureArgs.CanvasBounds.Width == 0)
+        return;
+
       var imageStream = new MemoryStream(captureArgs.ScreenImageStream);
 
       ScreenCaptureQueue.Enqueue(new ScreenCapture()
@@ -119,7 +120,7 @@ namespace LulCaster.UI.WPF.Workers
         ScreenMemoryStream = imageStream,
         RegionViewModels = ViewModel.Regions,
         ScreenBounds = captureArgs.ScreenBounds,
-        CanvasBounds = _canvasRenderSize,
+        CanvasBounds = captureArgs.CanvasBounds,
         CreationTime = DateTime.Now
       });
     }

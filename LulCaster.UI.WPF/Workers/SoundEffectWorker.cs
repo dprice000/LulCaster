@@ -44,7 +44,7 @@ namespace LulCaster.UI.WPF.Workers
 
     internal void triggerWorkerPool_TriggerActivated(object sender, TriggerSoundArgs soundArgs)
     {
-      _soundQueue.Enqueue(soundArgs);
+      EnqueueSound(soundArgs);
     }
   }
 }

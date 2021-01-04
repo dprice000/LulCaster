@@ -11,7 +11,6 @@ using LulCaster.UI.WPF.Workers.Events;
 using LulCaster.Utility.ScreenCapture.Windows;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -37,7 +36,6 @@ namespace LulCaster.UI.WPF.Pages
     private readonly IDialogService<MessageBoxDialog, LulDialogResult> _messageBoxService;
     private readonly PresetInputDialog _presetInputDialog;
     private readonly RegionDialog _regionInputDialog;
-    private Stopwatch _stopWatch = new Stopwatch();
 
     #endregion "Private Members"
 
@@ -81,7 +79,7 @@ namespace LulCaster.UI.WPF.Pages
       var workerIdleTimeout = _configManagerService.GetAsInteger("WorkIdleTimeout");
       _soundEffectWorker = new SoundEffectWorker(workerIdleTimeout);
       _screenCaptureWorker = new ScreenCaptureWorker(screenCaptureService, captureFps, workerIdleTimeout);
-      _regionWorkerPool = new RegionWorkerPool(_configManagerService.GetAsInteger("MaxRegionThreads"), captureFps, workerIdleTimeout, ViewModel, canvasScreenFeed.RenderSize);
+      _regionWorkerPool = new RegionWorkerPool(_configManagerService.GetAsInteger("MaxRegionThreads"), captureFps, workerIdleTimeout, ViewModel);
 
       InitializeWorkers();
       InitializeUserControlEvents();
@@ -102,6 +100,7 @@ namespace LulCaster.UI.WPF.Pages
       LstGamePresets.SelectionChanged += LstGamePresets_SelectionChanged;
       Controls.RegionConfiguration.SaveConfigTriggered += RegionConfiguration_SaveConfigTriggered;
       _screenCaptureWorker.ScreenCaptureCompleted += ViewModel.screenCaptureWorker_ScreenCaptureCompleted;
+      _screenCaptureWorker.ScreenCaptureCompleted += _regionWorkerPool.screenCaptureWorker_ScreenCaptureCompleted;
       CompositionTarget.Rendering += CompositionTarget_Rendering;
     }
 
@@ -121,9 +120,18 @@ namespace LulCaster.UI.WPF.Pages
     {
       if (ViewModel?.SelectedPreset != null)
       {
-        _screenCaptureWorker.SetGameHandle(HandleFinder.GetWindowsHandle(ViewModel.SelectedPreset.Name));
-        _screenCaptureWorker.Start();
-        ViewModel.Regions = new ObservableCollection<RegionViewModel>(_regionListController.GetRegions(ViewModel.SelectedPreset.Id));
+        try
+        {
+          var handle = HandleFinder.GetWindowsHandle(ViewModel.SelectedPreset.Name);
+
+          _screenCaptureWorker.SetGameHandle(handle);
+          _screenCaptureWorker.Start();
+          ViewModel.Regions = new ObservableCollection<RegionViewModel>(_regionListController.GetRegions(ViewModel.SelectedPreset.Id));
+        }
+        catch (System.Exception ex)
+        {
+          //TODO: This should not be empty
+        }
       }
       else
       {
@@ -134,6 +142,7 @@ namespace LulCaster.UI.WPF.Pages
 
     private async void RegionConfiguration_SaveConfigTriggered(object sender, RegionViewModel e)
     {
+      _screenCaptureWorker.CanvasBounds = canvasScreenFeed.RenderSize;
       await _regionListController.UpdateRegionAsync(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion);
     }
 

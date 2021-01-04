@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.IO;
 
 namespace LulCaster.UI.WPF.Workers.Events.Arguments
 {
@@ -7,5 +6,6 @@ namespace LulCaster.UI.WPF.Workers.Events.Arguments
     {
         public byte[] ScreenImageStream { get; set; }
         public Rectangle ScreenBounds { get; set; }
+        public System.Windows.Size CanvasBounds { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using LulCaster.Utility.ScreenCapture.Windows;
 using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Windows;
 
 namespace LulCaster.UI.WPF.Workers
 {
@@ -15,6 +16,7 @@ namespace LulCaster.UI.WPF.Workers
     /// The lower limit in milliseconds on how fast a capture can run. Defaults to 60,000 ms.
     /// </summary>
     public int CaptureInterval { get; } = 1000;
+    public Size CanvasBounds { get; set; }
 
     public IProgress<ScreenCaptureProgressArgs> ProgressHandler { get; }
 
@@ -56,7 +58,8 @@ namespace LulCaster.UI.WPF.Workers
         var captureArgs = new ScreenCaptureCompletedArgs
         {
           ScreenImageStream = byteImage,
-          ScreenBounds = _screenCaptureService.ScreenOptions.GetBoundsAsRectangle()
+          ScreenBounds = _screenCaptureService.ScreenOptions.GetBoundsAsRectangle(),
+          CanvasBounds = this.CanvasBounds
         };
 
         OnScreenCaptureCompleted(captureArgs);

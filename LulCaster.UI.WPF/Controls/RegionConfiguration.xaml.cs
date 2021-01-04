@@ -2,7 +2,6 @@
 using LulCaster.Utility.Common.Logic;
 using Microsoft.Win32;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -30,20 +29,12 @@ namespace LulCaster.UI.WPF.Controls
     );
 
     public static readonly DependencyProperty SelectedTriggerProperty =
-DependencyProperty.Register
-(
-    "SelectedTrigger",
-    typeof(TriggerViewModel),
-    typeof(RegionConfiguration)
-);
-
-    //public static readonly DependencyProperty SaveTimeoutProperty =
-    //DependencyProperty.Register
-    //(
-    //    "SaveTimeout",
-    //    typeof(TimeSpan),
-    //    typeof(RegionConfiguration)
-    //);
+    DependencyProperty.Register
+    (
+        "SelectedTrigger",
+        typeof(TriggerViewModel),
+        typeof(RegionConfiguration)
+    );
 
     #endregion "Dependency Properties"
 
