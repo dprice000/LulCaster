@@ -23,6 +23,8 @@ namespace LulCaster.UI.WPF.Config.UserSettings
 
     public RegionViewModel Create(Guid presetId, string regionName)
     {
+
+
       var newRegion = new RegionConfig
       {
         Id = Guid.NewGuid(),

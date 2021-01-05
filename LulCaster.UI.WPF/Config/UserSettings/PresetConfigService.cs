@@ -22,12 +22,14 @@ namespace LulCaster.UI.WPF.Config.UserSettings
 
     private async Task<IEnumerable<PresetConfig>> GetAllConfigsAsync()
     {
+      CreateListingFile();
       var fileContents = await File.ReadAllTextAsync(PresetFile.ListingFilePath);
       return JsonConvert.DeserializeObject<IEnumerable<PresetConfig>>(fileContents).ToList();
     }
 
     public async Task<IEnumerable<PresetViewModel>> GetAllAsync()
     {
+      CreateListingFile();
       var presets = new List<PresetViewModel>();
       var fileContents = await File.ReadAllTextAsync(PresetFile.ListingFilePath);
       var presetSection = JsonConvert.DeserializeObject<IEnumerable<PresetConfig>>(fileContents).ToList();
@@ -75,6 +77,12 @@ namespace LulCaster.UI.WPF.Config.UserSettings
       var presetSection = (await GetAllConfigsAsync()).ToList();
       presetSection.RemoveAll(x => x.Id == preset.Id);
       await File.WriteAllTextAsync(PresetFile.ListingFilePath, JsonConvert.SerializeObject(presetSection));
+    }
+
+    private void CreateListingFile()
+    {
+      if (!File.Exists(PresetFile.ListingFilePath))
+        File.Create(PresetFile.ListingFilePath);
     }
   }
 }

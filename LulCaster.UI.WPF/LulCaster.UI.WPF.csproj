@@ -30,6 +30,9 @@
     <None Update="Presets\3406149e-d6c5-4eb1-97f2-2f4fd5145882.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Presets\PresetListing.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
