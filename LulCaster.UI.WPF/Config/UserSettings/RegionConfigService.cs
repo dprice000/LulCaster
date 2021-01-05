@@ -21,7 +21,7 @@ namespace LulCaster.UI.WPF.Config.UserSettings
       _mapper = mapper;
     }
 
-    public RegionViewModel CreateRegion(Guid presetId, string regionName)
+    public RegionViewModel Create(Guid presetId, string regionName)
     {
       var newRegion = new RegionConfig
       {
@@ -36,7 +36,7 @@ namespace LulCaster.UI.WPF.Config.UserSettings
       return _mapper.Map<RegionViewModel>(newRegion);
     }
 
-    public void WriteAllRegions(string filePath, IEnumerable<RegionViewModel> regions)
+    public void WriteAll(string filePath, IEnumerable<RegionViewModel> regions)
     {
       File.WriteAllText(filePath, JsonConvert.SerializeObject(_mapper.Map<IEnumerable<RegionConfig>>(regions)));
     }
@@ -63,14 +63,14 @@ namespace LulCaster.UI.WPF.Config.UserSettings
       return JsonConvert.DeserializeObject<IEnumerable<RegionConfig>>(contents);
     }
 
-    public RegionViewModel GetRegion(Guid presetId, Guid id)
+    public RegionViewModel Get(Guid presetId, Guid id)
     {
       var regions = GetAllRegions(presetId);
 
       return _mapper.Map<RegionViewModel>(regions.FirstOrDefault(x => x.Id == id));
     }
 
-    public void UpdateRegion(Guid presetId, RegionViewModel regionViewModel)
+    public void Update(Guid presetId, RegionViewModel regionViewModel)
     {
       var regions = GetAllRegions(presetId).ToList();
       var region = regions.FirstOrDefault(x => x.Id == regionViewModel.Id);
@@ -79,7 +79,7 @@ namespace LulCaster.UI.WPF.Config.UserSettings
       File.WriteAllText(PresetFile.ResolvePresetFilePath(presetId), JsonConvert.SerializeObject(regions));
     }
 
-    public async Task UpdateRegionAsync(Guid presetId, RegionViewModel regionViewModel)
+    public async Task UpdateAsync(Guid presetId, RegionViewModel regionViewModel)
     {
       var regions = (await GetAllRegionsAsync(presetId)).ToList();
       var index = regions.IndexOf(regions.First(x => x.Id == regionViewModel.Id));
@@ -88,7 +88,7 @@ namespace LulCaster.UI.WPF.Config.UserSettings
       await File.WriteAllTextAsync(PresetFile.ResolvePresetFilePath(presetId), JsonConvert.SerializeObject(regions));
     }
 
-    public void DeleteRegion(Guid presetId, Guid regionId)
+    public void Delete(Guid presetId, Guid regionId)
     {
       var regions = GetAllRegions(presetId).ToList();
       var region = regions.RemoveAll(x => x.Id == regionId);

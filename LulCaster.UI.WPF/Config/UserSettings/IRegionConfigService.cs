@@ -3,20 +3,19 @@ using LulCaster.Utility.Common.Config;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Shapes;
 
 namespace LulCaster.UI.WPF.Config.UserSettings
 {
   public interface IRegionConfigService
   {
-    RegionViewModel CreateRegion(Guid presetId, string regionName);
-    void WriteAllRegions(string filePath, IEnumerable<RegionViewModel> regions);
-    void DeleteRegion(Guid presetId, Guid regionId);
+    RegionViewModel Create(Guid presetId, string regionName);
+    void WriteAll(string filePath, IEnumerable<RegionViewModel> regions);
+    void Delete(Guid presetId, Guid regionId);
     IEnumerable<RegionViewModel> GetAllRegions(string importFilePath);
     IEnumerable<RegionConfig> GetAllRegions(Guid presetId);
     IEnumerable<RegionViewModel> GetAllRegionsAsViewModels(Guid presetId);
-    RegionViewModel GetRegion(Guid presetId, Guid id);
-    void UpdateRegion(Guid presetId, RegionViewModel regionViewModel);
-    Task UpdateRegionAsync(Guid presetId, RegionViewModel regionViewModel);
+    RegionViewModel Get(Guid presetId, Guid id);
+    void Update(Guid presetId, RegionViewModel regionViewModel);
+    Task UpdateAsync(Guid presetId, RegionViewModel regionViewModel);
   }
 }

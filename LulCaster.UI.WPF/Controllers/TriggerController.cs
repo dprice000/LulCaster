@@ -20,18 +20,18 @@ namespace LulCaster.UI.WPF.Controllers
         Name = name
       };
 
-      var existingRegion = _regionConfigService.GetRegion(presetId, regionId);
+      var existingRegion = _regionConfigService.Get(presetId, regionId);
       existingRegion.Triggers.Add(newTrigger);
-      _regionConfigService.UpdateRegion(presetId, existingRegion);
+      _regionConfigService.Update(presetId, existingRegion);
 
       return newTrigger;
     }
 
     public void DeleteTrigger(Guid presetId, Guid regionId, TriggerViewModel triggerViewModel)
     {
-      var existingRegion = _regionConfigService.GetRegion(presetId, regionId);
+      var existingRegion = _regionConfigService.Get(presetId, regionId);
       existingRegion.Triggers.Remove(triggerViewModel);
-      _regionConfigService.UpdateRegion(presetId, existingRegion);
+      _regionConfigService.Update(presetId, existingRegion);
     }
   }
 }

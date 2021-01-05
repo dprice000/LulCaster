@@ -17,12 +17,12 @@ namespace LulCaster.UI.WPF.Controllers
 
     public RegionViewModel Create(Guid presetId, string regionName)
     {
-      return _regionConfigService.CreateRegion(presetId, regionName);
+      return _regionConfigService.Create(presetId, regionName);
     }
 
     public void WriteAll(string filePath, IEnumerable<RegionViewModel> regions)
     {
-      _regionConfigService.WriteAllRegions(filePath, regions);
+      _regionConfigService.WriteAll(filePath, regions);
     }
 
     public IEnumerable<RegionViewModel> GetAll(string importFilePath)
@@ -37,17 +37,17 @@ namespace LulCaster.UI.WPF.Controllers
 
     public void Update(Guid presetId, RegionViewModel region)
     {
-      _regionConfigService.UpdateRegion(presetId, region);
+      _regionConfigService.Update(presetId, region);
     }
 
     public async Task UpdatAsync(Guid presetId, RegionViewModel region)
     {
-      await _regionConfigService.UpdateRegionAsync(presetId, region);
+      await _regionConfigService.UpdateAsync(presetId, region);
     }
 
     public void Delete(Guid presetId, Guid regionId)
     {
-      _regionConfigService.DeleteRegion(presetId, regionId);
+      _regionConfigService.Delete(presetId, regionId);
     }
   }
 }
