@@ -8,6 +8,7 @@
     <Configurations>Debug;Release;Debug64</Configurations>
     <AssemblyName>LulCaster.UI.WPF</AssemblyName>
     <RootNamespace>LulCaster.UI.WPF</RootNamespace>
+    <StartupObject></StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

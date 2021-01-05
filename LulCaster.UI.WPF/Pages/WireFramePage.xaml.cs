@@ -72,7 +72,9 @@ namespace LulCaster.UI.WPF.Pages
       _presetListController = presetListController;
       _regionListController = regionListController;
       _triggerController = triggerController;
-      ViewModel.Presets = new ObservableCollection<PresetViewModel>(_presetListController.GetAllPresets());
+      var presetTask = _presetListController.GetAllAsync();
+      presetTask.Wait();
+      ViewModel.Presets = new ObservableCollection<PresetViewModel>(presetTask.Result);
 
       //Worker Initialization
       var captureFps = _configManagerService.GetAsInteger("CaptureFps");
@@ -240,7 +242,7 @@ namespace LulCaster.UI.WPF.Pages
       DrawSelectedRegion();
     }
 
-    private void LstGamePresets_NewItemClicked(object sender, ButtonClickArgs e)
+    private async void LstGamePresets_NewItemClicked(object sender, ButtonClickArgs e)
     {
       var title = $"{e.Action} {e.ItemDescriptor}";
       var message = $"{e.Action} {e.ItemDescriptor}: ";
@@ -250,22 +252,22 @@ namespace LulCaster.UI.WPF.Pages
       if (results.DialogResult != DialogResults.Ok)
         return;
 
-      var newPreset = _presetListController.CreatePreset(results.InnerResults.Name, results.InnerResults.ProcessName);
+      var newPreset = await _presetListController.CreateAsync(results.InnerResults.Name, results.InnerResults.ProcessName);
       ViewModel.Presets.Add(newPreset);
       ViewModel.SelectedPreset = newPreset;
     }
 
-    private void LstGamePresets_DeleteItemClicked(object sender, ButtonClickArgs e)
+    private async void LstGamePresets_DeleteItemClicked(object sender, ButtonClickArgs e)
     {
       if (ShowDeleteCheck(LstGamePresets.ItemDescriptor)?.DialogResult != DialogResults.Yes)
         return;
 
-      _presetListController.DeletePreset(ViewModel.SelectedPreset);
+      await _presetListController.DeleteAsync(ViewModel.SelectedPreset);
       ViewModel.Presets.Remove(ViewModel.SelectedPreset);
       ViewModel.SelectedPreset = null;
     }
 
-    private void LstGamePresets_EditItemClicked(object sender, ButtonClickArgs e)
+    private async void LstGamePresets_EditItemClicked(object sender, ButtonClickArgs e)
     {
       var selectedPreset = ViewModel.SelectedPreset;
       var results = _presetInputDialog.Show(new NestedDialogViewModel<PresetViewModel>("Editing Preset", "Editing Preset: ", selectedPreset, DialogButtons.OkCancel));
@@ -274,8 +276,8 @@ namespace LulCaster.UI.WPF.Pages
         return;
 
       var existingPresetIndex = ViewModel.Presets.IndexOf(ViewModel.SelectedPreset);
-      _presetListController.DeletePreset(ViewModel.SelectedPreset);
-      var newPreset = _presetListController.CreatePreset(results.InnerResults.Name, results.InnerResults.ProcessName);
+      await _presetListController.DeleteAsync(ViewModel.SelectedPreset);
+      var newPreset = await _presetListController.CreateAsync(results.InnerResults.Name, results.InnerResults.ProcessName);
       ViewModel.Presets[existingPresetIndex] = newPreset;
       ViewModel.SelectedPreset = newPreset;
     }

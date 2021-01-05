@@ -1,6 +1,7 @@
 ﻿using LulCaster.UI.WPF.Config.UserSettings;
 using LulCaster.UI.WPF.ViewModels;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LulCaster.UI.WPF.Controllers
 {
@@ -13,19 +14,19 @@ namespace LulCaster.UI.WPF.Controllers
       _presetConfigService = configService;
     }
 
-    public PresetViewModel CreatePreset(string name, string processName)
+    public async Task<PresetViewModel> CreateAsync(string name, string processName)
     {
-      return _presetConfigService.CreatePreset(name, processName);
+      return await _presetConfigService.CreateAsync(name, processName);
     }
 
-    public IEnumerable<PresetViewModel> GetAllPresets()
+    public async Task<IEnumerable<PresetViewModel>> GetAllAsync()
     {
-      return _presetConfigService.GetAllPresets();
+      return await _presetConfigService.GetAllAsync();
     }
 
-    public void DeletePreset(PresetViewModel preset)
+    public async Task DeleteAsync(PresetViewModel preset)
     {
-      _presetConfigService.DeletePreset(preset);
+      await _presetConfigService.DeleteAsync(preset);
     }
   }
 }

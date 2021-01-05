@@ -40,7 +40,7 @@ namespace LulCaster.UI.WPF
       NavigationFrame.Navigate(_wireFramePage);
     }
 
-    private void MenuItemImport_Click(object sender, RoutedEventArgs e)
+    private async void MenuItemImport_Click(object sender, RoutedEventArgs e)
     {
       var openFileDialog = new OpenFileDialog
       {
@@ -53,7 +53,7 @@ namespace LulCaster.UI.WPF
       if (_presetInputDialog.Show(new Dialogs.ViewModels.NestedDialogViewModel<PresetViewModel>( "Import Preset", "Preset Name:", new PresetViewModel(), DialogButtons.OkCancel)) is NestedDialogResults<PresetViewModel> dialogResult
         && dialogResult.DialogResult == DialogResults.Ok)
       {
-        var presetViewModel = _presetListController.CreatePreset(dialogResult.InnerResults.Name, dialogResult.InnerResults.ProcessName);
+        var presetViewModel = await _presetListController.CreateAsync(dialogResult.InnerResults.Name, dialogResult.InnerResults.ProcessName);
         var regionList = _regionListController.GetAllRegions(openFileDialog.FileName);
         _regionListController.WriteAllRegions(PresetFile.ResolvePresetFilePath(presetViewModel.Id), regionList);
 
