@@ -15,17 +15,17 @@ namespace LulCaster.UI.WPF.Controllers
       _regionConfigService = configService;
     }
 
-    public RegionViewModel CreateRegion(Guid presetId, string regionName)
+    public RegionViewModel Create(Guid presetId, string regionName)
     {
       return _regionConfigService.CreateRegion(presetId, regionName);
     }
 
-    public void WriteAllRegions(string filePath, IEnumerable<RegionViewModel> regions)
+    public void WriteAll(string filePath, IEnumerable<RegionViewModel> regions)
     {
       _regionConfigService.WriteAllRegions(filePath, regions);
     }
 
-    public IEnumerable<RegionViewModel> GetAllRegions(string importFilePath)
+    public IEnumerable<RegionViewModel> GetAll(string importFilePath)
     {
       return _regionConfigService.GetAllRegions(importFilePath);
     }
@@ -35,17 +35,17 @@ namespace LulCaster.UI.WPF.Controllers
       return _regionConfigService.GetAllRegionsAsViewModels(presetId);
     }
 
-    public void UpdateRegion(Guid presetId, RegionViewModel region)
+    public void Update(Guid presetId, RegionViewModel region)
     {
       _regionConfigService.UpdateRegion(presetId, region);
     }
 
-    public async Task UpdateRegionAsync(Guid presetId, RegionViewModel region)
+    public async Task UpdatAsync(Guid presetId, RegionViewModel region)
     {
       await _regionConfigService.UpdateRegionAsync(presetId, region);
     }
 
-    public void DeleteRegion(Guid presetId, Guid regionId)
+    public void Delete(Guid presetId, Guid regionId)
     {
       _regionConfigService.DeleteRegion(presetId, regionId);
     }

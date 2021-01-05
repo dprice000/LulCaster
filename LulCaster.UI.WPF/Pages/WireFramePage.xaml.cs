@@ -145,7 +145,7 @@ namespace LulCaster.UI.WPF.Pages
     private async void RegionConfiguration_SaveConfigTriggered(object sender, RegionViewModel e)
     {
       _screenCaptureWorker.CanvasBounds = canvasScreenFeed.RenderSize;
-      await _regionListController.UpdateRegionAsync(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion);
+      await _regionListController.UpdatAsync(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion);
     }
 
     #endregion "User Control Events"
@@ -189,7 +189,7 @@ namespace LulCaster.UI.WPF.Pages
 
         if (ViewModel?.SelectedRegion?.BoundingBox != null)
         {
-          await _regionListController.UpdateRegionAsync(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion);
+          await _regionListController.UpdatAsync(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion);
         }
       });
     }
@@ -292,7 +292,7 @@ namespace LulCaster.UI.WPF.Pages
       if (results.DialogResult != DialogResults.Ok)
         return;
 
-      var newRegion = _regionListController.CreateRegion(ViewModel.SelectedPreset.Id, results.InnerResults.Name);
+      var newRegion = _regionListController.Create(ViewModel.SelectedPreset.Id, results.InnerResults.Name);
       ViewModel.Regions.Add(newRegion);
       ViewModel.SelectedRegion = newRegion;
     }
@@ -302,7 +302,7 @@ namespace LulCaster.UI.WPF.Pages
       if (ShowDeleteCheck(LstScreenRegions.ItemDescriptor)?.DialogResult != DialogResults.Yes)
         return;
 
-      _regionListController.DeleteRegion(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion.Id);
+      _regionListController.Delete(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion.Id);
       ViewModel.Regions.Remove(ViewModel.SelectedRegion);
       ViewModel.SelectedRegion = null;
     }
@@ -321,8 +321,8 @@ namespace LulCaster.UI.WPF.Pages
         return;
 
       var existingRegionIndex = ViewModel.Regions.IndexOf(ViewModel.SelectedRegion);
-      _regionListController.DeleteRegion(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion.Id);
-      var newRegion = _regionListController.CreateRegion(ViewModel.SelectedPreset.Id, results.InnerResults.Name);
+      _regionListController.Delete(ViewModel.SelectedPreset.Id, ViewModel.SelectedRegion.Id);
+      var newRegion = _regionListController.Create(ViewModel.SelectedPreset.Id, results.InnerResults.Name);
       ViewModel.Regions[existingRegionIndex] = newRegion;
       ViewModel.SelectedRegion = newRegion;
     }

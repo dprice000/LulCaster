@@ -54,8 +54,8 @@ namespace LulCaster.UI.WPF
         && dialogResult.DialogResult == DialogResults.Ok)
       {
         var presetViewModel = await _presetListController.CreateAsync(dialogResult.InnerResults.Name, dialogResult.InnerResults.ProcessName);
-        var regionList = _regionListController.GetAllRegions(openFileDialog.FileName);
-        _regionListController.WriteAllRegions(PresetFile.ResolvePresetFilePath(presetViewModel.Id), regionList);
+        var regionList = _regionListController.GetAll(openFileDialog.FileName);
+        _regionListController.WriteAll(PresetFile.ResolvePresetFilePath(presetViewModel.Id), regionList);
 
         WireFrameViewModel.Presets.Add(presetViewModel);
         WireFrameViewModel.SelectedPreset = presetViewModel;
@@ -78,7 +78,7 @@ namespace LulCaster.UI.WPF
       if (saveFileDialog.ShowDialog() != true)
         return;
 
-      _regionListController.WriteAllRegions(saveFileDialog.FileName, WireFrameViewModel.Regions);
+      _regionListController.WriteAll(saveFileDialog.FileName, WireFrameViewModel.Regions);
     }
   }
 }
