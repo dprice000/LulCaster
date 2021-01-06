@@ -5,6 +5,7 @@ using LulCaster.UI.WPF.Pages;
 using LulCaster.UI.WPF.Utility;
 using LulCaster.UI.WPF.ViewModels;
 using Microsoft.Win32;
+using System.Diagnostics;
 using System.Windows;
 
 namespace LulCaster.UI.WPF
@@ -50,7 +51,7 @@ namespace LulCaster.UI.WPF
       if (openFileDialog.ShowDialog() != true)
         return;
 
-      if (_presetInputDialog.Show(new Dialogs.ViewModels.NestedDialogViewModel<PresetViewModel>( "Import Preset", "Preset Name:", new PresetViewModel(), DialogButtons.OkCancel)) is NestedDialogResults<PresetViewModel> dialogResult
+      if (_presetInputDialog.Show(new Dialogs.ViewModels.NestedDialogViewModel<PresetViewModel>("Import Preset", "Preset Name:", new PresetViewModel(), DialogButtons.OkCancel)) is NestedDialogResults<PresetViewModel> dialogResult
         && dialogResult.DialogResult == DialogResults.Ok)
       {
         var presetViewModel = await _presetListController.CreateAsync(dialogResult.InnerResults.Name, dialogResult.InnerResults.ProcessName);
@@ -79,6 +80,17 @@ namespace LulCaster.UI.WPF
         return;
 
       _regionListController.WriteAll(saveFileDialog.FileName, WireFrameViewModel.Regions);
+    }
+
+    private void MenuItem_Click(object sender, RoutedEventArgs e)
+    {
+      var processInfo = new ProcessStartInfo
+      {
+        FileName = "http://github.com/dprice809/LulCaster/wiki/User-Documentation",
+        UseShellExecute = true
+      };
+
+      Process.Start(processInfo);
     }
   }
 }
