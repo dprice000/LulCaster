@@ -5,6 +5,7 @@ using LulCaster.UI.WPF.Config.UserSettings.Models;
 using LulCaster.UI.WPF.Controllers;
 using LulCaster.UI.WPF.Dialogs;
 using LulCaster.UI.WPF.Dialogs.Models;
+using LulCaster.UI.WPF.Dialogs.Providers;
 using LulCaster.UI.WPF.Dialogs.Services;
 using LulCaster.UI.WPF.Pages;
 using LulCaster.UI.WPF.ViewModels;
@@ -44,10 +45,12 @@ namespace LulCaster.UI.WPF
       services.AddSingleton<IPresetConfigService, PresetConfigService>();
       services.AddSingleton<IRegionConfigService, RegionConfigService>();
       services.AddScoped<IScreenCaptureService, GameCaptureService>();
+      services.AddScoped<WireFrameViewModel>();
 
       RegisterControllers(services);
       RegisterPages(services);
       RegisterDialogServices(services);
+      RegisterDialogProviders(services);
       RegisterAutoMapper(services);
     }
 
@@ -84,8 +87,17 @@ namespace LulCaster.UI.WPF
 
     private void OnStartup(object sender, StartupEventArgs e)
     {
+      InitializeDialogProviders();
+
       var mainWindow = _serviceProvider.GetService<MainWindow>();
       mainWindow.Show();
+    }
+
+    private void InitializeDialogProviders()
+    {
+      _serviceProvider.GetService<MessageBoxProvider>();
+      _serviceProvider.GetService<InputDialogProvider>();
+      _serviceProvider.GetService<CrudDialogProvider>();
     }
 
     private void RegisterControllers(IServiceCollection services)
@@ -104,6 +116,13 @@ namespace LulCaster.UI.WPF
       services.AddTransient(typeof(IDialogService<InputDialog, InputDialogResult>), typeof(DialogService<InputDialog, InputDialogResult>));
       services.AddTransient(typeof(IDialogService<PresetInputDialog, NestedDialogResults<PresetViewModel>>), typeof(DialogService<PresetInputDialog, NestedDialogResults<PresetViewModel>>));
       services.AddTransient(typeof(IDialogService<MessageBoxDialog, LulDialogResult>), typeof(DialogService<MessageBoxDialog, LulDialogResult>));
+    }
+
+    private void RegisterDialogProviders(IServiceCollection services)
+    {
+      services.AddSingleton<InputDialogProvider>();
+      services.AddSingleton<MessageBoxProvider>();
+      services.AddSingleton<CrudDialogProvider>();
     }
   }
 }

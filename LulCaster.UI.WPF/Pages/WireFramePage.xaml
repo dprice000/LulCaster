@@ -32,7 +32,7 @@
     </Grid.RowDefinitions>
 
     <materialDesign:Card Grid.Row="0" Margin="10,10,10,18">
-      <Canvas Name="canvasScreenFeed" Background="{Binding ScreenCaptureBrush, Mode=OneWay}" MouseLeftButtonDown="CanvasScreenFeed_MouseLeftButtonDown" MouseLeftButtonUp="CanvasScreenFeed_MouseLeftButtonUp" MouseMove="CanvasScreenFeed_MouseMove"></Canvas>
+      <Canvas Name="canvasScreenFeed" Background="{Binding ScreenCaptureBrush, Mode=OneWay}" MouseLeftButtonDown="canvasScreenFeed_MouseLeftButtonDown"  MouseLeftButtonUp="canvasScreenFeed_MouseLeftButtonUp"  MouseMove="canvasScreenFeed_MouseMove"></Canvas>
     </materialDesign:Card>
     <Grid Name="GridConfigTools" Grid.Row="1" Margin="10,0,10,0">
       <Grid.ColumnDefinitions>
@@ -58,7 +58,12 @@
                                       DeleteItemClicked="LstScreenRegions_DeleteItemClicked"
                                       EditItemClicked="LstScreenRegions_EditItemClicked"
                                       Grid.Column="1" Margin="6,0,3,0" />
-      <lulCon:RegionConfiguration x:Name="cntrlRegionConfig" SelectedRegion="{Binding SelectedRegion}" SelectedTrigger="{Binding SelectedTrigger}" Grid.Column="2" Margin="3,0,3,0" />
+      <lulCon:RegionConfiguration x:Name="cntrlRegionConfig" 
+                                  SelectedRegion="{Binding SelectedRegion}" 
+                                  SelectedTrigger="{Binding SelectedTrigger}" 
+                                  AddTriggerClicked="{Binding AddTriggerClick}"
+                                  DeleteTriggerClicked="{Binding DeleteTriggerClick}"
+                                  Grid.Column="2" Margin="3,0,3,0" />
     </Grid>
   </Grid>
 </Page>

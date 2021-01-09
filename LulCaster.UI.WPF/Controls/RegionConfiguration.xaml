@@ -23,12 +23,14 @@
       <Button x:Name="BtnAddTrigger" Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
                                             Height="25"
                                             materialDesign:ButtonAssist.CornerRadius="24"
+                                            Click="BtnAddTrigger_Click"
                                             ToolTip="Add New Trigger" Width="25">
         <materialDesign:PackIcon Kind="Add" Opacity=".56" Height="18" Width="18" />
       </Button>
       <Button x:Name="BtnDeleteTrigger" Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
                                                 IsEnabled="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedTrigger, Converter={StaticResource NullToBooleanConverter}}"
                                                 Height="25"
+                                                Click="BtnDeleteTrigger_Click"
                                                 materialDesign:ButtonAssist.CornerRadius="24"
                                                 ToolTip="Delete Selected Trigger" Width="25">
         <materialDesign:PackIcon Kind="Minus" Opacity=".56" Height="18" Width="18" />

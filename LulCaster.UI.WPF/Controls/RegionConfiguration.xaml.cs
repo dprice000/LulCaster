@@ -1,4 +1,5 @@
-﻿using LulCaster.UI.WPF.ViewModels;
+﻿using LulCaster.UI.WPF.Controls.EventArgs;
+using LulCaster.UI.WPF.ViewModels;
 using LulCaster.Utility.Common.Logic;
 using Microsoft.Win32;
 using System;
@@ -9,13 +10,16 @@ using System.Windows.Controls;
 
 namespace LulCaster.UI.WPF.Controls
 {
-  /// <summary>
-  /// Interaction logic for SegementConfiguration.xaml
-  /// </summary>
   public partial class RegionConfiguration : UserControl
   {
+    private const string ITEM_DESCRIPTOR = "Trigger"; 
+
     //HACK: This being static will cause issues if there are more than one instance of this control
     public static event EventHandler<RegionViewModel> SaveConfigTriggered;
+
+    public event EventHandler<ButtonClickArgs> AddTriggerClicked;
+
+    public event EventHandler<ButtonClickArgs> DeleteTriggerClicked;
 
     #region "Dependency Properties"
 
@@ -61,15 +65,6 @@ namespace LulCaster.UI.WPF.Controls
       InitializeComponent();
     }
 
-    private void btnSoundBrowser_Click(object sender, RoutedEventArgs e)
-    {
-      OpenFileDialog openFileDialog = new OpenFileDialog();
-      openFileDialog.Filter = "MP3|*.mp3|WAV (*.wav)|*.wav|WMA|*.wma";
-
-      if (openFileDialog.ShowDialog() == true)
-        SelectedTrigger.SoundFilePath = openFileDialog.FileName;
-    }
-
     private static void SelectedRegionPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
       if (sender is RegionConfiguration thisControl)
@@ -84,6 +79,25 @@ namespace LulCaster.UI.WPF.Controls
     private static void SelectedRegion_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
       SaveConfigTriggered?.Invoke(null, (RegionViewModel)sender);
+    }
+
+    private void BtnAddTrigger_Click(object sender, RoutedEventArgs e)
+    {
+      AddTriggerClicked?.Invoke(null, new ButtonClickArgs("Add", ITEM_DESCRIPTOR));
+    }
+
+    private void BtnDeleteTrigger_Click(object sender, RoutedEventArgs e)
+    {
+      DeleteTriggerClicked?.Invoke(null, new ButtonClickArgs("Delete", ITEM_DESCRIPTOR));
+    }
+
+    private void btnSoundBrowser_Click(object sender, RoutedEventArgs e)
+    {
+      OpenFileDialog openFileDialog = new OpenFileDialog();
+      openFileDialog.Filter = "MP3|*.mp3|WAV (*.wav)|*.wav|WMA|*.wma";
+
+      if (openFileDialog.ShowDialog() == true)
+        SelectedTrigger.SoundFilePath = openFileDialog.FileName;
     }
   }
 }

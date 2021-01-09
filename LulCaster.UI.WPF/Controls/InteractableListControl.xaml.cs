@@ -1,11 +1,6 @@
 ﻿using LulCaster.UI.WPF.Controls.EventArgs;
-using LulCaster.UI.WPF.Dialogs;
-using LulCaster.UI.WPF.Dialogs.Models;
-using LulCaster.UI.WPF.Dialogs.ViewModels;
-using LulCaster.Utility.Common.Enums;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -19,7 +14,9 @@ namespace LulCaster.UI.WPF.Controls
     #region "Public Events"
 
     public event EventHandler<ButtonClickArgs> NewItemClicked;
+
     public event EventHandler<ButtonClickArgs> DeleteItemClicked;
+
     public event EventHandler<ButtonClickArgs> EditItemClicked;
 
     public event EventHandler<IListItem> SelectionChanged;
