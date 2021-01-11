@@ -45,8 +45,8 @@ namespace LulCaster.UI.WPF
       services.AddSingleton<IPresetConfigService, PresetConfigService>();
       services.AddSingleton<IRegionConfigService, RegionConfigService>();
       services.AddScoped<IScreenCaptureService, GameCaptureService>();
-      services.AddScoped<WireFrameViewModel>();
 
+      RegisterViewModels(services);
       RegisterControllers(services);
       RegisterPages(services);
       RegisterDialogServices(services);
@@ -78,6 +78,14 @@ namespace LulCaster.UI.WPF
 
         return new Mapper(config);
       });
+    }
+
+    private void RegisterViewModels(IServiceCollection services)
+    {
+      services.AddScoped<WireFrameViewModel>();
+      services.AddScoped<PresetControlViewModel>();
+      services.AddScoped<RegionControlViewModel>();
+      services.AddScoped<RegionConfigViewModel>();
     }
 
     private void RegisterPages(IServiceCollection services)

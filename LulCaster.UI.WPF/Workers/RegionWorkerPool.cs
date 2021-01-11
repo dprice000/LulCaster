@@ -118,7 +118,7 @@ namespace LulCaster.UI.WPF.Workers
       ScreenCaptureQueue.Enqueue(new ScreenCapture()
       {
         ScreenMemoryStream = imageStream,
-        RegionViewModels = ViewModel.Regions,
+        RegionViewModels = ViewModel.RegionControl.Regions,
         ScreenBounds = captureArgs.ScreenBounds,
         CanvasBounds = captureArgs.CanvasBounds,
         CreationTime = DateTime.Now

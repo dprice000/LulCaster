@@ -58,14 +58,14 @@ namespace LulCaster.UI.WPF
         var regionList = _regionListController.GetAll(openFileDialog.FileName);
         _regionListController.WriteAll(PresetFile.ResolvePresetFilePath(presetViewModel.Id), regionList);
 
-        WireFrameViewModel.Presets.Add(presetViewModel);
-        WireFrameViewModel.SelectedPreset = presetViewModel;
+        WireFrameViewModel.PresetControl.Presets.Add(presetViewModel);
+        WireFrameViewModel.PresetControl.SelectedPreset = presetViewModel;
       }
     }
 
     private void MenuItemExport_Click(object sender, RoutedEventArgs e)
     {
-      if (WireFrameViewModel.SelectedPreset == null)
+      if (WireFrameViewModel.PresetControl.SelectedPreset == null)
       {
         _messageBoxDialog.Show("Export Fail!", "Unable to export as no preset is selected!", DialogButtons.Ok);
         return;
@@ -79,7 +79,7 @@ namespace LulCaster.UI.WPF
       if (saveFileDialog.ShowDialog() != true)
         return;
 
-      _regionListController.WriteAll(saveFileDialog.FileName, WireFrameViewModel.Regions);
+      _regionListController.WriteAll(saveFileDialog.FileName, WireFrameViewModel.RegionControl.Regions);
     }
 
     private void MenuItem_Click(object sender, RoutedEventArgs e)

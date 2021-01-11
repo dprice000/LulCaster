@@ -45,24 +45,19 @@
                                       IsPresetControl="True"
                                       ItemList="{Binding Presets}" 
                                       SelectedItem="{Binding SelectedPreset, Mode=TwoWay}"
-                                      NewItemClicked="LstGamePresets_NewItemClicked"
-                                      DeleteItemClicked="LstGamePresets_DeleteItemClicked"
-                                      EditItemClicked="LstGamePresets_EditItemClicked"
+   
+                                      
                                       Grid.Column="0" Margin="6,0,3,0" />
       <lulCon:InteractableListControl x:Name="LstScreenRegions" Title="Screen Regions"
                                       ItemDescriptor="Screen Region"
                                       IsPresetControl="False"
                                       ItemList="{Binding Regions}" 
                                       SelectedItem="{Binding SelectedRegion, Mode=TwoWay}"
-                                      NewItemClicked="LstScreenRegions_NewItemClicked"
-                                      DeleteItemClicked="LstScreenRegions_DeleteItemClicked"
-                                      EditItemClicked="LstScreenRegions_EditItemClicked"
+
                                       Grid.Column="1" Margin="6,0,3,0" />
       <lulCon:RegionConfiguration x:Name="cntrlRegionConfig" 
                                   SelectedRegion="{Binding SelectedRegion}" 
                                   SelectedTrigger="{Binding SelectedTrigger}" 
-                                  AddTriggerClicked="{Binding AddTriggerClick}"
-                                  DeleteTriggerClicked="{Binding DeleteTriggerClick}"
                                   Grid.Column="2" Margin="3,0,3,0" />
     </Grid>
   </Grid>

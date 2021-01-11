@@ -69,7 +69,7 @@ namespace LulCaster.UI.WPF.Pages
     private void InitializeUserControlEvents()
     {
       LstGamePresets.SelectionChanged += LstGamePresets_SelectionChanged;
-      Controls.RegionConfiguration.SaveConfigTriggered += RegionConfiguration_SaveConfigTriggered; ;
+      Controls.RegionConfiguration.SaveConfigTriggered += RegionConfiguration_SaveConfigTriggered;
       _screenCaptureWorker.ScreenCaptureCompleted += ViewModel.screenCaptureWorker_ScreenCaptureCompleted;
 
       CompositionTarget.Rendering += CompositionTarget_Rendering;
@@ -94,11 +94,11 @@ namespace LulCaster.UI.WPF.Pages
 
     private void LstGamePresets_SelectionChanged(object sender, Controls.IListItem e)
     {
-      if (ViewModel?.SelectedPreset != null)
+      if (ViewModel?.PresetControl.SelectedPreset != null)
       {
         try
         {
-          var handle = HandleFinder.GetWindowsHandle(ViewModel.SelectedPreset.Name);
+          var handle = HandleFinder.GetWindowsHandle(ViewModel.PresetControl.SelectedPreset.Name);
           _screenCaptureWorker.SetGameHandle(handle);
           _screenCaptureWorker.Start();
         }
@@ -121,14 +121,14 @@ namespace LulCaster.UI.WPF.Pages
     {
       canvasScreenFeed.Children.Clear();
 
-      if (ViewModel?.SelectedRegion?.BoundingBox != null)
+      if (ViewModel?.RegionControl.SelectedRegion?.BoundingBox != null)
       {
-        var selectedBox = ViewModel.SelectedRegion.BoundingBox;
+        var selectedBox = ViewModel.RegionControl.SelectedRegion.BoundingBox;
         var windowsBox = _boundingBoxBrush.ConvertRectToWindowsRect(selectedBox);
         canvasScreenFeed.Children.Add(windowsBox);
         Canvas.SetLeft(windowsBox, selectedBox.X);
         Canvas.SetTop(windowsBox, selectedBox.Y);
-        ViewModel.SelectedRegion.BoundingBox = selectedBox;
+        ViewModel.RegionControl.SelectedRegion.BoundingBox = selectedBox;
       }
     }
 
@@ -148,17 +148,18 @@ namespace LulCaster.UI.WPF.Pages
 
     private void canvasScreenFeed_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
-      ViewModel.CanvasLeftMouseDown.Execute(e);
+      ViewModel.RegionControl.CanvasLeftMouseDown.Execute(e);
     }
 
     private void canvasScreenFeed_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
-      ViewModel.CanvasLeftMouseUp.Execute(e);
+      ViewModel.RegionControl.CanvasLeftMouseUp.Execute(e);
     }
 
     private void canvasScreenFeed_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
     {
-      ViewModel.CanvasMouseMove.Execute(e);
+      //TODO: Needs to be uncommented
+      //ViewModel.RegionControl.CanvasMouseMove.Execute(e);
     }
   }
 }
