@@ -42,7 +42,8 @@
           <StackPanel Orientation="Horizontal">
             <Label>Trigger Type:</Label>
             <ComboBox Width="200" SelectedIndex="0"
-                      ItemsSource="{Binding ElementName=ctrlRegionConfiguration, Path=TriggerTypes, Mode=OneTime}"
+                      IsEnabled="{Binding ElementName=ctrlRegionConfiguration, Path=IsTriggerListEmpty, Mode=OneWay}"
+                      ItemsSource="{Binding ElementName=ctrlRegionConfiguration, Path=TriggerTypes, Mode=OneWay}"
                       SelectedItem="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedTrigger.TriggerType, Mode=TwoWay}"></ComboBox>
           </StackPanel>
           <StackPanel Orientation="Horizontal">

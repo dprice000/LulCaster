@@ -40,6 +40,14 @@ namespace LulCaster.UI.WPF.Controls
         typeof(RegionConfiguration)
     );
 
+    public static readonly DependencyProperty IsTriggerListEmptyProperty =
+    DependencyProperty.Register
+    (
+        "IsTriggerListEmpty",
+        typeof(bool),
+        typeof(RegionConfiguration)
+    );
+
     #endregion "Dependency Properties"
 
     #region "Properties"
@@ -54,6 +62,12 @@ namespace LulCaster.UI.WPF.Controls
     {
       get { return (TriggerViewModel)GetValue(SelectedTriggerProperty); }
       set { SetValue(SelectedTriggerProperty, value); }
+    }
+
+    public bool IsTriggerListEmpty
+    {
+      get { return ((RegionViewModel)GetValue(SelectedRegionProperty)).Triggers?.Count > 0; }
+      set { SetValue(IsTriggerListEmptyProperty, value); }
     }
 
     public IEnumerable<TriggerTypes> TriggerTypes { get => Enum.GetValues(typeof(TriggerTypes)).Cast<TriggerTypes>(); } 
