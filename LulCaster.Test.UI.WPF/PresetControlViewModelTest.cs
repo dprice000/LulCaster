@@ -6,7 +6,6 @@ using NSubstitute;
 using Shouldly;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace LulCaster.Test.UI.WPF
@@ -17,7 +16,7 @@ namespace LulCaster.Test.UI.WPF
     private IPresetListController _presetController;
     private PresetControlViewModel _presetControlViewModel; 
 
-    protected PresetControlViewModelTests()
+    public PresetControlViewModelTests()
     {
       _presetController = Substitute.For<IPresetListController>();
       _presetControlViewModel = new PresetControlViewModel(_presetController);
@@ -26,23 +25,30 @@ namespace LulCaster.Test.UI.WPF
     [Fact]
     public void PresetController_OnViewModelLoad_ListContainsSavedPresets()
     {
+      //Arrange
       List<PresetViewModel> mockedPresets = _fixture.Create<List<PresetViewModel>>();
-
       _presetController.GetAllAsync().Returns(mockedPresets);
 
+      //Act
+      _presetControlViewModel = new PresetControlViewModel(_presetController);
+
+      //Assert
       _presetControlViewModel.Presets.Count.ShouldBe(mockedPresets.Count);
     }
 
     [Fact]
-    public void PresetController_GetAll_ItemListShouldBeItenditical()
+    public void PresetController_OnViewModelLoad_ItemListShouldBeItenditical()
     {
+      //Arrange
       List<PresetViewModel> mockedPresets = _fixture.Create<List<PresetViewModel>>();
-
       _presetController.GetAllAsync().Returns(mockedPresets);
 
+      //Act
+      _presetControlViewModel = new PresetControlViewModel(_presetController);
       var mockedItem = mockedPresets.Last();
       var resultItem = _presetControlViewModel.Presets.Last();
 
+      //Assert
       resultItem.ShouldBe<PresetViewModel>(mockedItem);
     }
   }
