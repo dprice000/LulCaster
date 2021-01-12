@@ -68,7 +68,7 @@ namespace LulCaster.UI.WPF.ViewModels
     }
 
     #region "Control Events"
-    private async void NewItemClicked(ButtonClickArgs args)
+    public async void NewItemClickedAsync(ButtonClickArgs args)
     {
       var e = (ButtonClickArgs)args;
 
@@ -85,7 +85,7 @@ namespace LulCaster.UI.WPF.ViewModels
       SelectedPreset = newPreset;
     }
 
-    private async void DeleteItemClicked(object sender, ButtonClickArgs e)
+    public async void DeleteItemClickedAsync(object sender, ButtonClickArgs e)
     {
       if (MessageBoxProvider.ShowDeleteDialog("Preset")?.DialogResult != DialogResults.Yes)
         return;
@@ -95,7 +95,7 @@ namespace LulCaster.UI.WPF.ViewModels
       SelectedPreset = null;
     }
 
-    private async void EditItemClicked(object sender, ButtonClickArgs e)
+    public async void EditItemClickedAsync(object sender, ButtonClickArgs e)
     {
       var results = CrudDialogProvider.PresetModal(new NestedDialogViewModel<PresetViewModel>("Editing Preset", "Editing Preset: ", SelectedPreset, DialogButtons.OkCancel));
 

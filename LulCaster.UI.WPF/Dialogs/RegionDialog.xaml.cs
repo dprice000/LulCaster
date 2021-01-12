@@ -30,13 +30,19 @@ namespace LulCaster.UI.WPF.Dialogs
     private void btnCancel_Click(object sender, RoutedEventArgs e)
     {
       DialogResult = DialogResults.Cancel;
-      Close();
+      Hide();
     }
 
     private void btnOk_Click(object sender, RoutedEventArgs e)
     {
       DialogResult = DialogResults.Ok;
-      Close();
+      Hide();
+    }
+
+    private void ctrlRegionDialog_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    {
+      e.Cancel = true;
+      Hide();
     }
   }
 }

@@ -1,7 +1,4 @@
 ﻿using LulCaster.UI.WPF.Config;
-using LulCaster.UI.WPF.Dialogs;
-using LulCaster.UI.WPF.Dialogs.Models;
-using LulCaster.UI.WPF.Dialogs.Services;
 using LulCaster.UI.WPF.ViewModels;
 using LulCaster.UI.WPF.Workers;
 using LulCaster.UI.WPF.Workers.Events;
@@ -70,9 +67,9 @@ namespace LulCaster.UI.WPF.Pages
       CompositionTarget.Rendering += CompositionTarget_Rendering;
     }
 
-    private void RegionConfiguration_SaveConfigTriggered(object sender, RegionViewModel e)
+    private async void RegionConfiguration_SaveConfigTriggered(object sender, RegionViewModel e)
     {
-      ViewModel.SaveTriggerClicked.Execute(null);
+      await ViewModel.RegionControl.SaveTriggerConfigAsnyc();
     }
 
     private void InitializeWorkers()
@@ -139,22 +136,66 @@ namespace LulCaster.UI.WPF.Pages
       DrawSelectedRegion();
     }
 
-    #endregion "Special Controls Events"
-
     private void canvasScreenFeed_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
-      ViewModel.RegionControl.CanvasLeftMouseDown.Execute(e);
+      ViewModel.RegionControl.CanvasMouseLeftButtonDownOccured(e);
     }
 
     private void canvasScreenFeed_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
-      ViewModel.RegionControl.CanvasLeftMouseUp.Execute(e);
+      ViewModel.RegionControl.CanvasMouseLeftButtonUpOccured(e);
     }
-
     private void canvasScreenFeed_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
     {
-      //TODO: Needs to be uncommented
-      //ViewModel.RegionControl.CanvasMouseMove.Execute(e);
+      ViewModel.RegionControl.CanvasMouseMoveOccured(e);
     }
+
+    #endregion "Special Controls Events"
+
+    #region "Preset Control Events"
+    private void LstGamePresets_NewItemClicked(object sender, Controls.EventArgs.ButtonClickArgs e)
+    {
+      ViewModel.PresetControl.NewItemClickedAsync(e);
+    }
+
+    private void LstGamePresets_DeleteItemClicked(object sender, Controls.EventArgs.ButtonClickArgs e)
+    {
+      ViewModel.PresetControl.DeleteItemClickedAsync(sender, e);
+    }
+
+    private void LstGamePresets_EditItemClicked(object sender, Controls.EventArgs.ButtonClickArgs e)
+    {
+      ViewModel.PresetControl.EditItemClickedAsync(sender, e);
+    }
+    #endregion "Preset Control Events"
+
+    #region "Region Control Events"
+    private void LstScreenRegions_NewItemClicked(object sender, Controls.EventArgs.ButtonClickArgs e)
+    {
+      ViewModel.RegionControl.NewItemClicked(e);
+    }
+
+    private void LstScreenRegions_DeleteItemClicked(object sender, Controls.EventArgs.ButtonClickArgs e)
+    {
+      ViewModel.RegionControl.DeleteItemClicked(sender, e);
+    }
+
+    private void LstScreenRegions_EditItemClicked(object sender, Controls.EventArgs.ButtonClickArgs e)
+    {
+      ViewModel.RegionControl.EditItemClicked(sender, e);
+    }
+    #endregion
+
+    #region "Region Config Control Events"
+    private void cntrlRegionConfig_AddTriggerClicked(object sender, Controls.EventArgs.ButtonClickArgs e)
+    {
+      ViewModel.RegionConfigControl.AddTriggerClicked(e);
+    }
+
+    private void cntrlRegionConfig_DeleteTriggerClicked(object sender, Controls.EventArgs.ButtonClickArgs e)
+    {
+      ViewModel.RegionConfigControl.DeleteTriggerClicked(e);
+    }
+    #endregion
   }
 }

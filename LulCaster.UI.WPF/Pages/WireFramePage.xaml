@@ -49,19 +49,24 @@
                                       IsPresetControl="True"
                                       ItemList="{Binding PresetControl.Presets}" 
                                       SelectedItem="{Binding PresetControl.SelectedPreset, Mode=TwoWay}"
-   
-                                      
+                                      NewItemClicked="LstGamePresets_NewItemClicked"
+                                      DeleteItemClicked="LstGamePresets_DeleteItemClicked"
+                                      EditItemClicked="LstGamePresets_EditItemClicked"
                                       Grid.Column="0" Margin="6,0,3,0" />
       <lulCon:InteractableListControl x:Name="LstScreenRegions" Title="Screen Regions"
                                       ItemDescriptor="Screen Region"
                                       IsPresetControl="False"
                                       ItemList="{Binding RegionControl.Regions}" 
                                       SelectedItem="{Binding RegionControl.SelectedRegion, Mode=TwoWay}"
-
+                                      NewItemClicked="LstScreenRegions_NewItemClicked"
+                                      DeleteItemClicked="LstScreenRegions_DeleteItemClicked"
+                                      EditItemClicked="LstScreenRegions_EditItemClicked"
                                       Grid.Column="1" Margin="6,0,3,0" />
       <lulCon:RegionConfiguration x:Name="cntrlRegionConfig" 
                                   SelectedRegion="{Binding RegionControl.SelectedRegion}" 
-                                  SelectedTrigger="{Binding RegionConfigControl.SelectedTrigger}" 
+                                  SelectedTrigger="{Binding RegionConfigControl.SelectedTrigger}"
+                                  AddTriggerClicked="cntrlRegionConfig_AddTriggerClicked"
+                                  DeleteTriggerClicked="cntrlRegionConfig_DeleteTriggerClicked"
                                   Grid.Column="2" Margin="3,0,3,0" />
     </Grid>
   </Grid>

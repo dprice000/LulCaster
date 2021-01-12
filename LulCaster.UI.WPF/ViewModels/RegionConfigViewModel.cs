@@ -88,7 +88,7 @@ namespace LulCaster.UI.WPF.ViewModels
 
     #region "Trigger Events"
 
-    private void AddTriggerClicked(object args)
+    public void AddTriggerClicked(object args)
     {
       if (InputDialogProvider.Show("New Trigger", "New Trigger Name:", DialogButtons.OkCancel) is InputDialogResult dialogResult && dialogResult.DialogResult == DialogResults.Ok)
       {
@@ -99,7 +99,7 @@ namespace LulCaster.UI.WPF.ViewModels
       }
     }
 
-    private void DeleteTriggerClicked(object args)
+    public void DeleteTriggerClicked(object args)
     {
       if (MessageBoxProvider.Show("Delete Trigger", "Delete selected trigger?", DialogButtons.YesNo) is LulDialogResult dialogResult
         && dialogResult.DialogResult == DialogResults.Yes)

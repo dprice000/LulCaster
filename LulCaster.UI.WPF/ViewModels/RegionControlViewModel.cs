@@ -6,8 +6,8 @@ using LulCaster.UI.WPF.Dialogs.Providers;
 using LulCaster.UI.WPF.Dialogs.ViewModels;
 using LulCaster.UI.WPF.Utility;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
-using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace LulCaster.UI.WPF.ViewModels
@@ -72,7 +72,7 @@ namespace LulCaster.UI.WPF.ViewModels
     {
       get
       {
-        return _canvasLeftMouseUp ?? (_canvasLeftMouseUp = new DelegateCommand<ButtonClickArgs>(CanvasMouseLeftButtonUp, (buttonClickArgs) => (SelectedRegion != null)));
+        return _canvasLeftMouseUp ?? (_canvasLeftMouseUp = new DelegateCommand<ButtonClickArgs>(CanvasMouseLeftButtonUpOccured, (buttonClickArgs) => (SelectedRegion != null)));
       }
     }
 
@@ -82,7 +82,7 @@ namespace LulCaster.UI.WPF.ViewModels
     {
       get
       {
-        return _canvasLeftMouseDown ?? (_canvasLeftMouseDown = new DelegateCommand<ButtonClickArgs>(CanvasMouseLeftButtonDown, (buttonClickArgs) => (SelectedRegion != null)));
+        return _canvasLeftMouseDown ?? (_canvasLeftMouseDown = new DelegateCommand<ButtonClickArgs>(CanvasMouseLeftButtonDownOccured, (buttonClickArgs) => (SelectedRegion != null)));
       }
     }
 
@@ -104,7 +104,7 @@ namespace LulCaster.UI.WPF.ViewModels
 
     #region "Control Events"
 
-    private void NewItemClicked(ButtonClickArgs e)
+    public void NewItemClicked(ButtonClickArgs e)
     {
       var title = $"{e.Action} {e.ItemDescriptor}";
       var message = $"{e.Action} {e.ItemDescriptor}: ";
@@ -119,7 +119,7 @@ namespace LulCaster.UI.WPF.ViewModels
       SelectedRegion = newRegion;
     }
 
-    private void DeleteItemClicked(object sender, ButtonClickArgs e)
+    public void DeleteItemClicked(object sender, ButtonClickArgs e)
     {
       if (MessageBoxProvider.ShowDeleteDialog("Region")?.DialogResult != DialogResults.Yes)
         return;
@@ -129,7 +129,7 @@ namespace LulCaster.UI.WPF.ViewModels
       SelectedRegion = null;
     }
 
-    private void EditItemClicked(object sender, ButtonClickArgs e)
+    public void EditItemClicked(object sender, ButtonClickArgs e)
     {
       var selectedRegion = SelectedRegion;
       var results = CrudDialogProvider.RegionModal(new NestedDialogViewModel<RegionViewModel>("Editing Region", "Editing Region: ", selectedRegion, DialogButtons.OkCancel));
@@ -143,10 +143,15 @@ namespace LulCaster.UI.WPF.ViewModels
       Regions[existingRegionIndex] = newRegion;
       SelectedRegion = newRegion;
     }
+
+    public async Task SaveTriggerConfigAsnyc()
+    {
+      await _regionController.UpdatAsync(SelectedPreset.Id, SelectedRegion);
+    }
     #endregion
 
     #region "Canvas Events"
-    public async void CanvasMouseLeftButtonUp(object e)
+    public async void CanvasMouseLeftButtonUpOccured(object e)
     {
       var args = (MouseButtonEventArgs)e;
 
@@ -159,7 +164,7 @@ namespace LulCaster.UI.WPF.ViewModels
       }
     }
 
-    private void CanvasMouseLeftButtonDown(object e)
+    public void CanvasMouseLeftButtonDownOccured(object e)
     {
       var args = (MouseButtonEventArgs)e;
 
@@ -169,9 +174,9 @@ namespace LulCaster.UI.WPF.ViewModels
       SelectedRegion.BoundingBox = _boundingBoxBrush.OnMouseDown(args);
     }
 
-    private void CanvasMouseMoveOccured(object e)
+    public void CanvasMouseMoveOccured(object e)
     {
-      var args = (MouseButtonEventArgs)e;
+      var args = (MouseEventArgs)e;
 
       if (args.LeftButton == MouseButtonState.Released || SelectedRegion == null)
         return;

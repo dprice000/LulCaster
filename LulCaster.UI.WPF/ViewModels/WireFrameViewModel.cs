@@ -1,6 +1,4 @@
-﻿using LulCaster.UI.WPF.Controls.EventArgs;
-using LulCaster.UI.WPF.Utility;
-using LulCaster.UI.WPF.Workers.Events.Arguments;
+﻿using LulCaster.UI.WPF.Workers.Events.Arguments;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
 using System.IO;
 using System.Windows;
@@ -78,20 +76,6 @@ namespace LulCaster.UI.WPF.ViewModels
 
     #endregion "Properties"
 
-    #region "Commands"
-
-    private DelegateCommand<ButtonClickArgs> _saveTriggerClicked;
-
-    public DelegateCommand<ButtonClickArgs> SaveTriggerClicked
-    {
-      get
-      {
-        return _saveTriggerClicked ?? (_saveTriggerClicked = new DelegateCommand<ButtonClickArgs>((obj) => SaveConfigTriggeredClicked(obj), (buttonClickArgs) => (RegionConfigControl.SelectedTrigger != null)));
-      }
-    }
-
-    #endregion "Commands"
-
     #region "Constructor"
 
     public WireFrameViewModel(PresetControlViewModel presetControlViewModel
@@ -106,11 +90,6 @@ namespace LulCaster.UI.WPF.ViewModels
     }
 
     #endregion "Constructor"
-
-    private void RegionControl_SelectionChanged(object sender, RegionViewModel e)
-    {
-      RegionConfigControl.SelectedRegion = e;
-    }
 
     private void PresetControl_SelectionChanged(object sender, PresetViewModel e)
     {
@@ -133,15 +112,5 @@ namespace LulCaster.UI.WPF.ViewModels
         ScreenCaptureBrush = new ImageBrush(screenCaptureImage);
       });
     }
-
-    #region "Trigger Events"
-
-    private async void SaveConfigTriggeredClicked(object parameters)
-    {
-      //TODO: This needs to be uncommented
-      //await _regionController.UpdatAsync(SelectedPreset.Id, SelectedRegion);
-    }
-
-    #endregion "Trigger Events"
   }
 }
