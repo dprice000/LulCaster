@@ -87,6 +87,8 @@ namespace LulCaster.UI.WPF.Controls
         {
           thisControl.SelectedRegion.PropertyChanged += SelectedRegion_PropertyChanged;
         }
+
+        thisControl.IsTriggerListEmpty = thisControl?.SelectedRegion?.Triggers?.Count > 0;
       }
     }
 

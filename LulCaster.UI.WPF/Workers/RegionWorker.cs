@@ -38,15 +38,20 @@ namespace LulCaster.UI.WPF.Workers
       {
         var scrappedText = ScrapeImage(greyScaledImage);
         scrappedText = Regex.Replace(scrappedText, @"[^0-9a-zA-Z]", "");
-        ProcessTriggers(_region.Triggers, _screenCapture, scrappedText);
+        ProcessTriggers(_region, _screenCapture, scrappedText);
       }
 
       IsRunning = false;
     }
 
-    private void ProcessTriggers(IList<TriggerViewModel> triggers, ScreenCapture screenCapture, string scrappedText)
+    private void ProcessTriggers(RegionViewModel region, ScreenCapture screenCapture, string scrappedText)
     {
-      foreach (var trigger in triggers)
+      if (region.RegionType != LulCaster.Utility.Common.Enums.RegionTypes.SimpleString)
+      {
+
+      }
+
+      foreach (var trigger in region?.Triggers)
       {
         //TODO: This needs to eventually tap into a trigger factory.
         if (scrappedText.Contains(trigger.ThresholdValue, StringComparison.OrdinalIgnoreCase))
