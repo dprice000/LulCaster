@@ -4,7 +4,6 @@ using LulCaster.UI.WPF.ViewModels;
 using NSubstitute;
 using Shouldly;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
 namespace LulCaster.Test.UI.WPF
@@ -22,7 +21,7 @@ namespace LulCaster.Test.UI.WPF
     }
 
     [Fact]
-    public void OnViewModelLoad_ControllerLoadsPresets_ListContainsSavedPresets()
+    public void OnViewModelLoad_PresetsExist_PresetsAreLoaded()
     {
       //Arrange
       List<PresetViewModel> mockedPresets = _fixture.Create<List<PresetViewModel>>();
@@ -32,23 +31,21 @@ namespace LulCaster.Test.UI.WPF
       _presetControlViewModel = new PresetControlViewModel(_presetController);
 
       //Assert
-      _presetControlViewModel.Presets.Count.ShouldBe(mockedPresets.Count);
+      _presetControlViewModel.Presets.ShouldBe(mockedPresets);
     }
 
     [Fact]
-    public void OnViewModelLoad_ControllerLoadsPresets_ItemListShouldBeItenditical()
+    public void OnViewModelLoad_EmptyListReturned_PresetSetToEmptyList()
     {
       //Arrange
-      List<PresetViewModel> mockedPresets = _fixture.Create<List<PresetViewModel>>();
-      _presetController.GetAllAsync().Returns(mockedPresets);
+      var emptyList = new List<PresetViewModel>();
+      _presetController.GetAllAsync().Returns(emptyList);
 
       //Act
       _presetControlViewModel = new PresetControlViewModel(_presetController);
-      var mockedItem = mockedPresets.Last();
-      var resultItem = _presetControlViewModel.Presets.Last();
 
       //Assert
-      resultItem.ShouldBe<PresetViewModel>(mockedItem);
+      _presetControlViewModel.Presets.ShouldBe(emptyList);
     }
   }
 }
