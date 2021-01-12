@@ -6,6 +6,7 @@ using LulCaster.UI.WPF.Dialogs.Providers;
 using LulCaster.UI.WPF.Dialogs.ViewModels;
 using LulCaster.UI.WPF.Utility;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -13,12 +14,16 @@ namespace LulCaster.UI.WPF.ViewModels
 {
   public class RegionControlViewModel : ViewModelBase
   {
+    #region "Private Members"
     private readonly IRegionListController _regionController;
     private readonly BoundingBoxBrush _boundingBoxBrush = new BoundingBoxBrush();
     private PresetViewModel _selectedPreset;
 
     private RegionViewModel _selectedRegion;
     private ObservableCollection<RegionViewModel> _regions = new ObservableCollection<RegionViewModel>();
+    #endregion "Private Members"
+
+    #region "Properties"
     public PresetViewModel SelectedPreset
     {
       get
@@ -29,6 +34,7 @@ namespace LulCaster.UI.WPF.ViewModels
       {
         _selectedPreset = value;
         Regions = (_selectedPreset != null) ? new ObservableCollection<RegionViewModel>(_regionController.GetRegions(_selectedPreset.Id)) : null;
+        OnPropertyChanged(nameof(SelectedPreset));
       }
     }
 
@@ -57,11 +63,7 @@ namespace LulCaster.UI.WPF.ViewModels
         OnPropertyChanged(nameof(SelectedRegion));
       }
     }
-
-    public RegionControlViewModel(IRegionListController regionController)
-    {
-      _regionController = regionController;
-    }
+    #endregion "Properties"
 
     #region "Commands"
     private DelegateCommand<ButtonClickArgs> _canvasLeftMouseUp;
@@ -94,6 +96,13 @@ namespace LulCaster.UI.WPF.ViewModels
       }
     }
     #endregion
+
+    public RegionControlViewModel(IRegionListController regionController)
+    {
+      _regionController = regionController;
+    }
+
+    #region "Control Events"
 
     private void NewItemClicked(ButtonClickArgs e)
     {
@@ -134,6 +143,7 @@ namespace LulCaster.UI.WPF.ViewModels
       Regions[existingRegionIndex] = newRegion;
       SelectedRegion = newRegion;
     }
+    #endregion
 
     #region "Canvas Events"
     public async void CanvasMouseLeftButtonUp(object e)

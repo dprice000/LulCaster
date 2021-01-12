@@ -13,10 +13,13 @@ namespace LulCaster.UI.WPF.ViewModels
   {
     public event EventHandler<PresetViewModel> SelectionChanged;
 
+    #region "Private Members"
     private ObservableCollection<PresetViewModel> _presets = new ObservableCollection<PresetViewModel>();
     private PresetViewModel _selectedPreset;
     private IPresetListController _presetController;
+    #endregion "Private Members"
 
+    #region "Properties"
     private void OnPresetSelectionChanged()
     {
       SelectionChanged?.Invoke(this, SelectedPreset);
@@ -48,6 +51,7 @@ namespace LulCaster.UI.WPF.ViewModels
         OnPresetSelectionChanged();
       }
     }
+    #endregion "Properties"
 
     public PresetControlViewModel(IPresetListController presetController)
     {

@@ -18,7 +18,6 @@ namespace LulCaster.UI.WPF.Pages
   public partial class WireFramePage : Page
   {
     #region "Private Members"
-
     private readonly ScreenCaptureWorker _screenCaptureWorker;
     private readonly RegionWorkerPool _regionWorkerPool;
     private readonly SoundEffectWorker _soundEffectWorker;
@@ -39,11 +38,7 @@ namespace LulCaster.UI.WPF.Pages
 
     public WireFramePage(WireFrameViewModel viewModel
                           , IScreenCaptureService screenCaptureService
-                          , IConfigManagerService configManagerService
-                          , IDialogService<InputDialog, InputDialogResult> inputDialog
-                          , IDialogService<MessageBoxDialog, LulDialogResult> messageBoxService
-                          , PresetInputDialog presetInputDialog
-                          , RegionDialog regionDialog)
+                          , IConfigManagerService configManagerService)
     {
       InitializeComponent();
       DataContext = viewModel;

@@ -1,9 +1,7 @@
-﻿using LulCaster.UI.WPF.Controllers;
-using LulCaster.UI.WPF.Controls.EventArgs;
+﻿using LulCaster.UI.WPF.Controls.EventArgs;
 using LulCaster.UI.WPF.Utility;
 using LulCaster.UI.WPF.Workers.Events.Arguments;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
@@ -14,6 +12,7 @@ namespace LulCaster.UI.WPF.ViewModels
   public class WireFrameViewModel : ViewModelBase
   {
     #region "Private Members"
+
     private PresetControlViewModel _presetControlViewModel;
     private RegionControlViewModel _regionControlViewModel;
     private RegionConfigViewModel _regionConfigViewModel;
@@ -91,30 +90,10 @@ namespace LulCaster.UI.WPF.ViewModels
       }
     }
 
-    //private DelegateCommand<ButtonClickArgs> _deleteTriggerClick;
-
-    //public DelegateCommand<ButtonClickArgs> DeleteTriggerClick
-    //{
-    //  get
-    //  {
-    //    return _deleteTriggerClick ?? (_deleteTriggerClick = new DelegateCommand<ButtonClickArgs>(DeleteTriggerClicked, (buttonClickArgs) => (SelectedTrigger != null)));
-    //  }
-    //}
-
-    //private DelegateCommand<ButtonClickArgs> _addTriggerClick;
-
-    //public DelegateCommand<ButtonClickArgs> AddTriggerClick
-    //{
-    //  get
-    //  {
-    //    return _addTriggerClick ?? (_addTriggerClick = new DelegateCommand<ButtonClickArgs>(AddTriggerClicked, (buttonClickArgs) => (SelectedRegion != null)));
-    //  }
-    //}
-
     #endregion "Commands"
 
-
     #region "Constructor"
+
     public WireFrameViewModel(PresetControlViewModel presetControlViewModel
       , RegionControlViewModel regionControlViewModel
       , RegionConfigViewModel regionConfigViewModel)
@@ -123,14 +102,20 @@ namespace LulCaster.UI.WPF.ViewModels
       _regionControlViewModel = regionControlViewModel;
       _regionConfigViewModel = regionConfigViewModel;
 
-      PresetControl.SelectionChanged += PresetControl_SelectionChanged; ;
+      PresetControl.SelectionChanged += PresetControl_SelectionChanged;
     }
-    #endregion
+
+    #endregion "Constructor"
+
+    private void RegionControl_SelectionChanged(object sender, RegionViewModel e)
+    {
+      RegionConfigControl.SelectedRegion = e;
+    }
 
     private void PresetControl_SelectionChanged(object sender, PresetViewModel e)
     {
-      PresetControl.SelectedPreset = e;
-
+      RegionControl.SelectedPreset = e;
+      RegionConfigControl.SelectedPreset = e;
     }
 
     internal void screenCaptureWorker_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
