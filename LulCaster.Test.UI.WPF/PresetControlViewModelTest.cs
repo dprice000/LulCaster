@@ -1,6 +1,5 @@
 using AutoFixture;
 using LulCaster.UI.WPF.Controllers;
-using LulCaster.UI.WPF.Dialogs.Providers;
 using LulCaster.UI.WPF.ViewModels;
 using NSubstitute;
 using Shouldly;
@@ -23,7 +22,7 @@ namespace LulCaster.Test.UI.WPF
     }
 
     [Fact]
-    public void PresetController_OnViewModelLoad_ListContainsSavedPresets()
+    public void OnViewModelLoad_ControllerLoadsPresets_ListContainsSavedPresets()
     {
       //Arrange
       List<PresetViewModel> mockedPresets = _fixture.Create<List<PresetViewModel>>();
@@ -37,7 +36,7 @@ namespace LulCaster.Test.UI.WPF
     }
 
     [Fact]
-    public void PresetController_OnViewModelLoad_ItemListShouldBeItenditical()
+    public void OnViewModelLoad_ControllerLoadsPresets_ItemListShouldBeItenditical()
     {
       //Arrange
       List<PresetViewModel> mockedPresets = _fixture.Create<List<PresetViewModel>>();
