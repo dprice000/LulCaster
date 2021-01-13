@@ -7,7 +7,6 @@ using NSubstitute;
 using Shouldly;
 using System;
 using System.Collections.Generic;
-using System.Windows.Input;
 using Xunit;
 
 

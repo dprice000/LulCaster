@@ -6,6 +6,7 @@ using LulCaster.UI.WPF.Dialogs.Providers;
 using LulCaster.UI.WPF.Dialogs.ViewModels;
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace LulCaster.UI.WPF.ViewModels
 {
@@ -68,14 +69,14 @@ namespace LulCaster.UI.WPF.ViewModels
     }
 
     #region "Control Events"
-    public async void NewItemClickedAsync(ButtonClickArgs args)
+    public async Task NewItemClickedAsync(ButtonClickArgs args)
     {
       var e = (ButtonClickArgs)args;
 
       var title = $"{e.Action} {e.ItemDescriptor}";
       var message = $"{e.Action} {e.ItemDescriptor}: ";
       var selectedItem = SelectedPreset;
-      var results = CrudDialogProvider.Show<PresetViewModel>(new NestedViewModel<PresetViewModel>(title, message, selectedItem, DialogButtons.OkCancel));
+      var results = CrudDialogProvider.Show(new NestedViewModel<PresetViewModel>(title, message, selectedItem, DialogButtons.OkCancel));
 
       if (results.DialogResult != DialogResults.Ok)
         return;
@@ -85,7 +86,7 @@ namespace LulCaster.UI.WPF.ViewModels
       SelectedPreset = newPreset;
     }
 
-    public async void DeleteItemClickedAsync(object sender, ButtonClickArgs e)
+    public async Task DeleteItemClickedAsync(object sender, ButtonClickArgs e)
     {
       if (MessageBoxProvider.ShowDeleteDialog("Preset")?.DialogResult != DialogResults.Yes)
         return;
@@ -95,9 +96,9 @@ namespace LulCaster.UI.WPF.ViewModels
       SelectedPreset = null;
     }
 
-    public async void EditItemClickedAsync(object sender, ButtonClickArgs e)
+    public async Task EditItemClickedAsync(object sender, ButtonClickArgs e)
     {
-      var results = CrudDialogProvider.Show<PresetViewModel>(new NestedViewModel<PresetViewModel>("Editing Preset", "Editing Preset: ", SelectedPreset, DialogButtons.OkCancel));
+      var results = CrudDialogProvider.Show(new NestedViewModel<PresetViewModel>("Editing Preset", "Editing Preset: ", SelectedPreset, DialogButtons.OkCancel));
 
       if (results.DialogResult != DialogResults.Ok)
         return;

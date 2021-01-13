@@ -153,19 +153,19 @@ namespace LulCaster.UI.WPF.Pages
     #endregion "Special Controls Events"
 
     #region "Preset Control Events"
-    private void LstGamePresets_NewItemClicked(object sender, Controls.EventArgs.ButtonClickArgs e)
+    private async void LstGamePresets_NewItemClicked(object sender, Controls.EventArgs.ButtonClickArgs e)
     {
-      ViewModel.PresetControl.NewItemClickedAsync(e);
+      await ViewModel.PresetControl.NewItemClickedAsync(e);
     }
 
-    private void LstGamePresets_DeleteItemClicked(object sender, Controls.EventArgs.ButtonClickArgs e)
+    private async void LstGamePresets_DeleteItemClicked(object sender, Controls.EventArgs.ButtonClickArgs e)
     {
-      ViewModel.PresetControl.DeleteItemClickedAsync(sender, e);
+      await ViewModel.PresetControl.DeleteItemClickedAsync(sender, e);
     }
 
-    private void LstGamePresets_EditItemClicked(object sender, Controls.EventArgs.ButtonClickArgs e)
+    private async void LstGamePresets_EditItemClicked(object sender, Controls.EventArgs.ButtonClickArgs e)
     {
-      ViewModel.PresetControl.EditItemClickedAsync(sender, e);
+      await ViewModel.PresetControl.EditItemClickedAsync(sender, e);
     }
     #endregion "Preset Control Events"
 

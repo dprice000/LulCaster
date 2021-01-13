@@ -103,9 +103,8 @@ namespace LulCaster.UI.WPF
 
     private void InitializeDialogProviders()
     {
-      _serviceProvider.GetService<MessageBoxProvider>();
-      _serviceProvider.GetService<InputDialogProvider>();
-      _serviceProvider.GetService<CrudDialogProvider>();
+      CrudDialogProvider.AddDialog<PresetViewModel>(_serviceProvider.GetService<INestedViewDialog<PresetViewModel>>());
+      CrudDialogProvider.AddDialog<RegionViewModel>(_serviceProvider.GetService<INestedViewDialog<RegionViewModel>>());
     }
 
     private void RegisterControllers(IServiceCollection services)

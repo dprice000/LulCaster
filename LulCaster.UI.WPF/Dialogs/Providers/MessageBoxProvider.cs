@@ -3,7 +3,7 @@ using LulCaster.UI.WPF.Dialogs.Services;
 
 namespace LulCaster.UI.WPF.Dialogs.Providers
 {
-  internal class MessageBoxProvider
+  public class MessageBoxProvider
   {
     private static IDialogService<MessageBoxDialog, LulDialogResult> _messageBoxService;
 

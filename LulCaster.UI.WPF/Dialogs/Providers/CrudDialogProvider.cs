@@ -8,10 +8,9 @@ namespace LulCaster.UI.WPF.Dialogs.Providers
 {
   public class CrudDialogProvider
   {
-    private static Dictionary<Type, INestedViewDialog<ViewModelBase>> _dialogLookup = new Dictionary<Type, INestedViewDialog<ViewModelBase>>();
+    private static Dictionary<Type, object> _dialogLookup = new Dictionary<Type, object>();
 
-    public static void AddDialog<TViewModel>(INestedViewDialog<ViewModelBase> dialogService)
-      where TViewModel : ViewModelBase
+    public static void AddDialog<TViewModel>(object dialogService)
     {
       _dialogLookup.Add(typeof(TViewModel), dialogService);
     }
