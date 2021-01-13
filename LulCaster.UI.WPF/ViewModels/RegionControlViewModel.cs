@@ -109,7 +109,7 @@ namespace LulCaster.UI.WPF.ViewModels
       var title = $"{e.Action} {e.ItemDescriptor}";
       var message = $"{e.Action} {e.ItemDescriptor}: ";
 
-      var results = CrudDialogProvider.RegionModal(new NestedDialogViewModel<RegionViewModel>(title, message, new RegionViewModel(), DialogButtons.OkCancel));
+      var results = CrudDialogProvider.Show<RegionViewModel>(new NestedViewModel<RegionViewModel>(title, message, new RegionViewModel(), DialogButtons.OkCancel));
 
       if (results.DialogResult != DialogResults.Ok)
         return;
@@ -132,7 +132,7 @@ namespace LulCaster.UI.WPF.ViewModels
     public void EditItemClicked(object sender, ButtonClickArgs e)
     {
       var selectedRegion = SelectedRegion;
-      var results = CrudDialogProvider.RegionModal(new NestedDialogViewModel<RegionViewModel>("Editing Region", "Editing Region: ", selectedRegion, DialogButtons.OkCancel));
+      var results = CrudDialogProvider.Show(new NestedViewModel<RegionViewModel>("Editing Region", "Editing Region: ", selectedRegion, DialogButtons.OkCancel));
 
       if (results.DialogResult != DialogResults.Yes)
         return;

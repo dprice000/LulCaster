@@ -8,7 +8,7 @@ namespace LulCaster.UI.WPF.Dialogs
   /// <summary>
   /// Interaction logic for PresetInputDialog.xaml
   /// </summary>
-  public partial class PresetInputDialog : Window
+  public partial class PresetInputDialog : Window, INestedViewDialog<PresetViewModel>
   {
     public PresetInputDialog()
     {
@@ -20,12 +20,12 @@ namespace LulCaster.UI.WPF.Dialogs
 
     public new DialogResults DialogResult { get; set; }
 
-    public NestedDialogResults<PresetViewModel> Show(NestedDialogViewModel<PresetViewModel> data)
+    public NestedDialogResults<PresetViewModel> Show(INestedViewModel<PresetViewModel> data)
     {
       DataContext = data;
       ShowDialog();
 
-      var viewModel = (NestedDialogViewModel<PresetViewModel>)DataContext;
+      var viewModel = (NestedViewModel<PresetViewModel>)DataContext;
       return new NestedDialogResults<PresetViewModel>(viewModel.InnerItem, DialogResult);
     }
 

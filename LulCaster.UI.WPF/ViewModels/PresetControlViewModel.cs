@@ -75,7 +75,7 @@ namespace LulCaster.UI.WPF.ViewModels
       var title = $"{e.Action} {e.ItemDescriptor}";
       var message = $"{e.Action} {e.ItemDescriptor}: ";
       var selectedItem = SelectedPreset;
-      var results = CrudDialogProvider.PresetModal(new NestedDialogViewModel<PresetViewModel>(title, message, selectedItem, DialogButtons.OkCancel));
+      var results = CrudDialogProvider.Show<PresetViewModel>(new NestedViewModel<PresetViewModel>(title, message, selectedItem, DialogButtons.OkCancel));
 
       if (results.DialogResult != DialogResults.Ok)
         return;
@@ -97,7 +97,7 @@ namespace LulCaster.UI.WPF.ViewModels
 
     public async void EditItemClickedAsync(object sender, ButtonClickArgs e)
     {
-      var results = CrudDialogProvider.PresetModal(new NestedDialogViewModel<PresetViewModel>("Editing Preset", "Editing Preset: ", SelectedPreset, DialogButtons.OkCancel));
+      var results = CrudDialogProvider.Show<PresetViewModel>(new NestedViewModel<PresetViewModel>("Editing Preset", "Editing Preset: ", SelectedPreset, DialogButtons.OkCancel));
 
       if (results.DialogResult != DialogResults.Ok)
         return;

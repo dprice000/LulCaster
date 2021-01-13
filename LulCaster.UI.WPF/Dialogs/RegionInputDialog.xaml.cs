@@ -1,6 +1,7 @@
 ﻿using LulCaster.UI.WPF.Dialogs.Models;
 using LulCaster.UI.WPF.Dialogs.ViewModels;
 using LulCaster.UI.WPF.ViewModels;
+using System;
 using System.Windows;
 
 namespace LulCaster.UI.WPF.Dialogs
@@ -8,7 +9,7 @@ namespace LulCaster.UI.WPF.Dialogs
   /// <summary>
   /// Interaction logic for RegionDialog.xaml
   /// </summary>
-  public partial class RegionDialog : Window
+  public partial class RegionDialog : Window, INestedViewDialog<RegionViewModel>
   {
     public RegionDialog()
     {
@@ -17,9 +18,9 @@ namespace LulCaster.UI.WPF.Dialogs
 
     public new DialogResults DialogResult { get; set; }
 
-    public NestedDialogResults<RegionViewModel> Show(NestedDialogViewModel<RegionViewModel> data)
+    public NestedDialogResults<RegionViewModel> Show(INestedViewModel<RegionViewModel> data)
     {
-      DataContext = new RegionDialogViewModel(data);
+      DataContext = new RegionDialogViewModel((NestedViewModel<RegionViewModel>)data);
 
       ShowDialog();
       var viewModel = (RegionDialogViewModel)DataContext;

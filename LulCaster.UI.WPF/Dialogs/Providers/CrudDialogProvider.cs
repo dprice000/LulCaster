@@ -1,28 +1,26 @@
 ﻿using LulCaster.UI.WPF.Dialogs.Models;
 using LulCaster.UI.WPF.Dialogs.ViewModels;
 using LulCaster.UI.WPF.ViewModels;
+using System;
+using System.Collections.Generic;
 
 namespace LulCaster.UI.WPF.Dialogs.Providers
 {
   public class CrudDialogProvider
   {
-    private static PresetInputDialog _presetInputDialog;
-    private static RegionDialog _regionDialog;
+    private static Dictionary<Type, INestedViewDialog<ViewModelBase>> _dialogLookup = new Dictionary<Type, INestedViewDialog<ViewModelBase>>();
 
-    public CrudDialogProvider(PresetInputDialog presetInputDialog, RegionDialog regionDialog)
+    public static void AddDialog<TViewModel>(INestedViewDialog<ViewModelBase> dialogService)
+      where TViewModel : ViewModelBase
     {
-      _presetInputDialog = presetInputDialog;
-      _regionDialog = regionDialog;
+      _dialogLookup.Add(typeof(TViewModel), dialogService);
     }
 
-    public static NestedDialogResults<PresetViewModel> PresetModal(NestedDialogViewModel<PresetViewModel> viewModel)
+    public static NestedDialogResults<TViewModel> Show<TViewModel>(INestedViewModel<TViewModel> viewModel)
+        where TViewModel : ViewModelBase
     {
-      return _presetInputDialog.Show(viewModel);
-    }
-
-    public static NestedDialogResults<RegionViewModel> RegionModal(NestedDialogViewModel<RegionViewModel> viewModel)
-    {
-      return _regionDialog.Show(viewModel);
+      var dialog = (INestedViewDialog<TViewModel>)_dialogLookup[typeof(TViewModel)];
+      return dialog.Show(viewModel);
     }
   }
 }

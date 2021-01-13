@@ -51,7 +51,7 @@ namespace LulCaster.UI.WPF
       if (openFileDialog.ShowDialog() != true)
         return;
 
-      if (_presetInputDialog.Show(new Dialogs.ViewModels.NestedDialogViewModel<PresetViewModel>("Import Preset", "Preset Name:", new PresetViewModel(), DialogButtons.OkCancel)) is NestedDialogResults<PresetViewModel> dialogResult
+      if (_presetInputDialog.Show(new Dialogs.ViewModels.NestedViewModel<PresetViewModel>("Import Preset", "Preset Name:", new PresetViewModel(), DialogButtons.OkCancel)) is NestedDialogResults<PresetViewModel> dialogResult
         && dialogResult.DialogResult == DialogResults.Ok)
       {
         var presetViewModel = await _presetListController.CreateAsync(dialogResult.InnerResults.Name, dialogResult.InnerResults.ProcessName);

@@ -124,13 +124,14 @@ namespace LulCaster.UI.WPF
       services.AddTransient(typeof(IDialogService<InputDialog, InputDialogResult>), typeof(DialogService<InputDialog, InputDialogResult>));
       services.AddTransient(typeof(IDialogService<PresetInputDialog, NestedDialogResults<PresetViewModel>>), typeof(DialogService<PresetInputDialog, NestedDialogResults<PresetViewModel>>));
       services.AddTransient(typeof(IDialogService<MessageBoxDialog, LulDialogResult>), typeof(DialogService<MessageBoxDialog, LulDialogResult>));
+      services.AddTransient(typeof(INestedViewDialog<PresetViewModel>), typeof(PresetInputDialog));
+      services.AddTransient(typeof(INestedViewDialog<RegionViewModel>), typeof(RegionDialog));
     }
 
     private void RegisterDialogProviders(IServiceCollection services)
     {
       services.AddSingleton<InputDialogProvider>();
       services.AddSingleton<MessageBoxProvider>();
-      services.AddSingleton<CrudDialogProvider>();
     }
   }
 }

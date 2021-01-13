@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace LulCaster.UI.WPF.Dialogs.ViewModels
 {
-  public class RegionDialogViewModel : NestedDialogViewModel<RegionViewModel>
+  public class RegionDialogViewModel : NestedViewModel<RegionViewModel>, INestedViewModel<RegionViewModel>
   {
     public IEnumerable<string> AvailableTypes { get; set; }
 
-    public RegionDialogViewModel(NestedDialogViewModel<RegionViewModel> viewModel) : base(viewModel.Title, viewModel.Message, viewModel.InnerItem, viewModel.MessageBoxButtons)
+    public RegionDialogViewModel(INestedViewModel<RegionViewModel> viewModel) : base(viewModel.Title, viewModel.Message, viewModel.InnerItem, viewModel.MessageBoxButtons)
     {
       AvailableTypes = Enum.GetNames(typeof(RegionTypes));
     }
