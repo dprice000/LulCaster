@@ -66,7 +66,7 @@ namespace LulCaster.Test.UI.WPF
     }
 
     [Fact]
-    public async Task DeleteItemClicked_SelectedNoConfirmation_PresetDeleted()
+    public async Task DeleteItemClicked_SelectedNoConfirmation_PresetStillExists()
     {
       //Arrange
       var selectedPreset = _fixture.Create<PresetViewModel>();
