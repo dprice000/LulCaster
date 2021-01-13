@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LulCaster.Test.UI.WPF", "LulCaster.Test.UI.WPF\LulCaster.Test.UI.WPF.csproj", "{59F1C10E-FD45-4864-8931-50453449C8A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LulCaster.Test.UI.WPF", "LulCaster.Test.UI.WPF\LulCaster.Test.UI.WPF.csproj", "{59F1C10E-FD45-4864-8931-50453449C8A0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{01CF4D53-5360-491C-B257-59559F5C27E5}"
 EndProject
@@ -109,7 +109,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{59F1C10E-FD45-4864-8931-50453449C8A0} = {251FB26A-1C98-4EF7-874E-71F4990F9A73}
+		{59F1C10E-FD45-4864-8931-50453449C8A0} = {01CF4D53-5360-491C-B257-59559F5C27E5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B0354464-1396-449B-B544-E6F46BCCE109}
