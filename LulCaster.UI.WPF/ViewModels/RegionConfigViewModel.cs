@@ -92,6 +92,9 @@ namespace LulCaster.UI.WPF.ViewModels
     {
       if (InputDialogProvider.Show("New Trigger", "New Trigger Name:", DialogButtons.OkCancel) is InputDialogResult dialogResult && dialogResult.DialogResult == DialogResults.Ok)
       {
+        if (string.IsNullOrWhiteSpace(dialogResult.Input))
+          return;
+
         var newTrigger = _triggerController.CreateTrigger(SelectedPreset.Id, SelectedRegion.Id, dialogResult.Input);
 
         SelectedRegion.Triggers.Add(newTrigger);
@@ -104,6 +107,10 @@ namespace LulCaster.UI.WPF.ViewModels
       if (MessageBoxProvider.Show("Delete Trigger", "Delete selected trigger?", DialogButtons.YesNo) is LulDialogResult dialogResult
         && dialogResult.DialogResult == DialogResults.Yes)
       {
+
+        if (SelectedPreset == null || SelectedRegion == null || SelectedTrigger == null)
+          return;
+
         _triggerController.DeleteTrigger(SelectedPreset.Id, SelectedRegion.Id, SelectedTrigger);
         SelectedRegion.Triggers.Remove(SelectedTrigger);
         SelectedTrigger = null;

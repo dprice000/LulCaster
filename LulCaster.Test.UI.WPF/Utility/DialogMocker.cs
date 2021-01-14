@@ -28,6 +28,20 @@ namespace LulCaster.Test.UI.WPF.Utility
       CrudDialogProvider.AddDialog<RegionViewModel>(dialogService);
     }
 
+    public static void InitializeInputDialog(string inputResult, DialogResults buttonResults)
+    {
+      InputDialogResult result = new InputDialogResult() 
+      { 
+        Input = inputResult,
+        DialogResult = buttonResults 
+      };
+
+      var dialogService = Substitute.For<IDialogService<InputDialog, InputDialogResult>>();
+      dialogService.Show(Arg.Any<string>(), Arg.Any<string>(), DialogButtons.OkCancel).Returns(result);
+
+      var dialog = new InputDialogProvider(dialogService);
+    }
+
     public static void InitializeYesNoDialog(DialogResults dialogResult)
     {
       var result = new LulDialogResult() { DialogResult = dialogResult };

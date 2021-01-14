@@ -14,7 +14,7 @@ namespace LulCaster.UI.WPF.ViewModels
     private string _name;
     private Rectangle _boundingBox;
     private RegionTypes _regionType;
-    private ObservableCollection<TriggerViewModel> _triggers;
+    private ObservableCollection<TriggerViewModel> _triggers = new ObservableCollection<TriggerViewModel>();
 
     public Guid Id
     {

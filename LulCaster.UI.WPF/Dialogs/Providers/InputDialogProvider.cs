@@ -3,7 +3,7 @@ using LulCaster.UI.WPF.Dialogs.Services;
 
 namespace LulCaster.UI.WPF.Dialogs.Providers
 {
-  internal class InputDialogProvider
+  public class InputDialogProvider
   {
     private static IDialogService<InputDialog, InputDialogResult> _inputDialog;
 
