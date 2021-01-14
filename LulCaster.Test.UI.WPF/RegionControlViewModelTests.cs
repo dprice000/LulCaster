@@ -1,14 +1,11 @@
 ﻿using AutoFixture;
 using LulCaster.UI.WPF.Controllers;
-using LulCaster.UI.WPF.Dialogs.Providers;
 using LulCaster.UI.WPF.ViewModels;
-using LulCaster.Utility.ScreenCapture.Windows.Snipping;
 using NSubstitute;
 using Shouldly;
 using System;
 using System.Collections.Generic;
 using Xunit;
-
 
 namespace LulCaster.Test.UI.WPF
 {
@@ -28,7 +25,7 @@ namespace LulCaster.Test.UI.WPF
     }
 
     [Fact]
-    public void PresetSelectionChanged_PresetContainsRegion_RegionsAreIdentical()
+    public void PresetSelectionChanged_RegionsConfiguredForPreset_RegionsAreIdentical()
     {
       //Arrange
       var mockedPreset = _fixture.Create<PresetViewModel>();
@@ -44,7 +41,7 @@ namespace LulCaster.Test.UI.WPF
     }
 
     [Fact]
-    public void PresetSelectionChanged_RegionListEmpty_SetToEmptyList()
+    public void PresetSelectionChanged_NoRegionsConfiguredForPreset_RegionsIsEmptyList()
     {
       //Arrange
       var emptyList = new List<RegionViewModel>();

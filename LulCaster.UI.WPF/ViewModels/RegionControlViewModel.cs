@@ -109,7 +109,7 @@ namespace LulCaster.UI.WPF.ViewModels
       var title = $"{e.Action} {e.ItemDescriptor}";
       var message = $"{e.Action} {e.ItemDescriptor}: ";
 
-      var results = CrudDialogProvider.Show<RegionViewModel>(new NestedViewModel<RegionViewModel>(title, message, new RegionViewModel(), DialogButtons.OkCancel));
+      var results = CrudDialogProvider.Show(new NestedViewModel<RegionViewModel>(title, message, new RegionViewModel(), DialogButtons.OkCancel));
 
       if (results.DialogResult != DialogResults.Ok)
         return;

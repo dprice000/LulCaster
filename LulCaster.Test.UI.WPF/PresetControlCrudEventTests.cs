@@ -1,15 +1,11 @@
 ﻿using AutoFixture;
+using LulCaster.Test.UI.WPF.Utility;
 using LulCaster.UI.WPF.Controllers;
 using LulCaster.UI.WPF.Controls.EventArgs;
-using LulCaster.UI.WPF.Dialogs;
 using LulCaster.UI.WPF.Dialogs.Models;
-using LulCaster.UI.WPF.Dialogs.Providers;
-using LulCaster.UI.WPF.Dialogs.Services;
-using LulCaster.UI.WPF.Dialogs.ViewModels;
 using LulCaster.UI.WPF.ViewModels;
 using NSubstitute;
 using Shouldly;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,13 +13,13 @@ using Xunit;
 
 namespace LulCaster.Test.UI.WPF
 {
-  public class PresetControlEventTests
+  public class PresetControlCrudEventTests
   {
     private Fixture _fixture = new Fixture();
     private IPresetListController _presetController;
     private PresetControlViewModel _presetControlViewModel;
 
-    public PresetControlEventTests()
+    public PresetControlCrudEventTests()
     {
       _presetController = Substitute.For<IPresetListController>();
       _presetControlViewModel = new PresetControlViewModel(_presetController);
@@ -35,7 +31,7 @@ namespace LulCaster.Test.UI.WPF
       //Arrange
       var preset = _fixture.Create<PresetViewModel>();
       _presetController.CreateAsync(Arg.Any<string>(), Arg.Any<string>()).Returns(Task.FromResult(preset));
-      InitializeOkedDialog(preset);
+      DialogMocker.InitializeOkCancelDialog(preset, DialogResults.Ok);
 
       _presetControlViewModel.Presets.Count.ShouldBe(0);
 
@@ -48,13 +44,45 @@ namespace LulCaster.Test.UI.WPF
     }
 
     [Fact]
-    public async Task DeleteItemClicked_SelectedYesConfirmation_PresetDeleted()
+    public async Task NewItemClicked_CancelButtonSelected_NoPresetAdded()
+    {
+      //Arrange
+      var preset = _fixture.Create<PresetViewModel>();
+      DialogMocker.InitializeOkCancelDialog(preset, DialogResults.Cancel);
+
+      _presetControlViewModel.Presets.Count.ShouldBe(0);
+
+      //Act
+      await _presetControlViewModel.NewItemClickedAsync(new ButtonClickArgs("Create", "Preset"));
+
+      //Assert
+      _presetControlViewModel.Presets.Count.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task NewItemClicked_CancelButtonSelected_SelectedPresetIsNull()
+    {
+      //Arrange
+      var preset = _fixture.Create<PresetViewModel>();
+      DialogMocker.InitializeOkCancelDialog(preset, DialogResults.Cancel);
+
+      _presetControlViewModel.Presets.Count.ShouldBe(0);
+
+      //Act
+      await _presetControlViewModel.NewItemClickedAsync(new ButtonClickArgs("Create", "Preset"));
+
+      //Assert
+      _presetControlViewModel.SelectedPreset.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task DeleteItemClicked_YesButtonSelected_PresetDeleted()
     {
       //Arrange
       var selectedPreset = _fixture.Create<PresetViewModel>();
       _presetControlViewModel.Presets = new ObservableCollection<PresetViewModel>() { selectedPreset };
       _presetControlViewModel.SelectedPreset = selectedPreset;
-      InitializeYesNoDialog(DialogResults.Yes);
+      DialogMocker.InitializeYesNoDialog(DialogResults.Yes);
 
       _presetControlViewModel.Presets.Count.ShouldBe(1);
 
@@ -66,13 +94,13 @@ namespace LulCaster.Test.UI.WPF
     }
 
     [Fact]
-    public async Task DeleteItemClicked_SelectedNoConfirmation_PresetStillExists()
+    public async Task DeleteItemClicked_NoButtonSelected_PresetStillExists()
     {
       //Arrange
       var selectedPreset = _fixture.Create<PresetViewModel>();
       _presetControlViewModel.Presets = new ObservableCollection<PresetViewModel>() { selectedPreset };
       _presetControlViewModel.SelectedPreset = selectedPreset;
-      InitializeYesNoDialog(DialogResults.No);
+      DialogMocker.InitializeYesNoDialog(DialogResults.No);
 
       _presetControlViewModel.Presets.Count.ShouldBe(1);
 
@@ -83,22 +111,22 @@ namespace LulCaster.Test.UI.WPF
       _presetControlViewModel.Presets.Count.ShouldBe(1);
     }
 
-    private void InitializeOkedDialog(PresetViewModel dialogViewModel)
+    [Fact]
+    public async Task DeleteItemClicked_YesButtonSelected_SelectedPresetIsNull()
     {
-      var dialogResult = new NestedDialogResults<PresetViewModel>(dialogViewModel, DialogResults.Ok);
-      var dialogService = Substitute.For<INestedViewDialog<PresetViewModel>>();
-      dialogService.Show(Arg.Any<NestedViewModel<PresetViewModel>>()).Returns(dialogResult);
+      //Arrange
+      var selectedPreset = _fixture.Create<PresetViewModel>();
+      _presetControlViewModel.Presets = new ObservableCollection<PresetViewModel>() { selectedPreset };
+      _presetControlViewModel.SelectedPreset = selectedPreset;
+      DialogMocker.InitializeYesNoDialog(DialogResults.Yes);
 
-      CrudDialogProvider.AddDialog<PresetViewModel>(dialogService);
-    }
+      _presetControlViewModel.Presets.Count.ShouldBe(1);
 
-    private void InitializeYesNoDialog(DialogResults dialogResult)
-    {
-      var result = new LulDialogResult() { DialogResult = dialogResult };
-      var dialogService = Substitute.For<IDialogService<MessageBoxDialog, LulDialogResult>>();
-      dialogService.Show(Arg.Any<string>(), Arg.Any<string>(), DialogButtons.YesNo).Returns(result);
+      //Act
+      await _presetControlViewModel.DeleteItemClickedAsync(this, new ButtonClickArgs("Delete", "Delete"));
 
-      var messanger = new MessageBoxProvider(dialogService);
+      //Assert
+      _presetControlViewModel.SelectedPreset.ShouldBeNull();
     }
   }
 }
