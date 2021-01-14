@@ -134,7 +134,7 @@ namespace LulCaster.UI.WPF.ViewModels
       var selectedRegion = SelectedRegion;
       var results = CrudDialogProvider.Show(new NestedViewModel<RegionViewModel>("Editing Region", "Editing Region: ", selectedRegion, DialogButtons.OkCancel));
 
-      if (results.DialogResult != DialogResults.Yes)
+      if (results.DialogResult != DialogResults.Ok)
         return;
 
       var existingRegionIndex = Regions.IndexOf(SelectedRegion);

@@ -94,6 +94,24 @@ namespace LulCaster.Test.UI.WPF
     }
 
     [Fact]
+    public async Task DeleteItemClicked_NoButtonSelected_PresetStillSelected()
+    {
+      //Arrange
+      var selectedPreset = _fixture.Create<PresetViewModel>();
+      _presetControlViewModel.Presets = new ObservableCollection<PresetViewModel>() { selectedPreset };
+      _presetControlViewModel.SelectedPreset = selectedPreset;
+      DialogMocker.InitializeYesNoDialog(DialogResults.No);
+
+      _presetControlViewModel.SelectedPreset.ShouldBe(selectedPreset);
+
+      //Act
+      await _presetControlViewModel.DeleteItemClickedAsync(this, new ButtonClickArgs("Delete", "Delete"));
+
+      //Assert
+      _presetControlViewModel.SelectedPreset.ShouldBe(selectedPreset);
+    }
+
+    [Fact]
     public async Task DeleteItemClicked_NoButtonSelected_PresetStillExists()
     {
       //Arrange

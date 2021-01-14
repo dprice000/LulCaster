@@ -19,6 +19,15 @@ namespace LulCaster.Test.UI.WPF.Utility
       CrudDialogProvider.AddDialog<PresetViewModel>(dialogService);
     }
 
+    public static void InitializeOkCancelDialog(RegionViewModel dialogViewModel, DialogResults buttonResult)
+    {
+      var dialogResult = new NestedDialogResults<RegionViewModel>(dialogViewModel, buttonResult);
+      var dialogService = Substitute.For<INestedViewDialog<RegionViewModel>>();
+      dialogService.Show(Arg.Any<NestedViewModel<RegionViewModel>>()).Returns(dialogResult);
+
+      CrudDialogProvider.AddDialog<RegionViewModel>(dialogService);
+    }
+
     public static void InitializeYesNoDialog(DialogResults dialogResult)
     {
       var result = new LulDialogResult() { DialogResult = dialogResult };
