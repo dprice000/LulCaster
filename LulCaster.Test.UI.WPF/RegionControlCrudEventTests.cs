@@ -102,6 +102,42 @@ namespace LulCaster.Test.UI.WPF
     }
 
     [Fact]
+    public void DeleteItemClicked_SelectedRegionIsNull_DeleteNotRun()
+    {
+      //Arrange
+      var selectedPreset = _fixture.Create<PresetViewModel>();
+      _regionControlViewModel.SelectedPreset = selectedPreset;
+      _regionControlViewModel.SelectedRegion = null;
+      DialogMocker.InitializeYesNoDialog(DialogResults.Yes);
+
+      _regionControlViewModel.SelectedRegion.ShouldBeNull();
+
+      //Act
+      _regionControlViewModel.DeleteItemClicked(this, new ButtonClickArgs("Delete", "Delete"));
+
+      //Assert
+      //Nothing to assert here just need to test that now exceptions are thrown.
+    }
+
+    [Fact]
+    public void DeleteItemClicked_SelectedPresetIsNull_DeleteNotRun()
+    {
+      //Arrange
+      var selectedRegion = _fixture.Create<RegionViewModel>();
+      _regionControlViewModel.SelectedPreset = null;
+      _regionControlViewModel.SelectedRegion = selectedRegion;
+      DialogMocker.InitializeYesNoDialog(DialogResults.Yes);
+
+      _regionControlViewModel.SelectedPreset.ShouldBeNull();
+
+      //Act
+      _regionControlViewModel.DeleteItemClicked(this, new ButtonClickArgs("Delete", "Delete"));
+
+      //Assert
+      //Nothing to assert here just need to test that now exceptions are thrown.
+    }
+
+    [Fact]
     public void DeleteItemClicked_YesButtonSelected_SelectedRegionIsNull()
     {
       //Arrange

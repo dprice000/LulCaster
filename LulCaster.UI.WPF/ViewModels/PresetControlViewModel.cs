@@ -88,7 +88,8 @@ namespace LulCaster.UI.WPF.ViewModels
 
     public async Task DeleteItemClickedAsync(object sender, ButtonClickArgs e)
     {
-      if (MessageBoxProvider.ShowDeleteDialog("Preset")?.DialogResult != DialogResults.Yes)
+      if (SelectedPreset == null
+            || MessageBoxProvider.ShowDeleteDialog("Preset")?.DialogResult != DialogResults.Yes)
         return;
 
       await _presetController.DeleteAsync(SelectedPreset);

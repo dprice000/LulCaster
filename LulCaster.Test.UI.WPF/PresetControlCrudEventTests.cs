@@ -130,6 +130,22 @@ namespace LulCaster.Test.UI.WPF
     }
 
     [Fact]
+    public async Task DeleteItemClicked_SelectedPresetIsNull_DeleteIsNotRun()
+    {
+      //Arrange
+      _presetControlViewModel.SelectedPreset = null;
+      DialogMocker.InitializeYesNoDialog(DialogResults.Yes);
+
+      _presetControlViewModel.SelectedPreset.ShouldBeNull();
+
+      //Act
+      await _presetControlViewModel.DeleteItemClickedAsync(this, new ButtonClickArgs("Delete", "Delete"));
+
+      //Assert
+      //Nothing to assert just need to test that no exceptions are thrown.
+    }
+
+    [Fact]
     public async Task DeleteItemClicked_YesButtonSelected_SelectedPresetIsNull()
     {
       //Arrange

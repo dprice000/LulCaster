@@ -121,7 +121,9 @@ namespace LulCaster.UI.WPF.ViewModels
 
     public void DeleteItemClicked(object sender, ButtonClickArgs e)
     {
-      if (MessageBoxProvider.ShowDeleteDialog("Region")?.DialogResult != DialogResults.Yes)
+      if (SelectedPreset == null
+            || SelectedRegion == null        
+            || MessageBoxProvider.ShowDeleteDialog("Region")?.DialogResult != DialogResults.Yes)
         return;
 
       _regionController.Delete(SelectedPreset.Id, SelectedRegion.Id);
