@@ -12,7 +12,11 @@ namespace LulCaster.UI.WPF.Dialogs.Providers
 
     public static void AddDialog<TViewModel>(object dialogService)
     {
-      if (!_dialogLookup.ContainsKey(typeof(TViewModel)))
+      var viewModelType = typeof(TViewModel);
+
+      if (_dialogLookup.ContainsKey(viewModelType))
+        _dialogLookup[viewModelType] = dialogService;
+      else
         _dialogLookup.Add(typeof(TViewModel), dialogService);
     }
 
@@ -22,5 +26,6 @@ namespace LulCaster.UI.WPF.Dialogs.Providers
       var dialog = (INestedViewDialog<TViewModel>)_dialogLookup[typeof(TViewModel)];
       return dialog.Show(viewModel);
     }
+
   }
 }
