@@ -22,7 +22,7 @@ namespace LulCaster.UI.WPF.Dialogs
 
     public NestedDialogResults<PresetViewModel> Show(INestedViewModel<PresetViewModel> data)
     {
-      DataContext = data;
+      DataContext = data.InnerItem;
       ShowDialog();
 
       var viewModel = (NestedViewModel<PresetViewModel>)DataContext;
