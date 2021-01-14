@@ -12,7 +12,8 @@ namespace LulCaster.UI.WPF.Dialogs.Providers
 
     public static void AddDialog<TViewModel>(object dialogService)
     {
-      _dialogLookup.Add(typeof(TViewModel), dialogService);
+      if (!_dialogLookup.ContainsKey(typeof(TViewModel)))
+        _dialogLookup.Add(typeof(TViewModel), dialogService);
     }
 
     public static NestedDialogResults<TViewModel> Show<TViewModel>(INestedViewModel<TViewModel> viewModel)
