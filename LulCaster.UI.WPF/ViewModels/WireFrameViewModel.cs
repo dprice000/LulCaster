@@ -87,6 +87,12 @@ namespace LulCaster.UI.WPF.ViewModels
       _regionConfigViewModel = regionConfigViewModel;
 
       PresetControl.SelectionChanged += PresetControl_SelectionChanged;
+      RegionControl.SelectionChanged += RegionControl_SelectionChanged;
+    }
+
+    private void RegionControl_SelectionChanged(object sender, RegionViewModel e)
+    {
+      RegionConfigControl.SelectedRegion = e;
     }
 
     #endregion "Constructor"

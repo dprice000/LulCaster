@@ -6,6 +6,7 @@ using LulCaster.UI.WPF.Dialogs.Providers;
 using LulCaster.UI.WPF.Dialogs.ViewModels;
 using LulCaster.UI.WPF.Utility;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
+using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -14,6 +15,8 @@ namespace LulCaster.UI.WPF.ViewModels
 {
   public class RegionControlViewModel : ViewModelBase
   {
+    public event EventHandler<RegionViewModel> SelectionChanged;
+
     #region "Private Members"
     private readonly IRegionListController _regionController;
     private readonly BoundingBoxBrush _boundingBoxBrush = new BoundingBoxBrush();
@@ -24,6 +27,11 @@ namespace LulCaster.UI.WPF.ViewModels
     #endregion "Private Members"
 
     #region "Properties"
+    private void OnRegionSelectionChanged()
+    {
+      SelectionChanged?.Invoke(this, SelectedRegion);
+    }
+
     public PresetViewModel SelectedPreset
     {
       get
@@ -61,6 +69,7 @@ namespace LulCaster.UI.WPF.ViewModels
       {
         _selectedRegion = value;
         OnPropertyChanged(nameof(SelectedRegion));
+        OnRegionSelectionChanged();
       }
     }
     #endregion "Properties"

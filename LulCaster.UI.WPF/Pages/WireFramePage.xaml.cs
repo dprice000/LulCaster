@@ -47,7 +47,7 @@ namespace LulCaster.UI.WPF.Pages
       var captureFps = _configManagerService.GetAsInteger("CaptureFps");
       var workerIdleTimeout = _configManagerService.GetAsInteger("WorkIdleTimeout");
       _soundEffectWorker = new SoundEffectWorker(workerIdleTimeout);
-      _screenCaptureWorker = new ScreenCaptureWorker(screenCaptureService, captureFps, workerIdleTimeout);
+      _screenCaptureWorker = new ScreenCaptureWorker(screenCaptureService, canvasScreenFeed.RenderSize, captureFps, workerIdleTimeout);
       _regionWorkerPool = new RegionWorkerPool(_configManagerService.GetAsInteger("MaxRegionThreads"), captureFps, workerIdleTimeout, ViewModel);
 
       InitializeWorkers();
@@ -134,6 +134,7 @@ namespace LulCaster.UI.WPF.Pages
     private void CompositionTarget_Rendering(object sender, System.EventArgs e)
     {
       DrawSelectedRegion();
+      _screenCaptureWorker.CanvasBounds = canvasScreenFeed.RenderSize;
     }
 
     private void canvasScreenFeed_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

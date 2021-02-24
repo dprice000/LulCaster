@@ -105,10 +105,12 @@ namespace LulCaster.UI.WPF.ViewModels
         return;
 
       var existingPresetIndex = Presets.IndexOf(SelectedPreset);
-      await _presetController.DeleteAsync(SelectedPreset);
-      var newPreset = await _presetController.CreateAsync(results.InnerResults.Name, results.InnerResults.ProcessName);
-      Presets[existingPresetIndex] = newPreset;
-      SelectedPreset = newPreset;
+
+      SelectedPreset.Name = results.InnerResults.Name;
+      SelectedPreset.ProcessName = results.InnerResults.ProcessName;
+
+      await _presetController.UpdateAsync(SelectedPreset);
+      Presets[existingPresetIndex] = SelectedPreset;
     }
     #endregion
   }

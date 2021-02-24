@@ -72,7 +72,7 @@ namespace LulCaster.UI.WPF
             .ForMember(dest => dest.BoundingBox, opt => opt.Ignore())
             .ForMember(dest => dest.X, opt => opt.MapFrom(s => s.BoundingBox.X))
             .ForMember(dest => dest.Y, opt => opt.MapFrom(s => s.BoundingBox.Y))
-            .ForMember(dest => dest.Widht, opt => opt.MapFrom(s => s.BoundingBox.Width))
+            .ForMember(dest => dest.Width, opt => opt.MapFrom(s => s.BoundingBox.Width))
             .ForMember(dest => dest.Height, opt => opt.MapFrom(s => s.BoundingBox.Height));
         });
 
@@ -105,6 +105,8 @@ namespace LulCaster.UI.WPF
     {
       CrudDialogProvider.AddDialog<PresetViewModel>(_serviceProvider.GetService<INestedViewDialog<PresetViewModel>>());
       CrudDialogProvider.AddDialog<RegionViewModel>(_serviceProvider.GetService<INestedViewDialog<RegionViewModel>>());
+      var messageBox = new MessageBoxProvider(_serviceProvider.GetService<IDialogService<MessageBoxDialog, LulDialogResult>>());
+      var inputProvider = new InputDialogProvider(_serviceProvider.GetService<IDialogService<InputDialog, InputDialogResult>>());
     }
 
     private void RegisterControllers(IServiceCollection services)

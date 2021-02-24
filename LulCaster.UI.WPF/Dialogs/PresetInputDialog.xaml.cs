@@ -25,8 +25,8 @@ namespace LulCaster.UI.WPF.Dialogs
       DataContext = data.InnerItem;
       ShowDialog();
 
-      var viewModel = (NestedViewModel<PresetViewModel>)DataContext;
-      return new NestedDialogResults<PresetViewModel>(viewModel.InnerItem, DialogResult);
+      var viewModel = (PresetViewModel)DataContext;
+      return new NestedDialogResults<PresetViewModel>(viewModel, DialogResult);
     }
 
     private void PresetInputDialog_Loaded(object sender, RoutedEventArgs e)

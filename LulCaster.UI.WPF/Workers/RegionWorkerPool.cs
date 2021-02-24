@@ -110,7 +110,7 @@ namespace LulCaster.UI.WPF.Workers
 
     internal void screenCaptureWorker_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
     {
-      if (captureArgs.CanvasBounds.Height == 0 || captureArgs.CanvasBounds.Width == 0)
+      if (captureArgs.ScreenBounds.Height == 0 || captureArgs.ScreenBounds.Width == 0)
         return;
 
       var imageStream = new MemoryStream(captureArgs.ScreenImageStream);

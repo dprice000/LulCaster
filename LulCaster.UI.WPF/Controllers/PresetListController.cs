@@ -24,6 +24,11 @@ namespace LulCaster.UI.WPF.Controllers
       return await _presetConfigService.GetAllAsync();
     }
 
+    public async Task UpdateAsync(PresetViewModel preset)
+    {
+      await _presetConfigService.UpdateAsync(preset);
+    }
+
     public async Task DeleteAsync(PresetViewModel preset)
     {
       await _presetConfigService.DeleteAsync(preset);

@@ -1,29 +1,13 @@
 ﻿using System;
-using System.Configuration;
 
 namespace LulCaster.UI.WPF.Config.UserSettings.Models
 {
-  public class PresetConfig : ConfigurationElement
+  public class PresetConfig
   {
-    [ConfigurationProperty("Id", IsRequired = true, IsKey = true)]
-    public Guid Id 
-    {
-      get { return (Guid)this["Id"]; }
-      set { this["Id"] = value; }
-    }
+    public Guid Id { get; set; }
 
-    [ConfigurationProperty("Name", IsRequired = true)]
-    public string Name 
-    {
-      get { return (string)this["Name"]; }
-      set { this["Name"] = value; }
-    }
+    public string Name { get; set; }
 
-    [ConfigurationProperty("ProcessName", IsRequired = true)]
-    public string ProcessName
-    {
-      get { return (string)this["ProcessName"]; }
-      set { this["ProcessName"] = value; }
-    }
+    public string ProcessName { get; set; }
   }
 }

@@ -24,10 +24,11 @@ namespace LulCaster.UI.WPF.Workers
 
     public event EventHandler<ScreenCaptureCompletedArgs> ScreenCaptureCompleted;
 
-    public ScreenCaptureWorker(IScreenCaptureService screenCaptureService, int captureFps, int idleTimeout) : base(idleTimeout)
+    public ScreenCaptureWorker(IScreenCaptureService screenCaptureService, Size canvasBounds, int captureFps, int idleTimeout) : base(idleTimeout)
     {
       _screenCaptureService = screenCaptureService;
       CaptureInterval = CalculateHaltInterval(captureFps);
+      CanvasBounds = canvasBounds;
 
       ProgressHandler = new Progress<ScreenCaptureProgressArgs>(progressArgs =>
       {
@@ -44,6 +45,11 @@ namespace LulCaster.UI.WPF.Workers
     {
       while (IsRunning)
       {
+        if (!LegalCanvasSize(CanvasBounds))
+        {
+          continue;
+        }
+
         _stopWatch.Start();
 
         byte[] byteImage = new byte[0];
@@ -73,6 +79,11 @@ namespace LulCaster.UI.WPF.Workers
         HaltUntilNextInterval();
         _stopWatch.Restart();
       }
+    }
+
+    private bool LegalCanvasSize(Size bounds)
+    {
+      return bounds.Width > 0 && bounds.Height > 0;
     }
 
     private void HaltUntilNextInterval()
