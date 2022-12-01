@@ -11,7 +11,7 @@ namespace LulCaster.Utility.Common.Config
     public TriggerTypes LogicSet { get; set; }
     public string Name { get; set; }
     public int Height { get; set; }
-    public int Widht { get; set; }
+    public int Width { get; set; }
     public int X { get; set; }
     public int Y { get; set; }
     public IList<TriggerConfig> Triggers { get; set; }
@@ -19,7 +19,7 @@ namespace LulCaster.Utility.Common.Config
     { 
       get
       {
-        return new Rectangle(X, Y, Widht, Height);
+        return new Rectangle(X, Y, Width, Height);
       }
     }
   }

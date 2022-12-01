@@ -3,6 +3,8 @@ using System.IO;
 using System.Threading;
 using LulCaster.Utility.Service;
 using LulCaster.Utility.ScreenCapture.Windows;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace LulCaster
 {
@@ -15,11 +17,14 @@ namespace LulCaster
 
       while (true)
       {
-        //var bitmap = screenCap.CaptureScreenshot();
-        //var text = ocr.ProcessImage(new MemoryStream(bitmap));
+        var image = new Bitmap(@"C:\Users\David\Desktop\POP\TestFeed.tiff");
 
-        //Console.WriteLine(text);
-        //Thread.Sleep(5000);
+        using (MemoryStream memoryStream = new MemoryStream())
+        {
+          image.Save(memoryStream, ImageFormat.Tiff);
+
+          var text = ocr.ProcessImage(memoryStream);
+        }
       }
     }
   }

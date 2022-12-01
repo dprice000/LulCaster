@@ -56,6 +56,13 @@
                  ToolTip="{Binding ElementName=ctrlRegionConfiguration, Path=SelectedTrigger.SoundFilePath, Mode=TwoWay}"></Label>
           </StackPanel>
           <StackPanel Orientation="Horizontal">
+            <Label>Timeout</Label>
+            <materialDesign:PackIcon Kind="HelpOutline"  Opacity=".56" Height="18" Width="18" Margin="3"
+                                     ToolTip="Time that must elapse before trigger can fire again." />
+            <Label>:</Label>
+            <TextBlock Name="txtTimeout"></TextBlock>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal">
             <Button Name="btnSoundBrowser" Click="btnSoundBrowser_Click">Browse</Button>
           </StackPanel>
         </StackPanel>
