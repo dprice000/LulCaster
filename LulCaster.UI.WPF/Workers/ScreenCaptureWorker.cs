@@ -6,8 +6,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
-using System.Windows;
-using System.Windows.Media.Imaging;
 
 namespace LulCaster.UI.WPF.Workers
 {
@@ -82,6 +80,12 @@ namespace LulCaster.UI.WPF.Workers
 
         HaltUntilNextInterval();
       }
+    }
+
+    private Image ResizeImage(byte[] bytes)
+    {
+      MemoryStream memoryStream = new MemoryStream(bytes);
+      return Image.FromStream(memoryStream).GetThumbnailImage((int)CanvasBounds.Width, (int)CanvasBounds.Height, null, IntPtr.Zero);
     }
 
     private bool LegalCanvasSize(System.Windows.Size bounds)

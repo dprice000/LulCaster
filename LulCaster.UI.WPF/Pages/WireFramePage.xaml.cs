@@ -158,6 +158,11 @@ namespace LulCaster.UI.WPF.Pages
       ViewModel.RegionControl.CanvasMouseMoveOccured(e);
     }
 
+    private void canvasScreenFeed_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+    {
+      _screenCaptureWorker.CanvasBounds = canvasScreenFeed.RenderSize;
+    }
+
     #endregion "Special Controls Events"
 
     #region "Preset Control Events"
@@ -204,6 +209,6 @@ namespace LulCaster.UI.WPF.Pages
     {
       ViewModel.RegionConfigControl.DeleteTriggerClicked(e);
     }
-        #endregion
+    #endregion
   }
 }

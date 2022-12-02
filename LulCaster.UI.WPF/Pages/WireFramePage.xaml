@@ -43,7 +43,7 @@
       <Canvas Name="canvasScreenFeed" Background="{Binding ScreenCaptureBrush, Mode=OneWay}" 
               MouseLeftButtonDown="canvasScreenFeed_MouseLeftButtonDown"  
               MouseLeftButtonUp="canvasScreenFeed_MouseLeftButtonUp"  
-              MouseMove="canvasScreenFeed_MouseMove" Height="575" VerticalAlignment="Bottom"/>
+              MouseMove="canvasScreenFeed_MouseMove" SizeChanged="canvasScreenFeed_SizeChanged" Margin="0,-46,0,0"/>
     </materialDesign:Card>
     <Grid Name="GridConfigTools" Grid.Row="1" Margin="10,0,10,0">
       <Grid.ColumnDefinitions>

@@ -4,6 +4,7 @@ using LulCaster.UI.WPF.Workers.Events.Arguments;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Media.Imaging;
@@ -99,6 +100,15 @@ namespace LulCaster.UI.WPF.Utility
         CanvasBounds = args.CanvasBounds,
         CreationTime = timeCreated
       };
+    }
+
+    internal static byte[] ImageToByteArray(System.Drawing.Image imageIn)
+    {
+      using (var ms = new MemoryStream())
+      {
+        imageIn.Save(ms, ImageFormat.Bmp);
+        return ms.ToArray();
+      }
     }
   }
 }
