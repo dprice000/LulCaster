@@ -1,9 +1,9 @@
-﻿using LulCaster.UI.WPF.ViewModels;
+﻿using LulCaster.UI.WPF.Utility;
+using LulCaster.UI.WPF.ViewModels;
 using LulCaster.UI.WPF.Workers.Events.Arguments;
 using LulCaster.Utility.Common.Collections;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace LulCaster.UI.WPF.Workers
@@ -14,6 +14,7 @@ namespace LulCaster.UI.WPF.Workers
     private const string WORKER_MAX_ERROR = "Worker pool size must be greater than 0.";
 
     public event EventHandler<ScreenCaptureProgressArgs> ProgressChanged;
+    public event EventHandler<ScreenCapture> ProcessingCompleted;
 
     private readonly int _captureFps = 0;
     private readonly List<RegionWorker> _regionWorkers = new List<RegionWorker>();
@@ -88,6 +89,7 @@ namespace LulCaster.UI.WPF.Workers
 
       foreach (var worker in workers)
       {
+        worker.ProcessingComplete -= null;
         _regionWorkers.Remove(worker);
       }
     }
@@ -95,8 +97,15 @@ namespace LulCaster.UI.WPF.Workers
     private void CreateWorker(ScreenCapture screenCapture, RegionViewModel region)
     {
       var worker = new RegionWorker(screenCapture, region, IDLE_TIMEOUT);
+      worker.ProcessingComplete += Worker_ProcessingComplete;
+
       worker.Start();
       _regionWorkers.Add(worker);
+    }
+
+    private void Worker_ProcessingComplete(object sender, ScreenCapture e)
+    {
+        OnProcessingComplete(e);
     }
 
     #region "Event Handlers"
@@ -106,15 +115,7 @@ namespace LulCaster.UI.WPF.Workers
       if (captureArgs.ScreenBounds.Height == 0 || captureArgs.ScreenBounds.Width == 0)
         return;
 
-      ScreenCaptureQueue.Enqueue(new ScreenCapture()
-      {
-        ByteArray = captureArgs.ByteArray,
-        ScreenBitmap = captureArgs.BitmapImage,
-        RegionViewModels = ViewModel.RegionControl.Regions,
-        ScreenBounds = captureArgs.ScreenBounds,
-        CanvasBounds = captureArgs.CanvasBounds,
-        CreationTime = DateTime.Now
-      });
+      ScreenCaptureQueue.Enqueue(BitmapHelper.ConvertArgsToScreenCap(captureArgs, ViewModel.RegionControl.Regions, DateTime.Now));
 
       captureArgs.HasBeenProcessed = true;
 
@@ -122,6 +123,11 @@ namespace LulCaster.UI.WPF.Workers
       {
         captureArgs.Dispose();
       }
+    }
+
+    private void OnProcessingComplete(ScreenCapture screenCapture)
+    {
+      ProcessingCompleted?.Invoke(this, screenCapture);
     }
 
     #endregion "Event Handlers"

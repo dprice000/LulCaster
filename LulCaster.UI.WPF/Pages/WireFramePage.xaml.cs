@@ -64,6 +64,7 @@ namespace LulCaster.UI.WPF.Pages
       LstGamePresets.SelectionChanged += LstGamePresets_SelectionChanged;
       Controls.RegionConfiguration.SaveConfigTriggered += RegionConfiguration_SaveConfigTriggered;
       _screenCaptureWorker.ScreenCaptureCompleted += ViewModel.screenCaptureWorker_ScreenCaptureCompleted;
+      _regionWorkerPool.ProcessingCompleted += ViewModel.regionWorkerPool_ProcessingCompleted;
 
       CompositionTarget.Rendering += CompositionTarget_Rendering;
     }
@@ -123,6 +124,11 @@ namespace LulCaster.UI.WPF.Pages
         Canvas.SetTop(windowsBox, selectedBox.Y);
         ViewModel.RegionControl.SelectedRegion.BoundingBox = selectedBox;
       }
+    }
+
+    private void BtnDebugView_Click(object sender, System.Windows.RoutedEventArgs e)
+    {
+      ViewModel.ShowDebug = !ViewModel.ShowDebug;
     }
 
     #endregion "Screen Capture Events"
@@ -198,6 +204,6 @@ namespace LulCaster.UI.WPF.Pages
     {
       ViewModel.RegionConfigControl.DeleteTriggerClicked(e);
     }
-    #endregion
+        #endregion
   }
 }

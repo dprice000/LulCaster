@@ -1,8 +1,9 @@
-﻿using LulCaster.UI.WPF.Utility;
+﻿using LulCaster.UI.WPF.Workers;
+using LulCaster.UI.WPF.Utility;
 using LulCaster.UI.WPF.Workers.Events.Arguments;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
+
 using System;
-using System.IO;
 using System.Windows;
 using System.Windows.Media;
 
@@ -23,6 +24,8 @@ namespace LulCaster.UI.WPF.ViewModels
     #endregion "Private Members"
 
     #region "Properties"
+
+    public bool ShowDebug { get; set; } = false;
 
     public Brush ScreenCaptureBrush
     {
@@ -112,19 +115,49 @@ namespace LulCaster.UI.WPF.ViewModels
         return;
       }
 
-      Application.Current.Dispatcher.Invoke(() =>
-      {
-        ScreenCaptureBrush = new ImageBrush(BitmapHelper.ConvertStreamToBitmap(captureArgs.MemoryStream));
-      });
-
       _nextDrawTime = DateTime.Now.AddMilliseconds(DRAW_TIMEOUT_MS);
       captureArgs.HasBeenDrawn = true;
+
+      if (!ShowDebug)
+      {
+        Draw(BitmapHelper.ConvertArgsToScreenCap(captureArgs, RegionControl.Regions, DateTime.Now));
+      }
 
       //TODO: This needs to be cleaned up.....just don't know a better way to do it see RegionWorkerPool as well
       if (captureArgs.HasBeenProcessed && captureArgs.HasBeenDrawn)
       {
         captureArgs.Dispose();
       }
+    }
+
+    internal void regionWorkerPool_ProcessingCompleted(object sender, ScreenCapture screenCapture)
+    {
+      Draw(screenCapture);
+    }
+
+    public void Draw(ScreenCapture screenCapture)
+    {
+      if (ShowDebug)
+      {
+        DrawDebugView(screenCapture);
+      }
+      else
+      {
+        DrawEntireScreen(screenCapture);
+      }
+    }
+
+    private void DrawEntireScreen(ScreenCapture screenCapture)
+    {
+      Application.Current.Dispatcher.Invoke(() =>
+      {
+        ScreenCaptureBrush = new ImageBrush(BitmapHelper.ConvertStreamToBitmap(screenCapture.MemoryStream));
+      });
+    }
+
+    private void DrawDebugView(ScreenCapture screenCapture)
+    {
+
     }
   }
 }

@@ -1,6 +1,11 @@
-﻿using LulCaster.UI.WPF.Workers;
+﻿using LulCaster.UI.WPF.ViewModels;
+using LulCaster.UI.WPF.Workers;
+using LulCaster.UI.WPF.Workers.Events.Arguments;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Media.Imaging;
 
 namespace LulCaster.UI.WPF.Utility
@@ -81,6 +86,19 @@ namespace LulCaster.UI.WPF.Utility
       screenCaptureImage.Freeze();
 
       return screenCaptureImage;
+    }
+
+    internal static ScreenCapture ConvertArgsToScreenCap(ScreenCaptureCompletedArgs args, IList<RegionViewModel> regions, DateTime timeCreated)
+    {
+      return new ScreenCapture()
+      {
+        ByteArray = args.ByteArray,
+        ScreenBitmap = args.BitmapImage,
+        RegionViewModels = regions,
+        ScreenBounds = args.ScreenBounds,
+        CanvasBounds = args.CanvasBounds,
+        CreationTime = timeCreated
+      };
     }
   }
 }

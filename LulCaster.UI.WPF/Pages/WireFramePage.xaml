@@ -31,12 +31,19 @@
       <RowDefinition Height="4*"></RowDefinition>
     </Grid.RowDefinitions>
 
-    <materialDesign:Card Grid.Row="0" Margin="10,10,10,18">
+    <Button x:Name="BtnDebugView" Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                              Visibility="Visible"
+                                                Height="25"
+                                                Click="BtnDebugView_Click"
+                                                materialDesign:ButtonAssist.CornerRadius="24"
+                                                ToolTip="Toggles Debug Mode" Width="25" Margin="1165,10,10,552">
+      <materialDesign:PackIcon Kind="bug" Opacity=".56" Height="18" Width="18" />
+    </Button>
+    <materialDesign:Card Grid.Row="0" Margin="10,40,10,18">
       <Canvas Name="canvasScreenFeed" Background="{Binding ScreenCaptureBrush, Mode=OneWay}" 
               MouseLeftButtonDown="canvasScreenFeed_MouseLeftButtonDown"  
               MouseLeftButtonUp="canvasScreenFeed_MouseLeftButtonUp"  
-              MouseMove="canvasScreenFeed_MouseMove">
-      </Canvas>
+              MouseMove="canvasScreenFeed_MouseMove" Height="575" VerticalAlignment="Bottom"/>
     </materialDesign:Card>
     <Grid Name="GridConfigTools" Grid.Row="1" Margin="10,0,10,0">
       <Grid.ColumnDefinitions>
