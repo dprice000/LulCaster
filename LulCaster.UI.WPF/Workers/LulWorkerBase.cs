@@ -6,9 +6,9 @@ namespace LulCaster.UI.WPF.Workers
   {
     protected readonly int IDLE_TIMEOUT = 10;
 
-    protected object _autoResetLock = new object();
-    protected object _runningFlagLock = new object();
-    protected bool _isRunning, _autoReset = true;
+    private readonly object _autoResetLock = new object();
+    private readonly object _runningFlagLock = new object();
+    private bool _isRunning, _autoReset = true;
     private Task _workerTask;
 
     public bool AutoReset

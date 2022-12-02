@@ -1,9 +1,13 @@
-﻿using LulCaster.UI.WPF.Workers.Events.Arguments;
+﻿using LulCaster.UI.WPF.Utility;
+using LulCaster.UI.WPF.Workers.Events.Arguments;
 using LulCaster.Utility.ScreenCapture.Windows;
 using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace LulCaster.UI.WPF.Workers
 {
@@ -16,7 +20,7 @@ namespace LulCaster.UI.WPF.Workers
     /// The lower limit in milliseconds on how fast a capture can run. Defaults to 60,000 ms.
     /// </summary>
     public int CaptureInterval { get; } = 1000;
-    public Size CanvasBounds { get; set; }
+    public System.Windows.Size CanvasBounds { get; set; }
 
     public IProgress<ScreenCaptureProgressArgs> ProgressHandler { get; }
 
@@ -24,7 +28,7 @@ namespace LulCaster.UI.WPF.Workers
 
     public event EventHandler<ScreenCaptureCompletedArgs> ScreenCaptureCompleted;
 
-    public ScreenCaptureWorker(IScreenCaptureService screenCaptureService, Size canvasBounds, int captureFps, int idleTimeout) : base(idleTimeout)
+    public ScreenCaptureWorker(IScreenCaptureService screenCaptureService, System.Windows.Size canvasBounds, int captureFps, int idleTimeout) : base(idleTimeout)
     {
       _screenCaptureService = screenCaptureService;
       CaptureInterval = CalculateHaltInterval(captureFps);
@@ -63,7 +67,7 @@ namespace LulCaster.UI.WPF.Workers
 
         var captureArgs = new ScreenCaptureCompletedArgs
         {
-          ScreenImageStream = byteImage,
+          ByteArray = byteImage,
           ScreenBounds = _screenCaptureService.ScreenOptions.GetBoundsAsRectangle(),
           CanvasBounds = this.CanvasBounds
         };
@@ -77,21 +81,22 @@ namespace LulCaster.UI.WPF.Workers
         }
 
         HaltUntilNextInterval();
-        _stopWatch.Restart();
       }
     }
 
-    private bool LegalCanvasSize(Size bounds)
+    private bool LegalCanvasSize(System.Windows.Size bounds)
     {
       return bounds.Width > 0 && bounds.Height > 0;
     }
 
     private void HaltUntilNextInterval()
     {
-      ProgressChanged?.Invoke(null, new ScreenCaptureProgressArgs
-      {
-        Status = $"Screen capture interval completed in {_stopWatch.Elapsed.Milliseconds}ms."
-      });
+      //ProgressChanged?.Invoke(null, new ScreenCaptureProgressArgs
+      //{
+      //  Status = $"Screen capture interval completed in {_stopWatch.Elapsed.Milliseconds}ms."
+      //});
+
+      _stopWatch.Restart();
 
       var haltTime = CaptureInterval - (int)_stopWatch.Elapsed.TotalMilliseconds;
 

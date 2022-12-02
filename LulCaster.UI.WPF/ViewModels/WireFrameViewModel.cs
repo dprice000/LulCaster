@@ -1,16 +1,18 @@
-﻿using LulCaster.UI.WPF.Workers.Events.Arguments;
+﻿using LulCaster.UI.WPF.Utility;
+using LulCaster.UI.WPF.Workers.Events.Arguments;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
+using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace LulCaster.UI.WPF.ViewModels
 {
   public class WireFrameViewModel : ViewModelBase
   {
     #region "Private Members"
-
+    private const int DRAW_TIMEOUT_MS = 200;
+    private DateTime _nextDrawTime = DateTime.MinValue;
     private PresetControlViewModel _presetControlViewModel;
     private RegionControlViewModel _regionControlViewModel;
     private RegionConfigViewModel _regionConfigViewModel;
@@ -105,18 +107,24 @@ namespace LulCaster.UI.WPF.ViewModels
 
     internal void screenCaptureWorker_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
     {
-      var imageStream = new MemoryStream(captureArgs.ScreenImageStream);
-      var screenCaptureImage = new BitmapImage();
-      screenCaptureImage.BeginInit();
-      screenCaptureImage.StreamSource = imageStream;
-      screenCaptureImage.CacheOption = BitmapCacheOption.OnLoad;
-      screenCaptureImage.EndInit();
-      screenCaptureImage.Freeze();
+      if (DateTime.Now < _nextDrawTime)
+      {
+        return;
+      }
 
       Application.Current.Dispatcher.Invoke(() =>
       {
-        ScreenCaptureBrush = new ImageBrush(screenCaptureImage);
+        ScreenCaptureBrush = new ImageBrush(BitmapHelper.ConvertStreamToBitmap(captureArgs.MemoryStream));
       });
+
+      _nextDrawTime = DateTime.Now.AddMilliseconds(DRAW_TIMEOUT_MS);
+      captureArgs.HasBeenDrawn = true;
+
+      //TODO: This needs to be cleaned up.....just don't know a better way to do it see RegionWorkerPool as well
+      if (captureArgs.HasBeenProcessed && captureArgs.HasBeenDrawn)
+      {
+        captureArgs.Dispose();
+      }
     }
   }
 }

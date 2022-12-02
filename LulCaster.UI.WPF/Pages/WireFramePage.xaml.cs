@@ -4,6 +4,7 @@ using LulCaster.UI.WPF.Workers;
 using LulCaster.UI.WPF.Workers.Events;
 using LulCaster.Utility.ScreenCapture.Windows;
 using LulCaster.Utility.ScreenCapture.Windows.Snipping;
+using System;
 using System.Windows.Controls;
 using System.Windows.Media;
 

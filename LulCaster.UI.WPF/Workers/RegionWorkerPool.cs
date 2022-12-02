@@ -4,17 +4,19 @@ using LulCaster.Utility.Common.Collections;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows;
+using System.Linq;
 
 namespace LulCaster.UI.WPF.Workers
 {
   public class RegionWorkerPool : LulWorkerBase
   {
+    private const string CAPTURE_FPS_ERROR = "Capture FPS must be greater than 0.";
+    private const string WORKER_MAX_ERROR = "Worker pool size must be greater than 0.";
+
     public event EventHandler<ScreenCaptureProgressArgs> ProgressChanged;
 
-    private readonly int _captureFps;
+    private readonly int _captureFps = 0;
     private readonly List<RegionWorker> _regionWorkers = new List<RegionWorker>();
-    private Queue<ScreenCapture> _oldScreenCaptures = new Queue<ScreenCapture>();
     
     private WireFrameViewModel ViewModel { get; }
 
@@ -32,6 +34,15 @@ namespace LulCaster.UI.WPF.Workers
 
     public RegionWorkerPool(int maxPoolSize, int captureFps, int idleTimeout, WireFrameViewModel viewModel) : base(idleTimeout)
     {
+      if (maxPoolSize < 1)
+      {
+        throw new ArgumentOutOfRangeException(WORKER_MAX_ERROR);
+      }
+      else if (captureFps < 1)
+      {
+        throw new ArgumentOutOfRangeException(CAPTURE_FPS_ERROR);
+      }
+
       MaxPoolSize = maxPoolSize;
       _captureFps = captureFps;
       ViewModel = viewModel;
@@ -49,13 +60,16 @@ namespace LulCaster.UI.WPF.Workers
 
         var screenCapture = ScreenCaptureQueue.Dequeue();
 
+        if (screenCapture == null)
+        {
+          continue;
+        }
+
         foreach (var region in screenCapture.RegionViewModels)
         {
           WaitForFreeWorker();
           CreateWorker(screenCapture, region);
         }
-
-        _oldScreenCaptures.Enqueue(screenCapture);
       }
     }
 
@@ -63,39 +77,18 @@ namespace LulCaster.UI.WPF.Workers
     {
       while (IsFull)
       {
-        try
-        {
-          Wait(IDLE_TIMEOUT);
-          PruneFinishedWorkers();
-        }
-        finally
-        {
-          DisposeOldScreenCaptures();
-        }
+        Wait(IDLE_TIMEOUT);
+        PruneFinishedWorkers();
       }
     }
 
     private void PruneFinishedWorkers()
     {
-      for (int i = _regionWorkers.Count - 1; i > -1; i--)
-      {
-        if (!_regionWorkers[i].IsRunning)
-        {
-          _regionWorkers.RemoveAt(i);
-        }
-      }
-    }
+      var workers = _regionWorkers.Where(worker => !worker.IsRunning).ToList();
 
-    public void DisposeOldScreenCaptures()
-    {
-      var extraFramesCount = _oldScreenCaptures.Count - _captureFps;
-
-      if (extraFramesCount > 0)
+      foreach (var worker in workers)
       {
-        for (int i = 0; i < extraFramesCount; i++)
-        {
-          _oldScreenCaptures.Dequeue().Dispose();
-        }
+        _regionWorkers.Remove(worker);
       }
     }
 
@@ -113,16 +106,22 @@ namespace LulCaster.UI.WPF.Workers
       if (captureArgs.ScreenBounds.Height == 0 || captureArgs.ScreenBounds.Width == 0)
         return;
 
-      var imageStream = new MemoryStream(captureArgs.ScreenImageStream);
-
       ScreenCaptureQueue.Enqueue(new ScreenCapture()
       {
-        ScreenMemoryStream = imageStream,
+        ByteArray = captureArgs.ByteArray,
+        ScreenBitmap = captureArgs.BitmapImage,
         RegionViewModels = ViewModel.RegionControl.Regions,
         ScreenBounds = captureArgs.ScreenBounds,
         CanvasBounds = captureArgs.CanvasBounds,
         CreationTime = DateTime.Now
       });
+
+      captureArgs.HasBeenProcessed = true;
+
+      if (captureArgs.HasBeenProcessed && captureArgs.HasBeenDrawn)
+      {
+        captureArgs.Dispose();
+      }
     }
 
     #endregion "Event Handlers"

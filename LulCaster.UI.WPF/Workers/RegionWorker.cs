@@ -3,7 +3,6 @@ using LulCaster.UI.WPF.ViewModels;
 using LulCaster.UI.WPF.Workers.Events;
 using LulCaster.Utility.Service;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
