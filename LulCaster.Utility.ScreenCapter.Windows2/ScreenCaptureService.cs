@@ -10,22 +10,9 @@ namespace LulCaster.Utility.ScreenCapture.Windows
   {
     public ScreenOptions ScreenOptions { get; set; } = new ScreenOptions();
 
-    public ScreenCaptureService()
-    {
-      InitializeBounds();
-    }
-
     public ScreenCaptureService(ScreenOptions screenOptions)
     {
       ScreenOptions = screenOptions;
-    }
-
-    private void InitializeBounds()
-    {
-      ScreenOptions.ScreenHeight = 2160; //TODO: This should not be hardcoded
-      ScreenOptions.ScreenWidth = 3840;
-      ScreenOptions.X = (int)Screen.PrimaryScreen.Bounds.X;
-      ScreenOptions.Y = (int)Screen.PrimaryScreen.Bounds.Y;
     }
 
     public void CaptureScreenshot(ref byte[] byteImage)
