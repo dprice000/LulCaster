@@ -1,7 +1,6 @@
 ﻿using LulCaster.Utility.Common.Config;
 using System;
 using System.Drawing;
-using System.IO;
 using System.Runtime.InteropServices;
 using WpfScreenHelper;
 
@@ -59,12 +58,11 @@ namespace LulCaster.Utility.ScreenCapture.Windows
     /// </summary>
     /// <param name="handle">The handle to the window. 
     /// <returns></returns>
-    public void CaptureScreenshot(ref byte[] byteImage)
+    public Bitmap CaptureScreenshot()
     {
       if (ProcessPtr == null)
       {
-        byteImage = null;
-        return;
+        return null;
       }
 
       var hdcSrc = User32.GetWindowDC(ProcessPtr);
@@ -79,15 +77,10 @@ namespace LulCaster.Utility.ScreenCapture.Windows
         Gdi32.BitBlt(destinationPtr, 0, 0, ScreenOptions.ScreenWidth, ScreenOptions.ScreenHeight, hdcSrc, 0, 0, Gdi32.Srccopy);
         Gdi32.SelectObject(destinationPtr, hOld);
 
-        using (var screenCaptureImage = Image.FromHbitmap(bitmapPtr))
-        using (var bitmap = new Bitmap(screenCaptureImage))
-        using (var memoryStream = new MemoryStream())
-        {
-          screenCaptureImage.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Tiff);
+        var screenCaptureImage = Image.FromHbitmap(bitmapPtr);
+        var bitmap = new Bitmap(screenCaptureImage);
 
-          byteImage = new byte[memoryStream.Length];
-          byteImage = memoryStream.ToArray();
-        }
+        return bitmap;
       }
       finally
       {

@@ -50,6 +50,7 @@ namespace LulCaster.UI.WPF.Pages
       _soundEffectWorker = new SoundEffectWorker(workerIdleTimeout);
       _screenCaptureWorker = new ScreenCaptureWorker(screenCaptureService, canvasScreenFeed.RenderSize, captureFps, workerIdleTimeout);
       _regionWorkerPool = new RegionWorkerPool(_configManagerService.GetAsInteger("MaxRegionThreads"), captureFps, workerIdleTimeout, ViewModel);
+      _regionWorkerPool.ScreenCaptureQueue = _screenCaptureWorker.ScreenCaptureQueue;
 
       InitializeWorkers();
       InitializeUserControlEvents();
@@ -64,7 +65,6 @@ namespace LulCaster.UI.WPF.Pages
       LstGamePresets.SelectionChanged += LstGamePresets_SelectionChanged;
       Controls.RegionConfiguration.SaveConfigTriggered += RegionConfiguration_SaveConfigTriggered;
       _screenCaptureWorker.ScreenCaptureCompleted += ViewModel.screenCaptureWorker_ScreenCaptureCompleted;
-      _regionWorkerPool.ProcessingCompleted += ViewModel.regionWorkerPool_ProcessingCompleted;
 
       CompositionTarget.Rendering += CompositionTarget_Rendering;
     }
@@ -77,7 +77,6 @@ namespace LulCaster.UI.WPF.Pages
     private void InitializeWorkers()
     {
       _screenCaptureWorker.Start();
-      _screenCaptureWorker.ScreenCaptureCompleted += _regionWorkerPool.screenCaptureWorker_ScreenCaptureCompleted;
       TriggerEmitter.TriggerActivated += _soundEffectWorker.triggerWorkerPool_TriggerActivated;
       _regionWorkerPool.Start();
     }

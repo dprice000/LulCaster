@@ -50,7 +50,6 @@ namespace LulCaster.UI.WPF.Workers
     protected LulWorkerBase(int idleTimeout)
     {
       IDLE_TIMEOUT = idleTimeout;
-      _workerTask = new Task(() => DoWork());
     }
 
     public void Start()
@@ -58,13 +57,13 @@ namespace LulCaster.UI.WPF.Workers
       if (!IsRunning)
       {
         IsRunning = true;
-        _workerTask.Start();
+        _workerTask = Task.Run(() => DoWork());
       }
     }
 
     public void Reset()
     {
-      _workerTask = new Task(() => DoWork());
+      _workerTask = Task.Run(() => DoWork());
     }
 
     public void Stop()
@@ -73,9 +72,9 @@ namespace LulCaster.UI.WPF.Workers
       AutoReset = false;
     }
 
-    protected void Wait(int millisecond)
+    protected async Task WaitAsync(int millisecond)
     {
-      _workerTask.Wait(millisecond);
+      await Task.Delay(millisecond);
     }
 
     protected abstract void DoWork();

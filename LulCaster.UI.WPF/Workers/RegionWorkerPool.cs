@@ -1,8 +1,8 @@
 ﻿using LulCaster.UI.WPF.Utility;
 using LulCaster.UI.WPF.ViewModels;
 using LulCaster.UI.WPF.Workers.Events.Arguments;
-using LulCaster.Utility.Common.Collections;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,14 +14,13 @@ namespace LulCaster.UI.WPF.Workers
     private const string WORKER_MAX_ERROR = "Worker pool size must be greater than 0.";
 
     public event EventHandler<ScreenCaptureProgressArgs> ProgressChanged;
-    public event EventHandler<ScreenCapture> ProcessingCompleted;
 
     private readonly int _captureFps = 0;
     private readonly List<RegionWorker> _regionWorkers = new List<RegionWorker>();
     
     private WireFrameViewModel ViewModel { get; }
 
-    public ThreadSafeQueue<ScreenCapture> ScreenCaptureQueue { get; } = new ThreadSafeQueue<ScreenCapture>();
+    public ConcurrentQueue<ScreenCapture> ScreenCaptureQueue { get; set; }
 
     public bool IsFull
     {
@@ -49,19 +48,17 @@ namespace LulCaster.UI.WPF.Workers
       ViewModel = viewModel;
     }
 
-    protected override void DoWork()
+    protected async override void DoWork()
     {
       while (IsRunning)
       {
         if (ScreenCaptureQueue.IsEmpty)
         {
-          Wait(IDLE_TIMEOUT);
+          await WaitAsync(IDLE_TIMEOUT);
           continue;
         }
 
-        var screenCapture = ScreenCaptureQueue.Dequeue();
-
-        if (screenCapture == null)
+        if (ScreenCaptureQueue.TryDequeue(out var screenCapture) == false || screenCapture == null || screenCapture.RegionViewModels == null)
         {
           continue;
         }
@@ -74,11 +71,11 @@ namespace LulCaster.UI.WPF.Workers
       }
     }
 
-    private void WaitForFreeWorker()
+    private async void WaitForFreeWorker()
     {
       while (IsFull)
       {
-        Wait(IDLE_TIMEOUT);
+        await WaitAsync(IDLE_TIMEOUT);
         PruneFinishedWorkers();
       }
     }
@@ -89,7 +86,6 @@ namespace LulCaster.UI.WPF.Workers
 
       foreach (var worker in workers)
       {
-        worker.ProcessingComplete -= null;
         _regionWorkers.Remove(worker);
       }
     }
@@ -97,39 +93,9 @@ namespace LulCaster.UI.WPF.Workers
     private void CreateWorker(ScreenCapture screenCapture, RegionViewModel region)
     {
       var worker = new RegionWorker(screenCapture, region, IDLE_TIMEOUT);
-      worker.ProcessingComplete += Worker_ProcessingComplete;
 
       worker.Start();
       _regionWorkers.Add(worker);
     }
-
-    private void Worker_ProcessingComplete(object sender, ScreenCapture e)
-    {
-        OnProcessingComplete(e);
-    }
-
-    #region "Event Handlers"
-
-    internal void screenCaptureWorker_ScreenCaptureCompleted(object sender, ScreenCaptureCompletedArgs captureArgs)
-    {
-      if (captureArgs.ScreenBounds.Height == 0 || captureArgs.ScreenBounds.Width == 0)
-        return;
-
-      ScreenCaptureQueue.Enqueue(BitmapHelper.ConvertArgsToScreenCap(captureArgs, ViewModel.RegionControl.Regions, DateTime.Now));
-
-      captureArgs.HasBeenProcessed = true;
-
-      if (captureArgs.HasBeenProcessed && captureArgs.HasBeenDrawn)
-      {
-        captureArgs.Dispose();
-      }
-    }
-
-    private void OnProcessingComplete(ScreenCapture screenCapture)
-    {
-      ProcessingCompleted?.Invoke(this, screenCapture);
-    }
-
-    #endregion "Event Handlers"
   }
 }

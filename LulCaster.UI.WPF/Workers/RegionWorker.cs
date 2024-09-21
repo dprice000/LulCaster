@@ -12,8 +12,6 @@ namespace LulCaster.UI.WPF.Workers
 {
   public class RegionWorker : LulWorkerBase
   {
-    public event EventHandler<ScreenCapture> ProcessingComplete;
-
     private readonly RegionViewModel _region;
     private readonly ScreenCapture _screenCapture;
     private readonly IOcrService _ocrService = new OcrService();
@@ -33,17 +31,17 @@ namespace LulCaster.UI.WPF.Workers
         return;
       }
 
+      using (var screenCapture = _screenCapture)
       using (var croppedImage = BitmapHelper.CropBitmap(_screenCapture, _region.BoundingBox))
       using (var resizedImage = BitmapHelper.ResizeBitmap(croppedImage, croppedImage.Width, croppedImage.Height, IMAGE_MULTIPLIER))
       using (var greyScaledImage = BitmapHelper.SetGrayscale(resizedImage))
       {
         var scrappedText = ScrapeImage(greyScaledImage);
         scrappedText = Regex.Replace(scrappedText, @"[^0-9a-zA-Z]", "");
-        ProcessTriggers(_region, _screenCapture, scrappedText);
+        ProcessTriggers(_region, screenCapture, scrappedText);
       }
 
       IsRunning = false;
-      OnProcessingComplete(_screenCapture);
     }
 
     private void ProcessTriggers(RegionViewModel region, ScreenCapture screenCapture, string scrappedText)
@@ -76,11 +74,6 @@ namespace LulCaster.UI.WPF.Workers
 
         return _ocrService.ProcessImage(memoryStream);
       }
-    }
-
-    protected void OnProcessingComplete(ScreenCapture screenCapture)
-    {
-      ProcessingComplete?.Invoke(this, screenCapture);
     }
   }
 }

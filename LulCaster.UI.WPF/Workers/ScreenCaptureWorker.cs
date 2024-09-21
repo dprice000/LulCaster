@@ -1,11 +1,12 @@
-﻿using LulCaster.UI.WPF.Utility;
-using LulCaster.UI.WPF.Workers.Events.Arguments;
+﻿using LulCaster.UI.WPF.Workers.Events.Arguments;
 using LulCaster.Utility.ScreenCapture.Windows;
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace LulCaster.UI.WPF.Workers
 {
@@ -26,6 +27,9 @@ namespace LulCaster.UI.WPF.Workers
 
     public event EventHandler<ScreenCaptureCompletedArgs> ScreenCaptureCompleted;
 
+    public ConcurrentQueue<ScreenCapture> ScreenCaptureQueue { get; } = new ConcurrentQueue<ScreenCapture>();
+
+
     public ScreenCaptureWorker(IScreenCaptureService screenCaptureService, System.Windows.Size canvasBounds, int captureFps, int idleTimeout) : base(idleTimeout)
     {
       _screenCaptureService = screenCaptureService;
@@ -43,7 +47,7 @@ namespace LulCaster.UI.WPF.Workers
       ((GameCaptureService)_screenCaptureService).SetProcessPointer(gameHandle);
     }
 
-    protected override void DoWork()
+    protected async override void DoWork()
     {
       while (IsRunning)
       {
@@ -54,23 +58,30 @@ namespace LulCaster.UI.WPF.Workers
 
         _stopWatch.Start();
 
-        byte[] byteImage = new byte[0];
-        _screenCaptureService.CaptureScreenshot(ref byteImage);
+        var screenCapture = _screenCaptureService.CaptureScreenshot();
 
         // If game handle is not set we will get an empty array. Just do nothing.
-        if (byteImage == null)
+        if (screenCapture == null)
         {
-          HaltUntilNextInterval();
+          await HaltUntilNextIntervalAsync();
+          continue;
         }
 
-        var captureArgs = new ScreenCaptureCompletedArgs
+        ScreenCaptureQueue.Enqueue(new ScreenCapture()
         {
-          ByteArray = byteImage,
+          Image = screenCapture,
           ScreenBounds = _screenCaptureService.ScreenOptions.GetBoundsAsRectangle(),
           CanvasBounds = this.CanvasBounds
-        };
+        });
 
-        OnScreenCaptureCompleted(captureArgs);
+        OnScreenCaptureCompleted(new ScreenCaptureCompletedArgs
+        {
+          Image = screenCapture,
+          ScreenBounds = _screenCaptureService.ScreenOptions.GetBoundsAsRectangle(),
+          CanvasBounds = this.CanvasBounds
+        });
+
+        screenCapture = null;
 
         if (!AutoReset)
         {
@@ -78,7 +89,7 @@ namespace LulCaster.UI.WPF.Workers
           break;
         }
 
-        HaltUntilNextInterval();
+        await HaltUntilNextIntervalAsync();
       }
     }
 
@@ -93,7 +104,7 @@ namespace LulCaster.UI.WPF.Workers
       return bounds.Width > 0 && bounds.Height > 0;
     }
 
-    private void HaltUntilNextInterval()
+    private async Task HaltUntilNextIntervalAsync()
     {
       //ProgressChanged?.Invoke(null, new ScreenCaptureProgressArgs
       //{
@@ -106,7 +117,7 @@ namespace LulCaster.UI.WPF.Workers
 
       if (haltTime > 0)
       {
-        Thread.Sleep(haltTime);
+        await Task.Delay(haltTime);
       }
     }
 

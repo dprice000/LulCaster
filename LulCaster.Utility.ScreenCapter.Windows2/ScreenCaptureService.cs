@@ -2,7 +2,7 @@
 using System;
 using System.Drawing;
 using System.IO;
-using WpfScreenHelper;
+
 
 namespace LulCaster.Utility.ScreenCapture.Windows
 {
@@ -15,7 +15,7 @@ namespace LulCaster.Utility.ScreenCapture.Windows
       ScreenOptions = screenOptions;
     }
 
-    public void CaptureScreenshot(ref byte[] byteImage)
+    public Bitmap CaptureScreenshot()
     {
       using (Bitmap screencapImage = new Bitmap(ScreenOptions.ScreenWidth, ScreenOptions.ScreenHeight))
       using (Graphics graphic = Graphics.FromImage(screencapImage))
@@ -26,13 +26,7 @@ namespace LulCaster.Utility.ScreenCapture.Windows
                          screencapImage.Size,
                          CopyPixelOperation.SourceCopy);
 
-        using (var memoryStream = new MemoryStream())
-        {
-          screencapImage.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Tiff);
-
-          byteImage = new Byte[memoryStream.Length];
-          byteImage = memoryStream.ToArray();
-        }
+        return screencapImage;
       }
     }
   }

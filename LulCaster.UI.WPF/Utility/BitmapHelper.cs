@@ -15,7 +15,7 @@ namespace LulCaster.UI.WPF.Utility
   {
     public static Bitmap CropBitmap(ScreenCapture screenCapture, Rectangle regionBoundingBox)
     {
-      using (var image = Image.FromStream(screenCapture.MemoryStream))
+      using (var image = (Image)screenCapture.Image)
       {
         var relativeBounds = AspectRatioConverter.ResolveScreenLocation(screenCapture.ScreenBounds, screenCapture.CanvasBounds, regionBoundingBox);
 
@@ -93,7 +93,7 @@ namespace LulCaster.UI.WPF.Utility
     {
       return new ScreenCapture()
       {
-        ByteArray = args.ByteArray,
+        Image = args.Image,
         ScreenBitmap = args.BitmapImage,
         RegionViewModels = regions,
         ScreenBounds = args.ScreenBounds,
@@ -102,7 +102,7 @@ namespace LulCaster.UI.WPF.Utility
       };
     }
 
-    internal static byte[] ImageToByteArray(System.Drawing.Image imageIn)
+    internal static byte[] ImageToByteArray(Image imageIn)
     {
       using (var ms = new MemoryStream())
       {

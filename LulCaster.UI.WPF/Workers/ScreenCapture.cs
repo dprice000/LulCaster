@@ -9,19 +9,7 @@ namespace LulCaster.UI.WPF.Workers
 {
   public class ScreenCapture : IDisposable
   {
-    private MemoryStream _memoryStream;
-    private byte[] _byteArray;
-
-    public byte[] ByteArray
-    {
-      get => _byteArray;
-      set
-      {
-        _byteArray = value;
-        _memoryStream = new MemoryStream(_byteArray);
-      }
-    }
-    public MemoryStream MemoryStream => _memoryStream;
+    public Bitmap Image { get; set; }
     public BitmapImage ScreenBitmap { get; set; }
     public IList<RegionViewModel> RegionViewModels { get; set; }
     public Rectangle ScreenBounds { get; set; }
@@ -31,7 +19,7 @@ namespace LulCaster.UI.WPF.Workers
     public void Dispose()
     {
       ScreenBitmap = null;
-      _memoryStream?.Dispose();
+      Image.Dispose();
     }
   }
 }
