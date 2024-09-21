@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LulCaster.Utility.ScreenCapter.Windows2\LulCaster.Utility.ScreenCapture.Windows.csproj" />
+    <ProjectReference Include="..\LulCaster.Utility.ScreenCapture.Windows\LulCaster.Utility.ScreenCapture.Windows.csproj" />
     <ProjectReference Include="..\LulCaster.Utility.Service\LulCaster.Utility.Service.csproj" />
   </ItemGroup>
 
